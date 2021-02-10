@@ -1,2 +1,1 @@
-# kubernox
-Kubernox Deployment Stack
+# services
