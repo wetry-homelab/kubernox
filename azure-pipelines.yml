@@ -61,7 +61,7 @@ steps:
     containerRegistry: 'Docker Hub'
     repository: 'kubernox/service'
     command: 'buildAndPush'
-    Dockerfile: 'src/Kubernox/Dockerfile'
+    Dockerfile: 'src/Kubernox.Service/Dockerfile'
     buildContext: '.'
     tags: |
       $(tag)
