@@ -54,3 +54,15 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'external'
     publishFeedCredentials: 'NuGet WeTry'
+
+- task: Docker@2
+  displayName: Build an Kubernox Service Image
+  inputs:
+    containerRegistry: 'Docker Hub'
+    repository: 'kubernox/service'
+    command: 'buildAndPush'
+    Dockerfile: 'src/Kubernox/Dockerfile'
+    buildContext: '.'
+    tags: |
+      $(tag)
+      latest
