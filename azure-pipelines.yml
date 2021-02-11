@@ -4,6 +4,9 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
+  
+variables:
+  tag: '$(Build.BuildId)'
 
 steps:
 - task: UseDotNet@2
