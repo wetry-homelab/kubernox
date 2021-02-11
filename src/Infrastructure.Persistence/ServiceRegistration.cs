@@ -18,7 +18,7 @@ namespace Infrastructure.Persistence
             {
                 connectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION");
             }
-
+#if DEBUG
             services.AddDbContext<ServiceDbContext>(options =>
             {
                 options.UseSqlServer(connectionString, sqlServerOptions =>
@@ -27,6 +27,13 @@ namespace Infrastructure.Persistence
                 });
             }, ServiceLifetime.Scoped);
 
+#else
+            services.AddDbContext<ServiceDbContext>(options =>
+                options.UseNpgsql(connectionString, postgreOpts =>
+                {
+                    postgreOpts.EnableRetryOnFailure(10);
+                }));
+#endif
             services.AddScoped<IClusterRepository, ClusterRepository>();
             services.AddScoped<ISshKeyRepository, SshKeyRepository>();
             services.AddScoped<ITemplateRepository, TemplateRepository>();

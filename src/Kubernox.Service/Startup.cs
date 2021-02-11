@@ -12,6 +12,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Infrastructure.Persistence.Contexts;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kubernox.Service
 {
@@ -62,7 +65,7 @@ namespace Kubernox.Service
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ServiceDbContext serviceDbContext)
         {
             if (env.IsDevelopment())
             {
@@ -70,6 +73,8 @@ namespace Kubernox.Service
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kubernox.Service v1"));
             }
+
+            MigrateDatabase(serviceDbContext);
 
             app.UseHttpsRedirection();
 
@@ -83,6 +88,19 @@ namespace Kubernox.Service
                 endpoints.MapControllers();
                 endpoints.MapHub<AppHub>("/app");
             });
+        }
+
+        private void MigrateDatabase(ServiceDbContext serviceDbContext)
+        {
+            try
+            {
+                serviceDbContext.Database.EnsureCreated();
+                serviceDbContext.Database.Migrate();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

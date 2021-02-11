@@ -21,11 +21,28 @@ namespace Kubernox
         private const string ServiceContainerName = "kubernox_service";
         private const string WorkersContainerName = "kubernox_workers";
         private const string KubernoxContainerName = "kubernox";
+        private const string NetworkName = "kubernox_internal_lan";
+
 
         public ContainerDeployService()
         {
             var credentials = new BasicAuthCredentials("hantse", "Puce0123");
             client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine"), credentials).CreateClient();
+        }
+
+        public async Task<bool> InstantiateNetworkAsync()
+        {
+            var networks = await client.Networks.ListNetworksAsync();
+
+            if (networks.Any(a => a.Name == NetworkName))
+                return true;
+
+            var network = await client.Networks.CreateNetworkAsync(new NetworksCreateParameters()
+            {
+                Name = NetworkName
+            });
+
+            return network != null;
         }
 
         public async Task<bool> InstantiateDatabaseContainer(PostgreDatabaseProvider database, CancellationToken cancellationToken)
@@ -37,12 +54,33 @@ namespace Kubernox
             var volumes = new Dictionary<string, EmptyStruct>();
             volumes.Add($"{database.Storage}:/var/lib/postgresql/data", new EmptyStruct());
 
+            var ports = new Dictionary<string, EmptyStruct>();
+            ports.Add("5432/udp", new EmptyStruct());
+
             var createParameters = new CreateContainerParameters()
             {
                 Image = "postgres:latest",
                 Name = DbContainerName,
-                Env = new List<string>() { $"POSTGRES_PASSWORD={database.Password}" },
-                Volumes = volumes
+                Hostname = DbContainerName,
+                Env = new List<string>() { $"POSTGRES_PASSWORD={database.Password}", $"PG_USER={database.Username}" },
+                Volumes = volumes,
+                HostConfig = new HostConfig()
+                {
+                    NetworkMode = NetworkName,
+                    PortBindings = new Dictionary<string, IList<PortBinding>>
+                    {
+                        {
+                            $"5432/udp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = $"5432"
+                                }
+                            }
+                        }
+                    }
+                }
             };
 
             return await DeployAndStartAsync(DbContainerName, createParameters, cancellationToken);
@@ -64,6 +102,7 @@ namespace Kubernox
                 Hostname = QueueContainerName,
                 HostConfig = new HostConfig()
                 {
+                    NetworkMode = NetworkName,
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                     {
                         {
@@ -103,7 +142,12 @@ namespace Kubernox
             {
                 Image = "redis",
                 Name = CacheContainerName,
-                Cmd = new List<string>() { $"redis-server", "--requirepass", $"{redis.Password}" }
+                Cmd = new List<string>() { $"redis-server", "--requirepass", $"{redis.Password}" },
+                Hostname = CacheContainerName,
+                HostConfig = new HostConfig()
+                {
+                    NetworkMode = NetworkName
+                }
             };
 
             return await DeployAndStartAsync(CacheContainerName, createParameters, cancellationToken);
@@ -125,10 +169,12 @@ namespace Kubernox
             {
                 Image = "prom/prometheus:latest",
                 Name = PrometheusContainerName,
+                Hostname = PrometheusContainerName,
                 ExposedPorts = ports,
                 Volumes = volumes,
                 HostConfig = new HostConfig()
                 {
+                    NetworkMode = NetworkName,
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                     {
                         {
@@ -160,11 +206,20 @@ namespace Kubernox
                 Image = "kubernox/kubernox-service",
                 Name = ServiceContainerName,
                 ExposedPorts = ports,
+                HostConfig = new HostConfig()
+                {
+                    NetworkMode = NetworkName,
+                    Links = new List<string>()
+                    {
+                        $"{QueueContainerName}:{QueueContainerName}"
+                    }
+                },
+                Hostname = ServiceContainerName,
                 Env = new List<string>()
                 {
                     $"Proxmox__Uri={configuration.Proxmox.Host}",
                     $"Proxmox__Token=PVEAPIToken={configuration.Proxmox.Username}@{configuration.Proxmox.AuthType}!{configuration.Proxmox.TokenId}={configuration.Proxmox.AccessToken}",
-                    $"ConnectionStrings__Default=Data Source={configuration.Postgre.Host};Initial Catalog={configuration.Postgre.DbName};User ID={configuration.Postgre.Username};Password={configuration.Postgre.Password}",
+                    $"ConnectionStrings__Default=Host={configuration.Postgre.Host};Database={configuration.Postgre.DbName};Username={configuration.Postgre.Username};Password={configuration.Postgre.Password}",
                     $"ConnectionStrings__Redis={configuration.Redis.Host}",
                     $"RabbitMq__User={configuration.Rabbitmq.Username}",
                     $"RabbitMq__Password={configuration.Rabbitmq.Password}",
@@ -209,9 +264,11 @@ namespace Kubernox
             {
                 Image = "kubernox/kubernox",
                 Name = KubernoxContainerName,
+                Hostname = KubernoxContainerName,
                 ExposedPorts = ports,
                 HostConfig = new HostConfig()
                 {
+                    NetworkMode = NetworkName,
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                     {
                         {
