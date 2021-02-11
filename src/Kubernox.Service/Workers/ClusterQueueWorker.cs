@@ -30,12 +30,20 @@ namespace Kubernox.Service.Workers
         {
             do
             {
-                using (var scope = services.CreateScope())
+                try
                 {
-                    var scopedProcessingService =
-                        scope.ServiceProvider
-                            .GetRequiredService<IQueueBusiness>();
-                    await scopedProcessingService.StartQueueListener();
+                    using (var scope = services.CreateScope())
+                    {
+                        var scopedProcessingService =
+                            scope.ServiceProvider
+                                .GetRequiredService<IQueueBusiness>();
+                        await scopedProcessingService.StartQueueListener();
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Unable to start queue listener.");
+                    await Task.Delay(5000);
                 }
             } while (!stoppingToken.IsCancellationRequested);
         }
