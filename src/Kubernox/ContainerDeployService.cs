@@ -1,4 +1,5 @@
 ﻿using Docker.DotNet;
+using Docker.DotNet.BasicAuth;
 using Docker.DotNet.Models;
 using Kubernox.Model;
 using System;
@@ -18,12 +19,13 @@ namespace Kubernox
         private const string CacheContainerName = "kubernox_cache";
         private const string PrometheusContainerName = "kubernox_prometheus";
         private const string ServiceContainerName = "kubernox_service";
-        private const string DatacenterWorkerContainerName = "kubernox_datacenter_worker";
-        private const string MonitoringWorkerContainerName = "kubernox_monitoring_worker";
+        private const string WorkersContainerName = "kubernox_workers";
+        private const string KubernoxContainerName = "kubernox";
 
         public ContainerDeployService()
         {
-            client = new DockerClientConfiguration().CreateClient();
+            var credentials = new BasicAuthCredentials("hantse", "Puce0123");
+            client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine"), credentials).CreateClient();
         }
 
         public async Task<bool> InstantiateDatabaseContainer(PostgreDatabaseProvider database, CancellationToken cancellationToken)
@@ -102,12 +104,12 @@ namespace Kubernox
         public async Task<bool> InstantiateKubernoxServiceContainer(Configuration configuration, CancellationToken cancellationToken)
         {
             Console.WriteLine("---- Starting Deploy Kubernox Container ----");
-            await DownloadImage("kubernox/service", cancellationToken);
+            await DownloadImage("kubernox/kubernox-service", cancellationToken);
 
             var createParameters = new CreateContainerParameters()
             {
-                Image = "wetry/kubernox",
-                Name = CacheContainerName,
+                Image = "kubernox/kubernox-service",
+                Name = ServiceContainerName,
                 Env = new List<string>()
                 {
                     $"Proxmox__Uri={configuration.Proxmox.Host}",
@@ -125,15 +127,15 @@ namespace Kubernox
             return await DeployAndStartAsync(ServiceContainerName, createParameters, cancellationToken);
         }
 
-        public async Task<bool> InstantiateKubernoxDatacenterWorkerContainer(Configuration configuration, CancellationToken cancellationToken)
+        public async Task<bool> InstantiateKubernoxWorkersContainer(Configuration configuration, CancellationToken cancellationToken)
         {
             Console.WriteLine("---- Starting Deploy Kubernox Datacenter Worker Container ----");
-            await DownloadImage("wetry/kubernox-datacenter-worker", cancellationToken);
+            await DownloadImage("kubernox/kubernox-workers", cancellationToken);
 
             var createParameters = new CreateContainerParameters()
             {
-                Image = "wetry/kubernox-datacenter-worker",
-                Name = CacheContainerName,
+                Image = "kubernox/kubernox-workers",
+                Name = WorkersContainerName,
                 Env = new List<string>()
                 {
                     $"Proxmox__Uri={configuration.Proxmox.Host}",
@@ -142,27 +144,24 @@ namespace Kubernox
                 }
             };
 
-            return await DeployAndStartAsync(DatacenterWorkerContainerName, createParameters, cancellationToken);
+            return await DeployAndStartAsync(WorkersContainerName, createParameters, cancellationToken);
         }
 
-        public async Task<bool> InstantiateKubernoxMonitoringWorkerContainer(Configuration configuration, CancellationToken cancellationToken)
+        public async Task<bool> InstantiateKubernoxUiContainer(Configuration configuration, CancellationToken cancellationToken)
         {
             Console.WriteLine("---- Starting Deploy Kubernox Container ----");
-            await DownloadImage("wetry/kubernox-monitoring-worker", cancellationToken);
+            await DownloadImage("kubernox/kubernox", cancellationToken);
+
+            var ports = new Dictionary<string, EmptyStruct>();
+            ports.Add("7777:80", new EmptyStruct());
 
             var createParameters = new CreateContainerParameters()
             {
-                Image = "wetry/kubernox-monitoring-worker",
-                Name = CacheContainerName,
-                Env = new List<string>()
-                {
-                    $"Proxmox__Uri={configuration.Proxmox.Host}",
-                    $"Proxmox__Token=PVEAPIToken={configuration.Proxmox.Username}@{configuration.Proxmox.AuthType}!{configuration.Proxmox.TokenId}={configuration.Proxmox.AccessToken}",
-                    $"ConnectionStrings__Default=Data Source={configuration.Postgre.Host};Initial Catalog={configuration.Postgre.DbName};User ID={configuration.Postgre.Username};Password={configuration.Postgre.Password}"
-                }
+                Image = "kubernox/kubernox",
+                Name = KubernoxContainerName,
             };
 
-            return await DeployAndStartAsync(MonitoringWorkerContainerName, createParameters, cancellationToken);
+            return await DeployAndStartAsync(KubernoxContainerName, createParameters, cancellationToken);
         }
 
         private async Task DownloadImage(string image, CancellationToken cancellationToken)

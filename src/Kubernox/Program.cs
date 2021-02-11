@@ -29,6 +29,9 @@ namespace Kubernox
             deploymentStack.Add(containerDeployService.InstantiateQueueContainer(configuration.Rabbitmq, cancellationToken));
             deploymentStack.Add(containerDeployService.InstantiateCacheContainer(configuration.Redis, cancellationToken));
             deploymentStack.Add(containerDeployService.InstantiatePrometheusContainer(configuration.Prometheus, cancellationToken));
+            deploymentStack.Add(containerDeployService.InstantiateKubernoxServiceContainer(configuration, cancellationToken));
+            deploymentStack.Add(containerDeployService.InstantiateKubernoxWorkersContainer(configuration, cancellationToken));
+            deploymentStack.Add(containerDeployService.InstantiateKubernoxUiContainer(configuration, cancellationToken));
 
             var results = await Task.WhenAll(deploymentStack);
 
