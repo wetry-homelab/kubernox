@@ -52,11 +52,30 @@ namespace Kubernox
         {
             Console.WriteLine("---- Starting Deploy Queue Container ----");
             await DownloadImage("rabbitmq", "3", cancellationToken);
+            var ports = new Dictionary<string, EmptyStruct>();
+            ports.Add($"{queue.Port}/tcp", new EmptyStruct());
 
             var createParameters = new CreateContainerParameters()
             {
                 Image = "rabbitmq:3",
+                ExposedPorts = ports,
                 Name = QueueContainerName,
+                HostConfig = new HostConfig()
+                {
+                    PortBindings = new Dictionary<string, IList<PortBinding>>
+                    {
+                        {
+                            $"{queue.Port}/tcp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = $"{queue.Port}"
+                                }
+                            }
+                        }
+                    }
+                },
                 Env = new List<string>() { $"RABBITMQ_DEFAULT_USER={queue.Username}", $"RABBITMQ_DEFAULT_PASS={queue.Password}" },
             };
 
@@ -85,7 +104,7 @@ namespace Kubernox
 
 
             var ports = new Dictionary<string, EmptyStruct>();
-            ports.Add("9090:9090", new EmptyStruct());
+            ports.Add("9090/tcp", new EmptyStruct());
 
             var volumes = new Dictionary<string, EmptyStruct>();
             volumes.Add($"{prometheus.Path}:/etc/prometheus/prometheus.yml", new EmptyStruct());
@@ -95,7 +114,23 @@ namespace Kubernox
                 Image = "prom/prometheus:latest",
                 Name = PrometheusContainerName,
                 ExposedPorts = ports,
-                Volumes = volumes
+                Volumes = volumes,
+                HostConfig = new HostConfig()
+                {
+                    PortBindings = new Dictionary<string, IList<PortBinding>>
+                    {
+                        {
+                            "9090/tcp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = "9090"
+                                }
+                            }
+                        }
+                    }
+                }
             };
 
             return await DeployAndStartAsync(PrometheusContainerName, createParameters, cancellationToken);
@@ -105,11 +140,14 @@ namespace Kubernox
         {
             Console.WriteLine("---- Starting Deploy Kubernox Container ----");
             await DownloadImage("kubernox/kubernox-service", cancellationToken);
+            var ports = new Dictionary<string, EmptyStruct>();
+            ports.Add("80/tcp", new EmptyStruct());
 
             var createParameters = new CreateContainerParameters()
             {
                 Image = "kubernox/kubernox-service",
                 Name = ServiceContainerName,
+                ExposedPorts = ports,
                 Env = new List<string>()
                 {
                     $"Proxmox__Uri={configuration.Proxmox.Host}",
@@ -153,12 +191,29 @@ namespace Kubernox
             await DownloadImage("kubernox/kubernox", cancellationToken);
 
             var ports = new Dictionary<string, EmptyStruct>();
-            ports.Add("7777:80", new EmptyStruct());
+            ports.Add("80/tcp", new EmptyStruct());
 
             var createParameters = new CreateContainerParameters()
             {
                 Image = "kubernox/kubernox",
                 Name = KubernoxContainerName,
+                ExposedPorts = ports,
+                HostConfig = new HostConfig()
+                {
+                    PortBindings = new Dictionary<string, IList<PortBinding>>
+                    {
+                        {
+                            "80/tcp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = $"{configuration.Kubernox.UiPortExpose}"
+                                }
+                            }
+                        }
+                    }
+                }
             };
 
             return await DeployAndStartAsync(KubernoxContainerName, createParameters, cancellationToken);

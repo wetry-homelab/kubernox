@@ -18,13 +18,13 @@
 proxmox:
     # No default value, custom value required
     # Values acceptable : xx.xx.xx.xx:port / proxmox.mydomain:port 
-    host:
+    host: https://infra.ice-artefact.com
     # Default value : kubernox
     username: root
     # No default value, custom value required
-    access_token:
+    access_token: 05449ebc-2eaf-42a6-950a-b6a341f528d0
     # No default value, custom value required
-    token_id:
+    token_id: monsupertoken
     # Default value : pam
     # Possible values : pam / pem
     auth_type: pam
@@ -72,3 +72,6 @@ redis:
 prometheus:
     # Default value : prometheus.yml
     path: "prometheus.yml:"
+
+kubernox:
+    ui_port_expose: 7777

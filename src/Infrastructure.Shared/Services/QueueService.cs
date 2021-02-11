@@ -20,6 +20,8 @@ namespace Infrastructure.Shared.Services
         {
             this.logger = logger;
 
+            logger.LogInformation($"RabbitMQ : => {configuration["RabbitMq:User"]} - {configuration["RabbitMq:Password"]} - {configuration["RabbitMq:HostName"]} - {int.Parse(configuration["RabbitMq:Port"])}");
+
             ConnectionFactory factory = new ConnectionFactory()
             {
                 UserName = configuration["RabbitMq:User"],
