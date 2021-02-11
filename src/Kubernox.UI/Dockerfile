@@ -21,5 +21,5 @@ RUN dotnet publish "Kubernox.UI.csproj" -c Release -o /app/publish
 
 FROM nginx:alpine AS final
 WORKDIR /usr/share/nginx/html
-COPY --from=publish /publish/wwwroot /usr/local/webapp/nginx/html
+COPY --from=publish /app/publish/wwwroot /usr/local/webapp/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
