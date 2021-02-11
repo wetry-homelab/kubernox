@@ -1,0 +1,12 @@
+﻿@page "/"
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@if (DatacenterState != null && DatacenterState.Value != null && DatacenterState.Value.Nodes != null)
+{
+    <Row Gutter="12">
+        @foreach (var node in DatacenterState.Value.Nodes)
+        {
+            <UI.Components.Node.NodeListItem Node="node" />
+        }
+    </Row>
+}

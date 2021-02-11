@@ -324,7 +324,7 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("Nodes");
                 });
-#pragma warning restore 612, 618
+#pragma warning reKubernox.UI.Store 612, 618
         }
     }
 }

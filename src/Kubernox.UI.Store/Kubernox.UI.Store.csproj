@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fluxor" Version="4.0.0" />
+    <PackageReference Include="Fluxor.Blazor.Web" Version="4.0.0" />
+    <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kubernox.UI.Services\Kubernox.UI.Services.csproj" />
+  </ItemGroup>
+
+</Project>

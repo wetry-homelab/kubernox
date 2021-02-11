@@ -1,8 +1,4 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-name: Build Client Contracts
+name: Build Kubernox Stable Release
 trigger:
 - master
 
@@ -23,38 +19,6 @@ steps:
     projects: '**/*.csproj'
     arguments: '--configuration Release'
     
-- task: DotNetCoreCLI@2
-  displayName: "DotNet pack"
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/Infrastructure.Contracts.csproj'
-    includesymbols: true
-    versioningScheme: 'byPrereleaseNumber'
-    majorVersion: '1'
-    minorVersion: '0'
-    patchVersion: '0'
-    configuration: 'Release'
-
-- task: DotNetCoreCLI@2
-  displayName: "DotNet pack"
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/Infrastructure.Validators.csproj'
-    includesymbols: true
-    versioningScheme: 'byPrereleaseNumber'
-    majorVersion: '1'
-    minorVersion: '0'
-    patchVersion: '0'
-    configuration: 'Release'
-
-- task: NuGetCommand@2
-  displayName: Push To NuGet
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'NuGet WeTry'
-
 - task: Docker@2
   displayName: Build an Kubernox Service Image
   inputs:
@@ -62,6 +26,18 @@ steps:
     repository: 'kubernox/service'
     command: 'buildAndPush'
     Dockerfile: 'src/Kubernox.Service/Dockerfile'
+    buildContext: '.'
+    tags: |
+      $(tag)
+      latest
+
+- task: Docker@2
+  displayName: Build an Kubernox Datacenter Worker Image
+  inputs:
+    containerRegistry: 'Docker Hub'
+    repository: 'kubernox/kubernox-datacenter-worker'
+    command: 'buildAndPush'
+    Dockerfile: 'src/Kubernox.Workers/Dockerfile'
     buildContext: '.'
     tags: |
       $(tag)

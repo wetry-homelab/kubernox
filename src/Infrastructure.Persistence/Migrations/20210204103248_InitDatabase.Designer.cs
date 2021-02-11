@@ -162,7 +162,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.ToTable("DatacenterNode");
                 });
-#pragma warning restore 612, 618
+#pragma warning reKubernox.UI.Store 612, 618
         }
     }
 }

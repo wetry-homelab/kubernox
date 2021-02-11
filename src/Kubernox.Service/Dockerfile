@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
 COPY ["src/Kubernox.Service/Kubernox.Service.csproj", "src/Kubernox.Service/"]
-RUN dotnet restore "src/Kubernox.Service/Kubernox.Service.csproj"
+RUN dotnet reKubernox.UI.Store "src/Kubernox.Service/Kubernox.Service.csproj"
 COPY . .
 WORKDIR "/src/src/Kubernox.Service"
 RUN dotnet build "Kubernox.Service.csproj" -c Release -o /app/build

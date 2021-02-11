@@ -46,7 +46,7 @@ namespace Kubernox.Service.Controllers
             return Ok();
         }
 
-        [HttpPut("{id}/snapshot/{snapId}/restore")]
+        [HttpPut("{id}/snapshot/{snapId}/reKubernox.UI.Store")]
         public async Task<IActionResult> RestoreSnapshot(int id, Guid snapId)
         {
             return Ok();
