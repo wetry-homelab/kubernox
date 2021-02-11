@@ -51,15 +51,17 @@ namespace Kubernox
         public async Task<bool> InstantiateQueueContainer(RabbitMqProvider queue, CancellationToken cancellationToken)
         {
             Console.WriteLine("---- Starting Deploy Queue Container ----");
-            await DownloadImage("rabbitmq", "3", cancellationToken);
+            await DownloadImage("rabbitmq", "3-management", cancellationToken);
             var ports = new Dictionary<string, EmptyStruct>();
             ports.Add($"{queue.Port}/tcp", new EmptyStruct());
+            ports.Add($"15672/tcp", new EmptyStruct());
 
             var createParameters = new CreateContainerParameters()
             {
-                Image = "rabbitmq:3",
+                Image = "rabbitmq:3-management",
                 ExposedPorts = ports,
                 Name = QueueContainerName,
+                Hostname = QueueContainerName,
                 HostConfig = new HostConfig()
                 {
                     PortBindings = new Dictionary<string, IList<PortBinding>>
@@ -71,6 +73,16 @@ namespace Kubernox
                                 new PortBinding
                                 {
                                     HostPort = $"{queue.Port}"
+                                }
+                            }
+                        },
+                        {
+                            $"15672/tcp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = $"15672"
                                 }
                             }
                         }

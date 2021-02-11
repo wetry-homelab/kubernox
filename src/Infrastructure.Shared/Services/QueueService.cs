@@ -27,7 +27,8 @@ namespace Infrastructure.Shared.Services
                 UserName = configuration["RabbitMq:User"],
                 Password = configuration["RabbitMq:Password"],
                 HostName = configuration["RabbitMq:HostName"],
-                Port = int.Parse(configuration["RabbitMq:Port"])
+                Port = int.Parse(configuration["RabbitMq:Port"]),
+                VirtualHost = configuration["RabbitMq:VirtualHost"]
             };
 
             this.connectionQueue = factory.CreateConnection();
@@ -37,8 +38,9 @@ namespace Infrastructure.Shared.Services
         {
             using (var channel = connectionQueue.CreateModel())
             {
+                channel.QueueDeclare(queue: "k3s_queue_result", false, false, false, null);
                 channel.QueueBind(queue: "k3s_queue_result",
-                                  exchange: "k3s_queue_result",
+                                  exchange: "amq.fanout",
                                   routingKey: "");
 
                 Console.WriteLine(" [*] Waiting for queue.");
