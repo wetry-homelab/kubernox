@@ -3,14 +3,15 @@ using Services;
 using Kubernox.UI.Store.Actions.SshKey;
 using System;
 using System.Threading.Tasks;
+using Kubernox.UI.Services.Interfaces;
 
 namespace Kubernox.UI.Store.Effects
 {
     public class SshKeyEffects
     {
-        private readonly SshKeyService sshKeyService;
+        private readonly ISshKeyService sshKeyService;
 
-        public SshKeyEffects(SshKeyService sshKeyService)
+        public SshKeyEffects(ISshKeyService sshKeyService)
         {
             this.sshKeyService = sshKeyService;
         }

@@ -55,22 +55,23 @@ namespace Kubernox
             volumes.Add($"{database.Storage}:/var/lib/postgresql/data", new EmptyStruct());
 
             var ports = new Dictionary<string, EmptyStruct>();
-            ports.Add("5432/udp", new EmptyStruct());
+            ports.Add("5432/tcp", new EmptyStruct());
 
             var createParameters = new CreateContainerParameters()
             {
                 Image = "postgres:latest",
                 Name = DbContainerName,
                 Hostname = DbContainerName,
-                Env = new List<string>() { $"POSTGRES_PASSWORD={database.Password}", $"PG_USER={database.Username}" },
+                Env = new List<string>() { $"POSTGRES_PASSWORD={database.Password}", $"POSTGRES_USER={database.Username}", $"POSTGRES_DB={database.DbName}" },
                 Volumes = volumes,
+                ExposedPorts = ports,
                 HostConfig = new HostConfig()
                 {
                     NetworkMode = NetworkName,
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                     {
                         {
-                            $"5432/udp",
+                            $"5432/tcp",
                             new List<PortBinding>
                             {
                                 new PortBinding

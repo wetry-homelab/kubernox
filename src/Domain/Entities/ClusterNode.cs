@@ -6,12 +6,12 @@ namespace Domain.Entities
     public class ClusterNode
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString("N");
 
         [Required]
         public string Name { get; set; }
 
-        public Guid ClusterId { get; set; }
+        public string ClusterId { get; set; }
 
         public Cluster Cluster { get; set; }
 

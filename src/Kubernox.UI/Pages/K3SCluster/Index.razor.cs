@@ -171,7 +171,7 @@ namespace Kubernox.UI.Pages.K3SCluster
             return (GetRamUsedWidth() + GetRamToClaimWidth()) > 100;
         }
 
-        protected async Task DownloadKubeConfig(Guid id)
+        protected async Task DownloadKubeConfig(string id)
         {
             var download = await ClusterService.DownloadConfigAsync(id);
             await FileUtil.SaveAs(JSRuntime, download.Name, System.Text.Encoding.UTF8.GetBytes(download.Content));

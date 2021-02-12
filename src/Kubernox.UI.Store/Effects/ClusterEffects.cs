@@ -1,5 +1,5 @@
 ﻿using Fluxor;
-using Services;
+using Kubernox.UI.Services.Interfaces;
 using Kubernox.UI.Store.Actions.Cluster;
 using System;
 using System.Threading.Tasks;
@@ -8,9 +8,9 @@ namespace Kubernox.UI.Store.Effects
 {
     public class ClusterEffects
     {
-        private readonly ClusterService clusterService;
+        private readonly IClusterService clusterService;
 
-        public ClusterEffects(ClusterService clusterService)
+        public ClusterEffects(IClusterService clusterService)
         {
             this.clusterService = clusterService;
         }

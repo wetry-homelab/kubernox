@@ -103,14 +103,14 @@ namespace Kubernox.Workers.Business
                 foreach (var metric in metrics.Items)
                 {
                     var node = cluster.Nodes.FirstOrDefault(n => n.Name == metric.Metadata.Name);
-                    var extractItemId = new Guid();
+                    var extractItemId = string.Empty;
 
                     if (node != null)
                         extractItemId = node.Id;
                     else if (metric.Metadata.Name.Contains("master"))
                         extractItemId = cluster.Id;
 
-                    if (extractItemId != Guid.Empty)
+                    if (!string.IsNullOrEmpty(extractItemId))
                     {
                         metricsGathered.Add(new Metric()
                         {

@@ -7,7 +7,7 @@ namespace Domain.Entities
     public class Cluster
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString("N");
 
         [Required]
         public int OrderId { get; set; } = 3000;

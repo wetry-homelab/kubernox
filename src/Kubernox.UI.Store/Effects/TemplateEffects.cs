@@ -1,5 +1,5 @@
 ﻿using Fluxor;
-using Services;
+using Kubernox.UI.Services.Interfaces;
 using Kubernox.UI.Store.Actions.Template;
 using System;
 using System.Threading.Tasks;
@@ -8,9 +8,9 @@ namespace Kubernox.UI.Store.Effects
 {
     public class TemplateEffects
     {
-        private readonly TemplateService templateService;
+        private readonly ITemplateService templateService;
 
-        public TemplateEffects(TemplateService templateService)
+        public TemplateEffects(ITemplateService templateService)
         {
             this.templateService = templateService;
         }

@@ -12,7 +12,7 @@ namespace Domain.Entities
 
         public long MemoryValue { get; set; }
 
-        public Guid EntityId { get; set; }
+        public string EntityId { get; set; }
 
         [Required]
         public DateTime Date { get; set; } = DateTime.UtcNow;

@@ -28,13 +28,13 @@ namespace Kubernox.Service.Controllers
         }
 
         [HttpGet("{id}/metrics")]
-        public async Task<IActionResult> GetMetrics([FromRoute] Guid id)
+        public async Task<IActionResult> GetMetrics([FromRoute] string id)
         {
             return Ok();
         }
 
         [HttpGet("{id}/kubeconfig")]
-        public async Task<IActionResult> GetKubeconfig([FromRoute] Guid id)
+        public async Task<IActionResult> GetKubeconfig([FromRoute] string id)
         {
             var downloadConfig = await clusterBusiness.DownloadKubeconfigAsync(id);
 
@@ -48,7 +48,7 @@ namespace Kubernox.Service.Controllers
         }
 
         [HttpGet("{id}/command/restart")]
-        public async Task<IActionResult> Restart([FromRoute] Guid id)
+        public async Task<IActionResult> Restart([FromRoute] string id)
         {
             var restartResult = await clusterBusiness.RestartClusterMasterAsync(id);
 
@@ -62,7 +62,7 @@ namespace Kubernox.Service.Controllers
         }
 
         [HttpGet("{id}/command/{nodeid}/recycle")]
-        public async Task<IActionResult> Recycle([FromRoute] Guid id, [FromRoute] Guid nodeId)
+        public async Task<IActionResult> Recycle([FromRoute] string id, [FromRoute] Guid nodeId)
         {
             return Ok();
         }
@@ -91,7 +91,7 @@ namespace Kubernox.Service.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
             var deleteResult = await clusterBusiness.DeleteClusterAsync(id);
 
@@ -105,7 +105,7 @@ namespace Kubernox.Service.Controllers
         }
 
         [HttpPatch("{id}/scale/{nodeCount}")]
-        public async Task<IActionResult> HorizontalScale([FromRoute] Guid id, [FromRoute] int nodeCount)
+        public async Task<IActionResult> HorizontalScale([FromRoute] string id, [FromRoute] int nodeCount)
         {
             return Ok();
         }

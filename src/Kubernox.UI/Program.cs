@@ -47,11 +47,10 @@ namespace Kubernox.UI
 
         private static void ConfigureDependencyInjection(WebAssemblyHostBuilder builder)
         {
-            builder.Services.AddSingleton<ClusterService>();
-            builder.Services.AddSingleton<TemplateService>();
-            builder.Services.AddSingleton<SshKeyService>();
-
+            builder.Services.AddScoped<IClusterService, ClusterService>();
             builder.Services.AddScoped<IDatacenterService, DatacenterService>();
+            builder.Services.AddScoped<ITemplateService, TemplateService>();
+            builder.Services.AddScoped<ISshKeyService, SshKeyService>();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Contracts.Request;
 using Infrastructure.Contracts.Response;
+using Kubernox.UI.Services.Interfaces;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -8,46 +9,35 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class ClusterService
+    public class ClusterService : IClusterService
     {
+        private readonly HttpClient httpClient;
+
+        public ClusterService(HttpClient httpClient)
+        {
+            this.httpClient = httpClient;
+        }
+
         public async Task<ClusterItemResponse[]> GetClustersAsync()
         {
-            using (var httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri("https://localhost:5001")
-            })
-            {
-                var httpResponse = await httpClient.GetAsync("api/cluster");
-                var response = await httpResponse.Content.ReadAsStringAsync();
+            var httpResponse = await httpClient.GetAsync("api/cluster");
+            var response = await httpResponse.Content.ReadAsStringAsync();
 
-                return JsonSerializer.Deserialize<ClusterItemResponse[]>(response);
-            }
+            return JsonSerializer.Deserialize<ClusterItemResponse[]>(response);
         }
 
         public async Task<bool> CreateClustersAsync(ClusterCreateRequest request)
         {
-            using (var httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri("https://localhost:5001")
-            })
-            {
-                var httpResponse = await httpClient.PostAsync("api/cluster", GetContent(request));
-                return httpResponse.IsSuccessStatusCode;
-            }
+            var httpResponse = await httpClient.PostAsync("api/cluster", GetContent(request));
+            return httpResponse.IsSuccessStatusCode;
         }
 
-        public async Task<SshKeyDownloadResponse> DownloadConfigAsync(Guid id)
+        public async Task<KubeconfigDownloadResponse> DownloadConfigAsync(string id)
         {
-            using (var httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri("https://localhost:5001")
-            })
-            {
-                var httpResponse = await httpClient.GetAsync($"api/cluster/{id}/kubeconfig");
-                var response = await httpResponse.Content.ReadAsStringAsync();
+            var httpResponse = await httpClient.GetAsync($"api/cluster/{id}/kubeconfig");
+            var response = await httpResponse.Content.ReadAsStringAsync();
 
-                return JsonSerializer.Deserialize<SshKeyDownloadResponse>(response);
-            }
+            return JsonSerializer.Deserialize<KubeconfigDownloadResponse>(response);
         }
 
         public HttpContent GetContent(object data)

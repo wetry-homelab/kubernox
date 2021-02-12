@@ -218,12 +218,12 @@ namespace Kubernox.Service.Business
                 }).ToArray();
         }
 
-        public Task<(bool found, bool update)> UpdateClusterAsync(Guid id, ClusterUpdateRequest request)
+        public Task<(bool found, bool update)> UpdateClusterAsync(string id, ClusterUpdateRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<(bool found, bool update)> DeleteClusterAsync(Guid id)
+        public async Task<(bool found, bool update)> DeleteClusterAsync(string id)
         {
             var cluster = await clusterRepository.ReadAsync(c => c.Id == id);
 
@@ -252,7 +252,7 @@ namespace Kubernox.Service.Business
         }
 
 
-        public async Task<(bool found, bool restart)> RestartClusterMasterAsync(Guid id)
+        public async Task<(bool found, bool restart)> RestartClusterMasterAsync(string id)
         {
             var cluster = await clusterRepository.ReadAsync(c => c.Id == id && c.DeleteAt == null);
             var selectedNode = await datacenterRepository.ReadAsync(f => f.Id == cluster.ProxmoxNodeId);
@@ -264,7 +264,7 @@ namespace Kubernox.Service.Business
             return (true, await qemuClient.RestartQemu(selectedNode.Name, cluster.OrderId));
         }
 
-        public async Task<(bool found, bool ready, KubeconfigDownloadResponse file)> DownloadKubeconfigAsync(Guid id)
+        public async Task<(bool found, bool ready, KubeconfigDownloadResponse file)> DownloadKubeconfigAsync(string id)
         {
             var cluster = await clusterRepository.ReadAsync(c => c.Id == id);
             if (cluster == null)
