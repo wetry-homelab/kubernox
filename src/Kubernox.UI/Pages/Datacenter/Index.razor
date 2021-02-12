@@ -19,16 +19,16 @@
     <Column @bind-Field="@context.Ip" Sortable />
     <Column @bind-Field="@context.Model" Sortable />
     <Column @bind-Field="@context.Core" Sortable>
-        @($"{context.Core} / {context.Thread} - {context.Mhz} ({context.Socket})")
+        @($"{context.Core} / {context.Thread} - ({context.Mhz* 1000}Mhz) ({context.Socket})")
     </Column>
     <Column @bind-Field="@context.RamTotal" Sortable>
-        @($"{context.RamUsed / (1024 * 1024)} / {context.RamTotal / (1024 * 1024)}")
+        @($"{context.RamUsed / (1024 * 1024)}MB / {context.RamTotal / (1024 * 1024)}MB")
     </Column>
     <Column @bind-Field="@context.SwapTotal" Sortable>
-        @($"{context.SwapUsed / (1024 * 1024)} / {context.SwapTotal / (1024 * 1024)}")
+        @($"{context.SwapUsed / (1024 * 1024)}MB / {context.SwapTotal / (1024 * 1024)}MB")
     </Column>
     <Column @bind-Field="@context.RootFsTotal" Sortable>
-        @($"{context.RootFsUsed / (1024 * 1024)} / {context.RootFsTotal / (1024 * 1024)}")
+        @($"{context.RootFsUsed / (1024 * 1024)}MB / {context.RootFsTotal / (1024 * 1024)}MB")
     </Column>
     <ActionColumn>
         <Space>
