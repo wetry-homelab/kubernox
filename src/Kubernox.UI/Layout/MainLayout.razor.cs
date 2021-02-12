@@ -19,7 +19,7 @@ namespace Kubernox.UI.Layout
         protected override async Task OnInitializedAsync()
         {
             connection = new HubConnectionBuilder()
-                                .WithUrl($"{BaseUri}/app")
+                                .WithUrl($"{BaseUri}/ws/notifications")
                                 .Build();
 
             connection.On("NotificationReceived", async (string title, string content, string type) =>

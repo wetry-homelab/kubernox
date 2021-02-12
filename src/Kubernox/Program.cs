@@ -25,29 +25,24 @@ namespace Kubernox
 
         private static async Task StartDeployment(Configuration configuration)
         {
-            var deploymentStack = new List<Task<bool>>();
-
             var cancellationToken = new CancellationToken();
 
             if (await containerDeployService.InstantiateNetworkAsync())
             {
-                deploymentStack.Add(containerDeployService.InstantiateDatabaseContainer(configuration.Postgre, cancellationToken));
-                deploymentStack.Add(containerDeployService.InstantiateQueueContainer(configuration.Rabbitmq, cancellationToken));
-                deploymentStack.Add(containerDeployService.InstantiateCacheContainer(configuration.Redis, cancellationToken));
-                deploymentStack.Add(containerDeployService.InstantiatePrometheusContainer(configuration.Prometheus, cancellationToken));
-                deploymentStack.Add(containerDeployService.InstantiateKubernoxServiceContainer(configuration, cancellationToken));
-                deploymentStack.Add(containerDeployService.InstantiateKubernoxWorkersContainer(configuration, cancellationToken));
-                deploymentStack.Add(containerDeployService.InstantiateKubernoxUiContainer(configuration, cancellationToken));
-
-                var results = await Task.WhenAll(deploymentStack);
-
-                if (results.Any(a => !a))
+                if (await StartingInfrastructureStack(configuration, cancellationToken))
                 {
-                    Console.WriteLine("Deployment failed.");
+                    if (await StartingKubernoxStack(configuration, cancellationToken))
+                    {
+                        Console.WriteLine("Deployment failed.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Deployment success.");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Deployment success.");
+                    Console.WriteLine("Deployment failed for infrastructure.");
                 }
             }
             else
@@ -55,6 +50,37 @@ namespace Kubernox
                 Console.WriteLine("Network creation failed.");
             }
         }
+
+        private static async Task<bool> StartingInfrastructureStack(Configuration configuration, CancellationToken cancellationToken)
+        {
+            var deploymentStack = new List<Task<bool>>();
+
+            deploymentStack.Add(containerDeployService.InstantiateDatabaseContainer(configuration.Postgre, cancellationToken));
+            deploymentStack.Add(containerDeployService.InstantiateQueueContainer(configuration.Rabbitmq, cancellationToken));
+            deploymentStack.Add(containerDeployService.InstantiateCacheContainer(configuration.Redis, cancellationToken));
+            deploymentStack.Add(containerDeployService.InstantiatePrometheusContainer(configuration.Prometheus, cancellationToken));
+
+            return (await Task.WhenAll(deploymentStack)).All(a => a);
+        }
+
+        private static async Task<bool> StartingKubernoxStack(Configuration configuration, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await containerDeployService.InstantiateKubernoxServiceContainer(configuration, cancellationToken);
+                await containerDeployService.InstantiateKubernoxWorkersContainer(configuration, cancellationToken);
+                await containerDeployService.InstantiateKubernoxUiContainer(configuration, cancellationToken);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return false;
+        }
+
 
         private static void PrintHeader()
         {

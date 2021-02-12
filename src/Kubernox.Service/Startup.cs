@@ -87,7 +87,7 @@ namespace Kubernox.Service
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<AppHub>("/app");
+                endpoints.MapHub<AppHub>("/ws/notifications");
             });
         }
 
