@@ -1,6 +1,7 @@
 ﻿using Fluxor;
 using Kubernox.UI.Services.Interfaces;
 using Kubernox.UI.Store.Actions.Datacenter;
+using Kubernox.UI.Store.States;
 using System;
 using System.Threading.Tasks;
 
@@ -26,6 +27,21 @@ namespace Kubernox.UI.Store.Effects
             catch (Exception e)
             {
                 dispatcher.Dispatch(new FetchDatacenterFailureAction(e.Message));
+            }
+        }
+
+
+        [EffectMethod]
+        public async Task HandleSelectNodeAction(SelectDatacenterNodeAction action, IDispatcher dispatcher)
+        {
+            try
+            {
+                var selectedNode = await datacenterService.GetDatacenterNodeAsync(action.NodeId);
+                dispatcher.Dispatch(new SelectDatacenterNodeSuccessAction(selectedNode));
+            }
+            catch (Exception e)
+            {
+                dispatcher.Dispatch(new SelectDatacenterNodeFailureAction(e.Message));
             }
         }
     }

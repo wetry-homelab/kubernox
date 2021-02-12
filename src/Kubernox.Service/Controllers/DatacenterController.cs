@@ -23,5 +23,16 @@ namespace Kubernox.Service.Controllers
         {
             return Ok(await datacenterBusiness.GetDatacenter());
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var node = await datacenterBusiness.GetDatacenterNode(id);
+
+            if (node == null)
+                return NotFound();
+
+            return Ok(node);
+        }
     }
 }

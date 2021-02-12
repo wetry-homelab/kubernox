@@ -6,5 +6,6 @@ namespace Application.Interfaces
     public interface IDatacenterBusiness
     {
         Task<DatacenterNodeResponse[]> GetDatacenter();
+        Task<DatacenterNodeResponse> GetDatacenterNode(int id);
     }
 }

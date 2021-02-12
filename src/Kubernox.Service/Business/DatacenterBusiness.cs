@@ -28,5 +28,13 @@ namespace Kubernox.Service.Business
 
             return nodes.Select(node => mapper.Map<DatacenterNodeResponse>(node)).ToArray();
         }
+
+        public async Task<DatacenterNodeResponse> GetDatacenterNode(int id)
+        {
+            var node = await datacenterRepository.ReadAsync(n => n.Id == id);
+            if (node == null)
+                return null;
+            return mapper.Map<DatacenterNodeResponse>(node);
+        }
     }
 }

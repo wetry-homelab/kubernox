@@ -7,6 +7,6 @@ namespace Kubernox.UI.Store.Features
     {
         public override string GetName() => "Datacenter";
         protected override DatacenterState GetInitialState() =>
-            new DatacenterState(nodes: null, isLoading: false, error: null);
+            new DatacenterState(nodes: null, selectedNode: null, isLoading: false, error: null);
     }
 }

@@ -1,0 +1,27 @@
+﻿@page "/node/{NodeId}"
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@if (DatacenterState != null
+  && DatacenterState.Value != null
+  && DatacenterState.Value.IsLoading)
+{
+    <div class="mt-4" style="width:100%; text-align:center;">
+        <Spin Style="text-align:center; margin:auto" size="large" />
+    </div>
+}
+else
+{
+    @if (DatacenterState.Value.SelectedNode != null)
+    {
+        <div>
+            <Breadcrumb>
+                <BreadcrumbItem>
+                    <a RouterLink="/">Datacenter</a>
+                </BreadcrumbItem>
+                <BreadcrumbItem>
+                    <a RouterLink="/node/@DatacenterState.Value.SelectedNode.Id">@DatacenterState.Value.SelectedNode.Name</a>
+                </BreadcrumbItem>
+            </Breadcrumb>
+        </div>
+    }
+}

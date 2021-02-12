@@ -33,11 +33,11 @@ namespace Kubernox
                 {
                     if (await StartingKubernoxStack(configuration, cancellationToken))
                     {
-                        Console.WriteLine("Deployment failed.");
+                        Console.WriteLine("Deployment success.");
                     }
                     else
                     {
-                        Console.WriteLine("Deployment success.");
+                        Console.WriteLine("Deployment failed.");
                     }
                 }
                 else

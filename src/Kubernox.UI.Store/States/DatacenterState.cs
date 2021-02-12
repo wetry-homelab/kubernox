@@ -6,10 +6,13 @@ namespace Kubernox.UI.Store.States
     {
         public DatacenterNodeResponse[] Nodes { get; }
 
-        public DatacenterState(DatacenterNodeResponse[] nodes, bool isLoading, string error)
+        public DatacenterNodeResponse SelectedNode { get; }
+
+        public DatacenterState(DatacenterNodeResponse[] nodes, DatacenterNodeResponse selectedNode, bool isLoading, string error)
             : base(isLoading, error)
         {
             Nodes = nodes;
+            SelectedNode = selectedNode;
         }
     }
 }

@@ -23,5 +23,14 @@ namespace Services
 
             return JsonSerializer.Deserialize<DatacenterNodeResponse[]>(response);
         }
+
+        public async Task<DatacenterNodeResponse> GetDatacenterNodeAsync(int id)
+        {
+
+            var httpResponse = await httpClient.GetAsync($"api/datacenter/{id}");
+            var response = await httpResponse.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<DatacenterNodeResponse>(response);
+        }
     }
 }

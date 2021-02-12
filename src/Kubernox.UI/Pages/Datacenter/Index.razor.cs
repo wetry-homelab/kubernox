@@ -14,6 +14,10 @@ namespace Kubernox.UI.Pages.Datacenter
         [Inject]
         IDispatcher Dispatcher { get; set; }
 
+        [Inject]
+        NavigationManager NavigationManager { get; set; }
+
+
         protected ITable table;
 
         protected override void OnInitialized()
@@ -26,6 +30,11 @@ namespace Kubernox.UI.Pages.Datacenter
         private void DatacenterState_StateChanged(object sender, DatacenterState e)
         {
             StateHasChanged();
+        }
+
+        protected void ViewDetails(int id)
+        {
+            NavigationManager.NavigateTo($"/node/{id}");
         }
     }
 }
