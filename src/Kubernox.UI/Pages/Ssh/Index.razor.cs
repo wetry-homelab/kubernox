@@ -9,6 +9,7 @@ using Kubernox.UI.Store.Actions.SshKey;
 using Kubernox.UI.Store.States;
 using System.Threading.Tasks;
 using Kubernox.UI.Utils;
+using Kubernox.UI.Services.Interfaces;
 
 namespace Kubernox.UI.Pages.Ssh
 {
@@ -21,7 +22,7 @@ namespace Kubernox.UI.Pages.Ssh
         IDispatcher Dispatcher { get; set; }
 
         [Inject]
-        SshKeyService SshKeyService { get; set; }
+        ISshKeyService SshKeyService { get; set; }
 
         [Inject]
         IJSRuntime JSRuntime { get; set; }

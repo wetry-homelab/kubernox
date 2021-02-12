@@ -33,8 +33,8 @@ proxmox:
 # Actually only Postgre is supported
 # If nothing is configured, provider deploy own Postgre container
 postgre:
-    # Default value : kubernox-db
-    host: kubernox-db
+    # Default value : kubernox_db
+    host: kubernox_db
     # Default value : kubernox
     username: kubernox
     # Default value : kubernoxDbPassword@0123
@@ -48,8 +48,8 @@ postgre:
 # Actually only RabbitMQ is supported
 # If nothing is configured, provider deploy own RabbitMQ container
 rabbitmq:
-    # Default value : kubernox-db
-    host: kubernox_rabbitmq
+    # Default value : kubernox_queue
+    host: kubernox_queue
     # Default value : kubernox
     username: kubernox
     # Default value : kubernoxRabbitMqPassword@0123
@@ -64,7 +64,7 @@ rabbitmq:
 # If nothing is configured, provider deploy own Redis container
 redis:
     # Default value : kubernox-db
-    host: kubernox_redis
+    host: kubernox_cache
     # Default value : kubernox
     password: kubernoxRedisPassword@0123
 

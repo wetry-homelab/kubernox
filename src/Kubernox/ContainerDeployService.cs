@@ -209,11 +209,7 @@ namespace Kubernox
                 ExposedPorts = ports,
                 HostConfig = new HostConfig()
                 {
-                    NetworkMode = NetworkName,
-                    Links = new List<string>()
-                    {
-                        $"{QueueContainerName}:{QueueContainerName}"
-                    }
+                    NetworkMode = NetworkName
                 },
                 Hostname = ServiceContainerName,
                 Env = new List<string>()

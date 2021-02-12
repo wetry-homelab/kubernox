@@ -14,6 +14,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Kubernox.UI.Utils;
+using Kubernox.UI.Services.Interfaces;
 
 namespace Kubernox.UI.Pages.K3SCluster
 {
@@ -38,7 +39,7 @@ namespace Kubernox.UI.Pages.K3SCluster
         IJSRuntime JSRuntime { get; set; }
 
         [Inject]
-        ClusterService ClusterService { get; set; }
+        IClusterService ClusterService { get; set; }
 
         public bool IsLoad
         {

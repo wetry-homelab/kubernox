@@ -1,4 +1,5 @@
 using Fluxor;
+using Kubernox.UI.Layout;
 using Kubernox.UI.Services.Interfaces;
 using Kubernox.UI.Store;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -33,6 +34,8 @@ namespace Kubernox.UI
             {
                 BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}")
             });
+
+            MainLayout.BaseUri = builder.HostEnvironment.BaseAddress;
 
             builder.Services.AddAntDesign();
             var currentAssembly = typeof(StoreRegistration).Assembly;

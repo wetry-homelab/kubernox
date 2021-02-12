@@ -34,7 +34,7 @@ namespace Kubernox.Service
                     services.AddScoped<IQueueService, QueueService>();
                     services.AddScoped<IQueueBusiness, QueueBusiness>();
 
-                    //services.AddHostedService<ClusterQueueWorker>();
+                    services.AddHostedService<ClusterQueueWorker>();
                 });
     }
 }

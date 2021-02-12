@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Kubernox.Workers.Business;
 using Kubernox.Workers.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace Kubernox.Workers
 {
@@ -17,6 +18,10 @@ namespace Kubernox.Workers
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddEnvironmentVariables();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

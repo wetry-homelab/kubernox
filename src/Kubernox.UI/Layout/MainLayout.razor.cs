@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kubernox.UI.Layout
 {
     public partial class MainLayout : LayoutComponentBase
     {
+
+        public static string BaseUri;
 
         HubConnection connection;
 
@@ -19,7 +19,7 @@ namespace Kubernox.UI.Layout
         protected override async Task OnInitializedAsync()
         {
             connection = new HubConnectionBuilder()
-                                .WithUrl("https://localhost:5001/app")
+                                .WithUrl($"{BaseUri}/app")
                                 .Build();
 
             connection.On("NotificationReceived", async (string title, string content, string type) =>
