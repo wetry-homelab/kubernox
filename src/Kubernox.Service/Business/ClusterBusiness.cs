@@ -25,14 +25,13 @@ namespace Kubernox.Service.Business
         private readonly ISshKeyRepository sshKeyRepository;
         private readonly IQueueService queueService;
         private readonly ITemplateRepository templateRepository;
-        private readonly IConfiguration configuration;
         private readonly ITraefikRedisStore traefikCache;
-        private readonly IHubContext<AppHub, IAppHub> hubContext;
+        private readonly string domain;
 
-        public ClusterBusiness(IClusterRepository clusterRepository, IDatacenterRepository datacenterRepository, 
-            ISshKeyRepository sshKeyRepository, IClusterNodeRepository clusterNodeRepository, 
-            IQueueService queueService, ITemplateRepository templateRepository, 
-            IConfiguration configuration, ITraefikRedisStore traefikCache, IHubContext<AppHub, IAppHub> hubContext)
+        public ClusterBusiness(IClusterRepository clusterRepository, IDatacenterRepository datacenterRepository,
+            ISshKeyRepository sshKeyRepository, IClusterNodeRepository clusterNodeRepository,
+            IQueueService queueService, ITemplateRepository templateRepository,
+            IConfiguration configuration, ITraefikRedisStore traefikCache)
         {
             this.clusterRepository = clusterRepository;
             this.datacenterRepository = datacenterRepository;
@@ -40,9 +39,8 @@ namespace Kubernox.Service.Business
             this.clusterNodeRepository = clusterNodeRepository;
             this.queueService = queueService;
             this.templateRepository = templateRepository;
-            this.configuration = configuration;
             this.traefikCache = traefikCache;
-            this.hubContext = hubContext;
+            this.domain = configuration["Kubernox:Domain"];
             ConfigureClient.Initialise(configuration["Proxmox:Uri"], configuration["Proxmox:Token"]);
         }
 
@@ -67,6 +65,7 @@ namespace Kubernox.Service.Business
                     Name = $"k3s-master-{request.Name}",
                     Node = request.Node,
                     Storage = request.Storage,
+                    Domain = domain,
                     User = "root",
                     ProxmoxNodeId = selectedNode.Id,
                     OrderId = baseId,
@@ -108,7 +107,7 @@ namespace Kubernox.Service.Business
         private async Task InjectClusterCacheConfigurationAsync(Cluster newCluster)
         {
             var values = new List<KeyValuePair<string, string>>();
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}/rule", $"Host(`{newCluster.Name}.ice-artefact.com`)"));
+            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}/rule", $"Host(`{newCluster.Name}.{domain}`)"));
             values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}.entrypoints/0", $"web"));
             values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}.entrypoints/1", $"webSecure"));
             values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}/service", $"{newCluster.Name}-http-lb"));

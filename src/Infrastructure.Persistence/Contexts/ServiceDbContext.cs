@@ -12,6 +12,7 @@ namespace Infrastructure.Persistence.Contexts
         public DbSet<Metric> Metric { get; set; }
         public DbSet<SshKey> SshKey { get; set; }
         public DbSet<Template> Template { get; set; }
+        public DbSet<User> User { get; set; }
 
         public ServiceDbContext(DbContextOptions<ServiceDbContext> options)
             : base(options)

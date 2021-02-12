@@ -237,7 +237,7 @@ namespace Kubernox
                     $"Proxmox__Uri={configuration.Proxmox.Host}",
                     $"Proxmox__Token=PVEAPIToken={configuration.Proxmox.Username}@{configuration.Proxmox.AuthType}!{configuration.Proxmox.TokenId}={configuration.Proxmox.AccessToken}",
                     $"ConnectionStrings__Default=Host={configuration.Postgre.Host};Database={configuration.Postgre.DbName};Username={configuration.Postgre.Username};Password={configuration.Postgre.Password}",
-                    $"ConnectionStrings__Redis={configuration.Redis.Host}",
+                    $"ConnectionStrings__Redis={configuration.Redis.Host},password={configuration.Redis.Password}",
                     $"RabbitMq__User={configuration.Rabbitmq.Username}",
                     $"RabbitMq__Password={configuration.Rabbitmq.Password}",
                     $"RabbitMq__HostName={configuration.Rabbitmq.Host}",

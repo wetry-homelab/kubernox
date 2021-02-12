@@ -15,6 +15,9 @@ namespace Domain.Entities
         [Required]
         public string Name { get; set; }
 
+        [Required]
+        public string Domain { get; set; }
+
         public string Description { get; set; }
 
         [Required]

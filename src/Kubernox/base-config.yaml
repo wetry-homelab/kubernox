@@ -13,7 +13,6 @@
 
 # Github : https://github.com/wetry-homelab/kubernox
 
-
 # Configure Proxmox Host
 proxmox:
     # No default value, custom value required
@@ -74,4 +73,5 @@ prometheus:
     path: "prometheus.yml:"
 
 kubernox:
+    domain: kubernox.local
     ui_port_expose: 7777
