@@ -95,7 +95,6 @@ namespace Kubernox.Service
         {
             try
             {
-                serviceDbContext.Database.EnsureCreated();
                 serviceDbContext.Database.Migrate();
 
                 if (!serviceDbContext.Template.Any())
