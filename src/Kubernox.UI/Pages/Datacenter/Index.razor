@@ -1,31 +1,39 @@
 ﻿@page "/"
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
+
+@if (DatacenterState != null && DatacenterState.Value != null && DatacenterState.Value.IsLoading)
+{
+<div class="mt-4" style="width:100%; text-align:center;">
+    <Spin Style="text-align:center; margin:auto" size="large" />
+</div>
+}
+
 @if (DatacenterState != null && DatacenterState.Value != null && DatacenterState.Value.Nodes != null)
 {
-    <Table @ref="table"
-           TItem="DatacenterNodeResponse"
-           DataSource="@DatacenterState.Value.Nodes">
-        <Column @bind-Field="@context.Id" Sortable />
-        <Column @bind-Field="@context.Name" Sortable />
-        <Column @bind-Field="@context.Ip" Sortable />
-        <Column @bind-Field="@context.Model" Sortable />
-        <Column @bind-Field="@context.Core" Sortable>
-            @($"{context.Core} / {context.Thread} - {context.Mhz} ({context.Socket})")
-        </Column>
-        <Column @bind-Field="@context.RamTotal" Sortable>
-            @($"{context.RamUsed} / {context.RamTotal}")
-        </Column>
-        <Column @bind-Field="@context.SwapTotal" Sortable>
-            @($"{context.SwapUsed} / {context.SwapTotal}")
-        </Column>
-        <Column @bind-Field="@context.RootFsTotal" Sortable>
-            @($"{context.RootFsUsed} / {context.RootFsTotal}")
-        </Column>
-        <ActionColumn>
-            <Space>
-                <SpaceItem><Button>Details</Button></SpaceItem>
-            </Space>
-        </ActionColumn>
-    </Table>
+<Table @ref="table"
+       TItem="DatacenterNodeResponse"
+       DataSource="@DatacenterState.Value.Nodes">
+    <Column @bind-Field="@context.Id" Sortable />
+    <Column @bind-Field="@context.Name" Sortable />
+    <Column @bind-Field="@context.Ip" Sortable />
+    <Column @bind-Field="@context.Model" Sortable />
+    <Column @bind-Field="@context.Core" Sortable>
+        @($"{context.Core} / {context.Thread} - {context.Mhz} ({context.Socket})")
+    </Column>
+    <Column @bind-Field="@context.RamTotal" Sortable>
+        @($"{context.RamUsed} / {context.RamTotal}")
+    </Column>
+    <Column @bind-Field="@context.SwapTotal" Sortable>
+        @($"{context.SwapUsed} / {context.SwapTotal}")
+    </Column>
+    <Column @bind-Field="@context.RootFsTotal" Sortable>
+        @($"{context.RootFsUsed} / {context.RootFsTotal}")
+    </Column>
+    <ActionColumn>
+        <Space>
+            <SpaceItem><Button>Details</Button></SpaceItem>
+        </Space>
+    </ActionColumn>
+</Table>
 }
