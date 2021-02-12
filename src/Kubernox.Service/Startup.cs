@@ -15,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using Infrastructure.Persistence.Contexts;
 using System;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Kubernox.Service
 {
@@ -96,6 +97,51 @@ namespace Kubernox.Service
             {
                 serviceDbContext.Database.EnsureCreated();
                 serviceDbContext.Database.Migrate();
+
+                if (!serviceDbContext.Template.Any())
+                {
+                    serviceDbContext.Template.Add(new Domain.Entities.Template()
+                    {
+                        BaseTemplate = "k3s-template",
+                        CpuCount = 1,
+                        DiskSpace = 20,
+                        MemoryCount = 1024,
+                        Name = "Small",
+                        Type = "k3s"
+                    });
+
+                    serviceDbContext.Template.Add(new Domain.Entities.Template()
+                    {
+                        BaseTemplate = "k3s-template",
+                        CpuCount = 1,
+                        DiskSpace = 30,
+                        MemoryCount = 2048,
+                        Name = "Medium",
+                        Type = "k3s"
+                    });
+
+                    serviceDbContext.Template.Add(new Domain.Entities.Template()
+                    {
+                        BaseTemplate = "k3s-template",
+                        CpuCount = 2,
+                        DiskSpace = 40,
+                        MemoryCount = 4096,
+                        Name = "Large",
+                        Type = "k3s"
+                    });
+
+                    serviceDbContext.Template.Add(new Domain.Entities.Template()
+                    {
+                        BaseTemplate = "k3s-template",
+                        CpuCount = 4,
+                        DiskSpace = 50,
+                        MemoryCount = 4096,
+                        Name = "XLarge",
+                        Type = "k3s"
+                    });
+
+                    serviceDbContext.SaveChanges();
+                }
             }
             catch (Exception e)
             {

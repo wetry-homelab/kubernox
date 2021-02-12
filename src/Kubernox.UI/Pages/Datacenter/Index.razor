@@ -3,10 +3,22 @@
 
 @if (DatacenterState != null && DatacenterState.Value != null && DatacenterState.Value.Nodes != null)
 {
-    <Row Gutter="12">
-        @foreach (var node in DatacenterState.Value.Nodes)
-        {
-            <UI.Components.Node.NodeListItem Node="node" />
-        }
-    </Row>
+<Table @ref="table"
+       TItem="DatacenterNodeResponse"
+       DataSource="@DatacenterState.Value.Nodes">
+    <Column @bind-Field="@context.Id" Sortable />
+    <Column @bind-Field="@context.Name" Sortable />
+    <Column @bind-Field="@context.Ip" Sortable />
+    <Column @bind-Field="@context.Model" Sortable />
+    <Column @bind-Field="@($"{context.Core} / {context.Thread} - {context.Mhz} ({context.Socket})")" Sortable />
+    <Column @bind-Field="@($"{context.RamUsed} / {context.RamTotal}")" Sortable />
+    <Column @bind-Field="@($"{context.SwapUsed} / {context.SwapTotal}")" Sortable />
+    <Column @bind-Field="@($"{context.RootFsUsed} / {context.RootFsTotal}")" Sortable />
+    <Column @bind-Field="@context.Flag" Sortable />
+    <ActionColumn>
+        <Space>
+            <SpaceItem><Button>Details</Button></SpaceItem>
+        </Space>
+    </ActionColumn>
+</Table>
 }

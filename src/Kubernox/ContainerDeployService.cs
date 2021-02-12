@@ -10,7 +10,12 @@ using System.Threading.Tasks;
 
 namespace Kubernox
 {
-    public class ContainerDeployService
+    public interface IContainerDeployService
+    {
+
+    }
+
+    public class ContainerDeployService : IContainerDeployService
     {
         private readonly DockerClient client;
 
@@ -68,6 +73,10 @@ namespace Kubernox
                 HostConfig = new HostConfig()
                 {
                     NetworkMode = NetworkName,
+                    RestartPolicy = new RestartPolicy()
+                    {
+                        Name = RestartPolicyKind.Always
+                    },
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                     {
                         {
@@ -104,6 +113,10 @@ namespace Kubernox
                 HostConfig = new HostConfig()
                 {
                     NetworkMode = NetworkName,
+                    RestartPolicy = new RestartPolicy()
+                    {
+                        Name = RestartPolicyKind.Always
+                    },
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                     {
                         {
@@ -145,10 +158,7 @@ namespace Kubernox
                 Name = CacheContainerName,
                 Cmd = new List<string>() { $"redis-server", "--requirepass", $"{redis.Password}" },
                 Hostname = CacheContainerName,
-                HostConfig = new HostConfig()
-                {
-                    NetworkMode = NetworkName
-                }
+                HostConfig = StackHostConfig()
             };
 
             return await DeployAndStartAsync(CacheContainerName, createParameters, cancellationToken);
@@ -176,6 +186,10 @@ namespace Kubernox
                 HostConfig = new HostConfig()
                 {
                     NetworkMode = NetworkName,
+                    RestartPolicy = new RestartPolicy()
+                    {
+                        Name = RestartPolicyKind.Always
+                    },
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                     {
                         {
@@ -207,10 +221,7 @@ namespace Kubernox
                 Image = "kubernox/kubernox-service",
                 Name = ServiceContainerName,
                 ExposedPorts = ports,
-                HostConfig = new HostConfig()
-                {
-                    NetworkMode = NetworkName
-                },
+                HostConfig = StackHostConfig(),
                 Hostname = ServiceContainerName,
                 Env = new List<string>()
                 {
@@ -238,11 +249,12 @@ namespace Kubernox
             {
                 Image = "kubernox/kubernox-workers",
                 Name = WorkersContainerName,
+                HostConfig = StackHostConfig(),
                 Env = new List<string>()
                 {
                     $"Proxmox__Uri={configuration.Proxmox.Host}",
                     $"Proxmox__Token=PVEAPIToken={configuration.Proxmox.Username}@{configuration.Proxmox.AuthType}!{configuration.Proxmox.TokenId}={configuration.Proxmox.AccessToken}",
-                    $"ConnectionStrings__Default=Data Source={configuration.Postgre.Host};Initial Catalog={configuration.Postgre.DbName};User ID={configuration.Postgre.Username};Password={configuration.Postgre.Password}"
+                    $"ConnectionStrings__Default=Host={configuration.Postgre.Host};Database={configuration.Postgre.DbName};Username={configuration.Postgre.Username};Password={configuration.Postgre.Password}",
                 }
             };
 
@@ -314,6 +326,18 @@ namespace Kubernox
         private void Progress_ProgressChanged(object sender, JSONMessage e)
         {
             Console.WriteLine($"{e.ProgressMessage}");
+        }
+
+        private HostConfig StackHostConfig()
+        {
+            return new HostConfig()
+            {
+                NetworkMode = NetworkName,
+                RestartPolicy = new RestartPolicy()
+                {
+                    Name = RestartPolicyKind.Always
+                }
+            };
         }
 
         private async Task<bool> DeployAndStartAsync(string name, CreateContainerParameters parameters, CancellationToken cancellationToken)

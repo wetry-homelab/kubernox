@@ -1,8 +1,8 @@
-﻿using Fluxor;
-using Microsoft.AspNetCore.Components;
+﻿using AntDesign;
+using Fluxor;
 using Kubernox.UI.Store.Actions.Datacenter;
 using Kubernox.UI.Store.States;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace Kubernox.UI.Pages.Datacenter
 {
@@ -14,9 +14,18 @@ namespace Kubernox.UI.Pages.Datacenter
         [Inject]
         IDispatcher Dispatcher { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        protected ITable table;
+
+        protected override void OnInitialized()
         {
             Dispatcher.Dispatch(new FetchDatacenterAction());
+            DatacenterState.StateChanged += DatacenterState_StateChanged;
+            base.OnInitialized();
+        }
+
+        private void DatacenterState_StateChanged(object sender, DatacenterState e)
+        {
+            StateHasChanged();
         }
     }
 }

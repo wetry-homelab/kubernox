@@ -27,8 +27,6 @@ namespace Kubernox.UI.Pages.Ssh
         [Inject]
         IJSRuntime JSRuntime { get; set; }
 
-        public string Layout { get; set; } = FormLayout.Vertical;
-
         protected ITable table;
         protected bool visible = false;
 
