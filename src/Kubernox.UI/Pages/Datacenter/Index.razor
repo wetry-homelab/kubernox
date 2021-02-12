@@ -22,7 +22,6 @@
         <Column @bind-Field="@context.RootFsTotal" Sortable>
             @($"{context.RootFsUsed} / {context.RootFsTotal}")
         </Column>
-        <Column @bind-Field="@context.Flag" Sortable />
         <ActionColumn>
             <Space>
                 <SpaceItem><Button>Details</Button></SpaceItem>

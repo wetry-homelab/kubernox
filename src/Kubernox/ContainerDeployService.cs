@@ -5,6 +5,7 @@ using Kubernox.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,7 +33,15 @@ namespace Kubernox
         public ContainerDeployService()
         {
             var credentials = new BasicAuthCredentials("hantse", "Puce0123");
-            client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine"), credentials).CreateClient();
+            client = new DockerClientConfiguration(new Uri(GetSocket()), credentials).CreateClient();
+        }
+
+        private string GetSocket()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return "npipe://./pipe/docker_engine";
+
+            return "unix:///var/run/docker.sock";
         }
 
         public async Task<bool> InstantiateNetworkAsync()
