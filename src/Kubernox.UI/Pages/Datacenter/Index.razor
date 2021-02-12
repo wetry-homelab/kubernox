@@ -3,22 +3,30 @@
 
 @if (DatacenterState != null && DatacenterState.Value != null && DatacenterState.Value.Nodes != null)
 {
-<Table @ref="table"
-       TItem="DatacenterNodeResponse"
-       DataSource="@DatacenterState.Value.Nodes">
-    <Column @bind-Field="@context.Id" Sortable />
-    <Column @bind-Field="@context.Name" Sortable />
-    <Column @bind-Field="@context.Ip" Sortable />
-    <Column @bind-Field="@context.Model" Sortable />
-    <Column @bind-Field="@($"{context.Core} / {context.Thread} - {context.Mhz} ({context.Socket})")" Sortable />
-    <Column @bind-Field="@($"{context.RamUsed} / {context.RamTotal}")" Sortable />
-    <Column @bind-Field="@($"{context.SwapUsed} / {context.SwapTotal}")" Sortable />
-    <Column @bind-Field="@($"{context.RootFsUsed} / {context.RootFsTotal}")" Sortable />
-    <Column @bind-Field="@context.Flag" Sortable />
-    <ActionColumn>
-        <Space>
-            <SpaceItem><Button>Details</Button></SpaceItem>
-        </Space>
-    </ActionColumn>
-</Table>
+    <Table @ref="table"
+           TItem="DatacenterNodeResponse"
+           DataSource="@DatacenterState.Value.Nodes">
+        <Column @bind-Field="@context.Id" Sortable />
+        <Column @bind-Field="@context.Name" Sortable />
+        <Column @bind-Field="@context.Ip" Sortable />
+        <Column @bind-Field="@context.Model" Sortable />
+        <Column @bind-Field="@context.Core" Sortable>
+            @($"{context.Core} / {context.Thread} - {context.Mhz} ({context.Socket})")
+        </Column>
+        <Column @bind-Field="@context.RamTotal" Sortable>
+            @($"{context.RamUsed} / {context.RamTotal}")
+        </Column>
+        <Column @bind-Field="@context.SwapTotal" Sortable>
+            @($"{context.SwapUsed} / {context.SwapTotal}")
+        </Column>
+        <Column @bind-Field="@context.RootFsTotal" Sortable>
+            @($"{context.RootFsUsed} / {context.RootFsTotal}")
+        </Column>
+        <Column @bind-Field="@context.Flag" Sortable />
+        <ActionColumn>
+            <Space>
+                <SpaceItem><Button>Details</Button></SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
 }
