@@ -1,7 +1,10 @@
 ﻿using Docker.DotNet;
 using Docker.DotNet.BasicAuth;
 using Docker.DotNet.Models;
+using Kubernox.Interfaces;
 using Kubernox.Model;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,32 +12,31 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Kubernox
+namespace Kubernox.Services
 {
-    public interface IContainerDeployService
+    public class ContainerDeploymentService : IContainerDeploymentService
     {
+        private readonly Logger logger = new LoggerConfiguration()
+                                        .WriteTo.File("kubernox.log")
+                                        .WriteTo.Console()
+                                        .CreateLogger();
 
-    }
-
-    public class ContainerDeployService : IContainerDeployService
-    {
         private readonly DockerClient client;
 
         private const string DbContainerName = "kubernox_db";
         private const string QueueContainerName = "kubernox_queue";
         private const string CacheContainerName = "kubernox_cache";
         private const string PrometheusContainerName = "kubernox_prometheus";
+        private const string GrafanaContainerName = "kubernox_grafana";
         private const string ServiceContainerName = "kubernox_service";
         private const string WorkersContainerName = "kubernox_workers";
         private const string KubernoxContainerName = "kubernox";
         private const string TraefikContainerName = "kubernox_traefik";
         private const string NetworkName = "kubernox_internal_lan";
 
-
-        public ContainerDeployService()
+        public ContainerDeploymentService()
         {
-            var credentials = new BasicAuthCredentials("hantse", "Puce0123");
-            client = new DockerClientConfiguration(new Uri(GetSocket()), credentials).CreateClient();
+            client = new DockerClientConfiguration(new Uri(GetSocket())).CreateClient();
         }
 
         private string GetSocket()
@@ -62,7 +64,7 @@ namespace Kubernox
 
         public async Task<bool> InstantiateDatabaseContainer(PostgreDatabaseProvider database, CancellationToken cancellationToken)
         {
-            Console.WriteLine("---- Starting Deploy Database Container ----");
+            logger.Information("---- Starting Deploy Database Container ----");
 
             await DownloadImage("postgres", "latest", cancellationToken);
 
@@ -108,7 +110,7 @@ namespace Kubernox
 
         public async Task<bool> InstantiateQueueContainer(RabbitMqProvider queue, CancellationToken cancellationToken)
         {
-            Console.WriteLine("---- Starting Deploy Queue Container ----");
+            logger.Information("---- Starting Deploy Queue Container ----");
             await DownloadImage("rabbitmq", "3-management", cancellationToken);
             var ports = new Dictionary<string, EmptyStruct>();
             ports.Add($"{queue.Port}/tcp", new EmptyStruct());
@@ -159,7 +161,7 @@ namespace Kubernox
 
         public async Task<bool> InstantiateCacheContainer(RedisProvider redis, CancellationToken cancellationToken)
         {
-            Console.WriteLine("---- Starting Deploy Cache Container ----");
+            logger.Information("---- Starting Deploy Cache Container ----");
             await DownloadImage("redis", cancellationToken);
 
             var createParameters = new CreateContainerParameters()
@@ -176,7 +178,7 @@ namespace Kubernox
 
         public async Task<bool> InstantiatePrometheusContainer(PrometheusProvider prometheus, CancellationToken cancellationToken)
         {
-            Console.WriteLine("---- Starting Deploy Prometheus Container ----");
+            logger.Information("---- Starting Deploy Prometheus Container ----");
             await DownloadImage("prom/prometheus", "latest", cancellationToken);
 
 
@@ -219,9 +221,58 @@ namespace Kubernox
             return await DeployAndStartAsync(PrometheusContainerName, createParameters, cancellationToken);
         }
 
+        public async Task<bool> InstantiateGrafanaContainer(PrometheusProvider prometheus, CancellationToken cancellationToken)
+        {
+            logger.Information("---- Starting Deploy Grafana Container ----");
+            await DownloadImage("grafana/grafana", "latest", cancellationToken);
+
+
+            var ports = new Dictionary<string, EmptyStruct>();
+            ports.Add("3000/tcp", new EmptyStruct());
+
+            var createParameters = new CreateContainerParameters()
+            {
+                Image = "grafana/grafana:latest",
+                Name = GrafanaContainerName,
+                Hostname = GrafanaContainerName,
+                ExposedPorts = ports,
+                Env = new List<string>()
+                {
+                    "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel"
+                },
+                HostConfig = new HostConfig()
+                {
+                    NetworkMode = NetworkName,
+                    Binds = new List<string>()
+                    {
+                        $"{prometheus.Path}:/etc/prometheus/prometheus.yml"
+                    },
+                    RestartPolicy = new RestartPolicy()
+                    {
+                        Name = RestartPolicyKind.Always
+                    },
+                    PortBindings = new Dictionary<string, IList<PortBinding>>
+                    {
+                        {
+                            "3000/tcp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = "3000"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            return await DeployAndStartAsync(GrafanaContainerName, createParameters, cancellationToken);
+        }
+
         public async Task<bool> InstantiateKubernoxServiceContainer(Configuration configuration, CancellationToken cancellationToken)
         {
-            Console.WriteLine("---- Starting Deploy Kubernox Container ----");
+            logger.Information("---- Starting Deploy Kubernox Container ----");
             await DownloadImage("kubernox/kubernox-service", cancellationToken);
             var ports = new Dictionary<string, EmptyStruct>();
             ports.Add("80/tcp", new EmptyStruct());
@@ -235,6 +286,7 @@ namespace Kubernox
                 Hostname = ServiceContainerName,
                 Env = new List<string>()
                 {
+                    $"Kubernox__Domain={configuration.Kubernox.Domain}",
                     $"Proxmox__Uri={configuration.Proxmox.Host}",
                     $"Proxmox__Token=PVEAPIToken={configuration.Proxmox.Username}@{configuration.Proxmox.AuthType}!{configuration.Proxmox.TokenId}={configuration.Proxmox.AccessToken}",
                     $"ConnectionStrings__Default=Host={configuration.Postgre.Host};Database={configuration.Postgre.DbName};Username={configuration.Postgre.Username};Password={configuration.Postgre.Password}",
@@ -252,7 +304,7 @@ namespace Kubernox
 
         public async Task<bool> InstantiateKubernoxWorkersContainer(Configuration configuration, CancellationToken cancellationToken)
         {
-            Console.WriteLine("---- Starting Deploy Kubernox Datacenter Worker Container ----");
+            logger.Information("---- Starting Deploy Kubernox Datacenter Worker Container ----");
             await DownloadImage("kubernox/kubernox-workers", cancellationToken);
 
             var createParameters = new CreateContainerParameters()
@@ -273,7 +325,7 @@ namespace Kubernox
 
         public async Task<bool> InstantiateKubernoxUiContainer(Configuration configuration, CancellationToken cancellationToken)
         {
-            Console.WriteLine("---- Starting Deploy Kubernox Container ----");
+            logger.Information("---- Starting Deploy Kubernox Container ----");
             await DownloadImage("kubernox/kubernox", cancellationToken);
 
             var ports = new Dictionary<string, EmptyStruct>();
@@ -313,7 +365,7 @@ namespace Kubernox
 
         public async Task<bool> InstantiateTraefikProxyContainer(Configuration configuration, CancellationToken cancellationToken)
         {
-            Console.WriteLine("---- Starting Deploy Traefik Container ----");
+            logger.Information("---- Starting Deploy Traefik Container ----");
             await DownloadImage("traefik:latest", cancellationToken);
 
             var ports = new Dictionary<string, EmptyStruct>();
@@ -407,7 +459,7 @@ namespace Kubernox
 
         private void Progress_ProgressChanged(object sender, JSONMessage e)
         {
-            Console.WriteLine($"{e.ProgressMessage}");
+            logger.Information($"{e.ProgressMessage}");
         }
 
         private HostConfig StackHostConfig()
@@ -441,13 +493,16 @@ namespace Kubernox
                     if (container == null)
                     {
                         var containerCreateResult = await client.Containers.CreateContainerAsync(parameters, cancellationToken);
+                        logger.Information($"------ {name} creation done");
                     }
-
-                    Console.WriteLine($"------ {name} Creation Done");
+                    else
+                    {
+                        logger.Information($"------ {name} already exist.");
+                    }
 
                     if (container != null && container.State == "running")
                     {
-                        Console.WriteLine($"------ {name} Running");
+                        logger.Information($"------ {name} running");
                         return true;
                     }
 
@@ -455,14 +510,14 @@ namespace Kubernox
 
                     if (started)
                     {
-                        Console.WriteLine($"------ {name} Running");
+                        logger.Information($"------ {name} running");
                         return true;
                     }
                 }
                 catch (Exception e)
                 {
                     error = e;
-                    Console.WriteLine(e.Message);
+                    logger.Error(e, e.Message);
                 }
             } while (error != null && !cancellationToken.IsCancellationRequested);
 

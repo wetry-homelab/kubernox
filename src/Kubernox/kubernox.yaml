@@ -74,7 +74,7 @@ prometheus:
 
 # Configure traefik provider
 traefik:
-    path: traefik.yml
+    path: /home/tech/traefik.yml
 
 kubernox:
     domain: kubernox.local

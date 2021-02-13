@@ -9,5 +9,12 @@ providers:
     rootKey: "traefik"
     password: "kubernoxRedisPassword@0123"
 
+entryPoints:
+  web:
+    address: ":80"
+
+  websecure:
+    address: ":443"
+
 pilot:
     token: "679a4346-6f15-445c-a697-79a692971bff"
