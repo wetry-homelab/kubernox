@@ -70,7 +70,11 @@ redis:
 # Configure cache provider
 prometheus:
     # Default value : prometheus.yml
-    path: "prometheus.yml:"
+    path: /home/tech/prometheus.yml
+
+# Configure traefik provider
+traefik:
+    path: traefik.yml
 
 kubernox:
     domain: kubernox.local

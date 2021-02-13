@@ -1,7 +1,4 @@
 ﻿using Kubernox.Model;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,7 +30,10 @@ namespace Kubernox
                 {
                     if (await StartingKubernoxStack(configuration, cancellationToken))
                     {
-                        Console.WriteLine("Deployment success.");
+                        if (await containerDeployService.InstantiateTraefikProxyContainer(configuration, cancellationToken))
+                            Console.WriteLine("Deployment success.");
+                        else
+                            Console.WriteLine("Deployment failed.");
                     }
                     else
                     {

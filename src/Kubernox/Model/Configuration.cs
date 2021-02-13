@@ -8,5 +8,6 @@
         public RedisProvider Redis { get; set; }
         public PrometheusProvider Prometheus { get; set; }
         public KubernoxProvider Kubernox { get; set; }
+        public TraefikProvider Traefik { get; set; }
     }
 }

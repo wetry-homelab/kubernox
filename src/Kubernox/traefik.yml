@@ -1,0 +1,13 @@
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  redis:
+    endpoints:
+      - "kubernox_cache:6379"  
+    rootKey: "traefik"
+    password: "kubernoxRedisPassword@0123"
+
+pilot:
+    token: "679a4346-6f15-445c-a697-79a692971bff"

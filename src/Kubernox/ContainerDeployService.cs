@@ -27,6 +27,7 @@ namespace Kubernox
         private const string ServiceContainerName = "kubernox_service";
         private const string WorkersContainerName = "kubernox_workers";
         private const string KubernoxContainerName = "kubernox";
+        private const string TraefikContainerName = "kubernox_traefik";
         private const string NetworkName = "kubernox_internal_lan";
 
 
@@ -182,19 +183,19 @@ namespace Kubernox
             var ports = new Dictionary<string, EmptyStruct>();
             ports.Add("9090/tcp", new EmptyStruct());
 
-            var volumes = new Dictionary<string, EmptyStruct>();
-            volumes.Add($"{prometheus.Path}:/etc/prometheus/prometheus.yml", new EmptyStruct());
-
             var createParameters = new CreateContainerParameters()
             {
                 Image = "prom/prometheus:latest",
                 Name = PrometheusContainerName,
                 Hostname = PrometheusContainerName,
                 ExposedPorts = ports,
-                Volumes = volumes,
                 HostConfig = new HostConfig()
                 {
                     NetworkMode = NetworkName,
+                    Binds = new List<string>()
+                    {
+                        $"{prometheus.Path}:/etc/prometheus/prometheus.yml"
+                    },
                     RestartPolicy = new RestartPolicy()
                     {
                         Name = RestartPolicyKind.Always
@@ -286,6 +287,10 @@ namespace Kubernox
                 ExposedPorts = ports,
                 HostConfig = new HostConfig()
                 {
+                    RestartPolicy = new RestartPolicy()
+                    {
+                        Name = RestartPolicyKind.Always
+                    },
                     NetworkMode = NetworkName,
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                     {
@@ -304,6 +309,74 @@ namespace Kubernox
             };
 
             return await DeployAndStartAsync(KubernoxContainerName, createParameters, cancellationToken);
+        }
+
+        public async Task<bool> InstantiateTraefikProxyContainer(Configuration configuration, CancellationToken cancellationToken)
+        {
+            Console.WriteLine("---- Starting Deploy Traefik Container ----");
+            await DownloadImage("traefik:latest", cancellationToken);
+
+            var ports = new Dictionary<string, EmptyStruct>();
+            ports.Add("8080/tcp", new EmptyStruct());
+            ports.Add("443/tcp", new EmptyStruct());
+            ports.Add("80/tcp", new EmptyStruct());
+
+            var createParameters = new CreateContainerParameters()
+            {
+                Image = "traefik:latest",
+                Name = TraefikContainerName,
+                Hostname = TraefikContainerName,
+                ExposedPorts = ports,
+                HostConfig = new HostConfig()
+                {
+                    NetworkMode = NetworkName,
+                    Binds = new List<string>()
+                    {
+                        $"{configuration.Traefik.Path}:/etc/traefik/traefik.yml",
+                        "/var/run/docker.sock:/var/run/docker.sock"
+                    },
+                    RestartPolicy = new RestartPolicy()
+                    {
+                        Name = RestartPolicyKind.Always
+                    },
+                    PortBindings = new Dictionary<string, IList<PortBinding>>
+                    {
+                        {
+                            "8080/tcp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = $"8080"
+                                }
+                            }
+                        },
+                        {
+                            "443/tcp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = $"443"
+                                }
+                            }
+                        },
+                        {
+                            "80/tcp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = $"80"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+
+            return await DeployAndStartAsync(TraefikContainerName, createParameters, cancellationToken);
         }
 
         private async Task DownloadImage(string image, CancellationToken cancellationToken)
