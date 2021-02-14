@@ -20,7 +20,7 @@ namespace Domain.Entities
 
         public string KernelVersion { get; set; }
 
-        public int Uptime { get; set; }
+        public long Uptime { get; set; }
 
         public double Mhz { get; set; }
 

@@ -60,7 +60,8 @@ namespace Kubernox.Workers.Business
             if (selectedNode != null)
             {
                 selectedNode.Name = node.Name;
-                selectedNode.Uptime = proxmoxNode.Uptime;
+                selectedNode.Uptime = nodeDetails.Uptime;
+                selectedNode.RamUsed = nodeDetails.Memory.Used;
 
                 if ((await datacenterRepository.UpdateDatacenterNodeAsync(selectedNode)) > 0)
                 {
