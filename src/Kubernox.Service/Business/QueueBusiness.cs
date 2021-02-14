@@ -27,12 +27,12 @@ namespace Kubernox.Service.Business
         {
             await queueService.OnQueueMessageInit(async (message) =>
             {
-                logger.LogDebug(message);
+                logger.LogInformation(message);
 
                 var clusterResult = JsonSerializer.Deserialize<ClusterCreationResultMessage>(message);
                 var cluster = await clusterRepository.ReadAsync(c => c.OrderId == clusterResult.Data.OrderId);
 
-                if (cluster != null)
+                if (cluster != null && clusterResult.Pattern == "success")
                 {
                     cluster.KubeConfig = clusterResult.Data.KubeConfig.Replace($"server: https://{cluster.Ip}:6443", $"server: https://k3s-master-{cluster.Name}.{cluster.Domain}:6443");
                     cluster.KubeConfigJson = clusterResult.Data.KubeConfigAsJson;
