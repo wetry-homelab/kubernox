@@ -1,14 +1,31 @@
 ﻿using Application.Interfaces;
 using Microsoft.IdentityModel.Tokens;
+using ProxmoxVEAPI.Client;
+using ProxmoxVEAPI.Client.Contracts.Request;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Kubernox.Service.Business
 {
     public class IdentityBusiness : IIdentityBusiness
     {
+        public async Task<object> AuthenticateAsync(string username, string password)
+        {
+            UserClient userClient = new UserClient();
+
+            var authResult = await userClient.AuthenticateUser(new AuthenticateContractRequest()
+            {
+                Username = username,
+                Password = password
+            });
+
+
+            return null;
+        }
+
         private string GenerateJwtToken(int accountId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

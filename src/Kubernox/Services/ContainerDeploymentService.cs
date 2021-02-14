@@ -32,7 +32,7 @@ namespace Kubernox.Services
         private const string KubernoxContainerName = "kubernox";
         private const string KubernoxDeployWorkerContainerName = "kubernox_deploy_worker";
         private const string TraefikContainerName = "kubernox_traefik";
-        private const string NetworkName = "kubernox_internal_lan";
+        private const string NetworkName = "kubernox_lan";
 
         public ContainerDeploymentService()
         {
@@ -164,13 +164,37 @@ namespace Kubernox.Services
             logger.Information("---- Starting Deploy Cache Container ----");
             await DownloadImage("redis", cancellationToken);
 
+            var ports = new Dictionary<string, EmptyStruct>();
+            ports.Add("6379/tcp", new EmptyStruct());
+
             var createParameters = new CreateContainerParameters()
             {
                 Image = "redis",
                 Name = CacheContainerName,
                 Cmd = new List<string>() { $"redis-server", "--requirepass", $"{redis.Password}" },
                 Hostname = CacheContainerName,
-                HostConfig = StackHostConfig()
+                ExposedPorts = ports,
+                HostConfig = new HostConfig()
+                {
+                    NetworkMode = NetworkName,
+                    RestartPolicy = new RestartPolicy()
+                    {
+                        Name = RestartPolicyKind.Always
+                    },
+                    PortBindings = new Dictionary<string, IList<PortBinding>>
+                    {
+                        {
+                            "6379/tcp",
+                            new List<PortBinding>
+                            {
+                                new PortBinding
+                                {
+                                    HostPort = "6379"
+                                }
+                            }
+                        }
+                    }
+                }
             };
 
             return await DeployAndStartAsync(CacheContainerName, createParameters, cancellationToken);
@@ -412,7 +436,7 @@ namespace Kubernox.Services
                 ExposedPorts = ports,
                 HostConfig = new HostConfig()
                 {
-                    NetworkMode = NetworkName,
+                    NetworkMode = "host",
                     Binds = new List<string>()
                     {
                         $"{configuration.Traefik.Path}:/etc/traefik/traefik.yml",
@@ -457,7 +481,6 @@ namespace Kubernox.Services
                     }
                 }
             };
-
 
             return await DeployAndStartAsync(TraefikContainerName, createParameters, cancellationToken);
         }
