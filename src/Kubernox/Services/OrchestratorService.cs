@@ -84,6 +84,7 @@ namespace Kubernox.Services
             {
                 await containerDeploymentService.InstantiateKubernoxServiceContainer(configuration, cancellationToken);
                 await containerDeploymentService.InstantiateKubernoxWorkersContainer(configuration, cancellationToken);
+                await containerDeploymentService.InstantiateDeployWorkerContainer(configuration, cancellationToken);
                 await containerDeploymentService.InstantiateKubernoxUiContainer(configuration, cancellationToken);
 
                 return true;

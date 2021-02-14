@@ -20,6 +20,8 @@ proxmox:
     host: https://infra.ice-artefact.com
     # Default value : kubernox
     username: root
+    # Default value : kubernox
+    password: puce0123
     # No default value, custom value required
     access_token: 05449ebc-2eaf-42a6-950a-b6a341f528d0
     # No default value, custom value required
@@ -52,7 +54,7 @@ rabbitmq:
     # Default value : kubernox
     username: kubernox
     # Default value : kubernoxRabbitMqPassword@0123
-    password: kubernoxRabbitMqPassword@0123
+    password: kubernoxRabbitMqPassword0123
     # Default value : /
     virtualhost: /
     # Default value : 5672

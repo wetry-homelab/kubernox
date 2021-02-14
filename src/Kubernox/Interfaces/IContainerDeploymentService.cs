@@ -15,6 +15,7 @@ namespace Kubernox.Interfaces
         Task<bool> InstantiateKubernoxServiceContainer(Configuration configuration, CancellationToken cancellationToken);
         Task<bool> InstantiateKubernoxWorkersContainer(Configuration configuration, CancellationToken cancellationToken);
         Task<bool> InstantiateKubernoxUiContainer(Configuration configuration, CancellationToken cancellationToken);
+        Task<bool> InstantiateDeployWorkerContainer(Configuration configuration, CancellationToken cancellationToken);
         Task<bool> InstantiateTraefikProxyContainer(Configuration configuration, CancellationToken cancellationToken);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Docker.DotNet;
-using Docker.DotNet.BasicAuth;
 using Docker.DotNet.Models;
 using Kubernox.Interfaces;
 using Kubernox.Model;
@@ -31,6 +30,7 @@ namespace Kubernox.Services
         private const string ServiceContainerName = "kubernox_service";
         private const string WorkersContainerName = "kubernox_workers";
         private const string KubernoxContainerName = "kubernox";
+        private const string KubernoxDeployWorkerContainerName = "kubernox_deploy_worker";
         private const string TraefikContainerName = "kubernox_traefik";
         private const string NetworkName = "kubernox_internal_lan";
 
@@ -361,6 +361,37 @@ namespace Kubernox.Services
             };
 
             return await DeployAndStartAsync(KubernoxContainerName, createParameters, cancellationToken);
+        }
+
+        public async Task<bool> InstantiateDeployWorkerContainer(Configuration configuration, CancellationToken cancellationToken)
+        {
+            logger.Information("---- Starting Deploy Deploy Worker Container ----");
+            await DownloadImage("kubernox/kubernox-deploy-worker", "latest", cancellationToken);
+
+            var createParameters = new CreateContainerParameters()
+            {
+                Image = "kubernox/kubernox-deploy-worker:latest",
+                Name = KubernoxDeployWorkerContainerName,
+                Hostname = KubernoxDeployWorkerContainerName,
+                Env = new List<string>()
+                {
+                    $"Proxmox__APIUser={configuration.Proxmox.Username}@{configuration.Proxmox.AuthType}",
+                    $"Proxmox__APIPassword={configuration.Proxmox.Password}",
+                    $"Proxmox__APIUrl={configuration.Proxmox.Host}",
+                    $"RabbitMq__Url=amqp://{configuration.Rabbitmq.Username}:{configuration.Rabbitmq.Password}@{configuration.Rabbitmq.Host}:{configuration.Rabbitmq.Port}"
+                },
+                HostConfig = new HostConfig()
+                {
+                    NetworkMode = NetworkName,
+                    RestartPolicy = new RestartPolicy()
+                    {
+                        Name = RestartPolicyKind.Always
+                    }
+                }
+            };
+
+
+            return await DeployAndStartAsync(KubernoxDeployWorkerContainerName, createParameters, cancellationToken);
         }
 
         public async Task<bool> InstantiateTraefikProxyContainer(Configuration configuration, CancellationToken cancellationToken)
