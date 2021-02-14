@@ -41,6 +41,9 @@ namespace Kubernox.UI.Pages.K3SCluster
         [Inject]
         IClusterService ClusterService { get; set; }
 
+        [Inject]
+        NavigationManager NavigationManager { get; set; }
+
         public bool IsLoad
         {
             get
@@ -176,6 +179,11 @@ namespace Kubernox.UI.Pages.K3SCluster
         {
             var download = await ClusterService.DownloadConfigAsync(id);
             await FileUtil.SaveAs(JSRuntime, download.Name, System.Text.Encoding.UTF8.GetBytes(download.Content));
+        }
+
+        protected async Task ViewDetails(string id)
+        {
+            NavigationManager.NavigateTo($"/cluster/{id}");
         }
     }
 }
