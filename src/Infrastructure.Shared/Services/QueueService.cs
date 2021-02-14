@@ -36,7 +36,7 @@ namespace Infrastructure.Shared.Services
         {
             using (var channel = connectionQueue.CreateModel())
             {
-                channel.QueueDeclare(queue: "k3s_queue_result", false, false, false, null);
+                channel.QueueDeclare(queue: "k3s_queue_result", true, false, false, null);
                 channel.QueueBind(queue: "k3s_queue_result",
                                   exchange: "amq.fanout",
                                   routingKey: "");

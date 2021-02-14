@@ -110,6 +110,7 @@ namespace Kubernox.Service.Business
             values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}/rule", $"Host(`{newCluster.Name}.{domain}`)"));
             values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}.entrypoints/0", $"web"));
             values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}.entrypoints/1", $"webSecure"));
+            values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}.entrypoints/2", $"k3s"));
             values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}/service", $"{newCluster.Name}-http-lb"));
             values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-http-lb/loadbalancer/servers/0/url", $"http://{newCluster.Ip}:80"));
             values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-http-lb/loadbalancer/servers/1/url", $"https://{newCluster.Ip}:443"));

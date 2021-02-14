@@ -29,7 +29,7 @@ namespace Kubernox.Service.Business
 
                 if (cluster != null)
                 {
-                    cluster.KubeConfig = clusterResult.Data.KubeConfig;
+                    cluster.KubeConfig = clusterResult.Data.KubeConfig.Replace($"server: https://{cluster.Ip}:6443", $"server: https://k3s-master-{cluster.Name}.{cluster.Domain}:6443");
                     cluster.KubeConfigJson = clusterResult.Data.KubeConfigAsJson;
 
                     if ((await clusterRepository.UpdateClusterAsync(cluster)) > 0)

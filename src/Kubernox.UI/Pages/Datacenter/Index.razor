@@ -11,29 +11,31 @@
 
 @if (DatacenterState != null && DatacenterState.Value != null && DatacenterState.Value.Nodes != null)
 {
-<Table @ref="table"
-       TItem="DatacenterNodeResponse"
-       DataSource="@DatacenterState.Value.Nodes">
-    <Column @bind-Field="@context.Id" Sortable />
-    <Column @bind-Field="@context.Name" Sortable />
-    <Column @bind-Field="@context.Ip" Sortable />
-    <Column @bind-Field="@context.Model" Sortable />
-    <Column @bind-Field="@context.Core" Sortable>
-        @($"{context.Core} / {context.Thread} - ({context.Mhz* 1000}Mhz) ({context.Socket})")
-    </Column>
-    <Column @bind-Field="@context.RamTotal" Sortable>
-        @($"{context.RamUsed / (1024 * 1024)}MB / {context.RamTotal / (1024 * 1024)}MB")
-    </Column>
-    <Column @bind-Field="@context.SwapTotal" Sortable>
-        @($"{context.SwapUsed / (1024 * 1024)}MB / {context.SwapTotal / (1024 * 1024)}MB")
-    </Column>
-    <Column @bind-Field="@context.RootFsTotal" Sortable>
-        @($"{context.RootFsUsed / (1024 * 1024)}MB / {context.RootFsTotal / (1024 * 1024)}MB")
-    </Column>
-    <ActionColumn>
-        <Space>
-            <SpaceItem><Button OnClick="() => ViewDetails(context.Id)" >Details</Button></SpaceItem>
-        </Space>
-    </ActionColumn>
-</Table>
+<div class="mt-4">
+    <Table @ref="table"
+           TItem="DatacenterNodeResponse"
+           DataSource="@DatacenterState.Value.Nodes">
+        <Column @bind-Field="@context.Id" Sortable />
+        <Column @bind-Field="@context.Name" Sortable />
+        <Column @bind-Field="@context.Ip" Sortable />
+        <Column @bind-Field="@context.Model" Sortable />
+        <Column @bind-Field="@context.Core" Sortable>
+            @($"{context.Core} / {context.Thread} - ({context.Mhz* 1000}Mhz) ({context.Socket})")
+        </Column>
+        <Column @bind-Field="@context.RamTotal" Sortable>
+            @($"{context.RamUsed / (1024 * 1024)}MB / {context.RamTotal / (1024 * 1024)}MB")
+        </Column>
+        <Column @bind-Field="@context.SwapTotal" Sortable>
+            @($"{context.SwapUsed / (1024 * 1024)}MB / {context.SwapTotal / (1024 * 1024)}MB")
+        </Column>
+        <Column @bind-Field="@context.RootFsTotal" Sortable>
+            @($"{context.RootFsUsed / (1024 * 1024)}MB / {context.RootFsTotal / (1024 * 1024)}MB")
+        </Column>
+        <ActionColumn>
+            <Space>
+                <SpaceItem><Button OnClick="() => ViewDetails(context.Id)">Details</Button></SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
+</div>
 }

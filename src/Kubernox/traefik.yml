@@ -12,9 +12,10 @@ providers:
 entryPoints:
   web:
     address: ":80"
-
   websecure:
     address: ":443"
+  k3s:
+    address: ":6443"
 
 pilot:
     token: "679a4346-6f15-445c-a697-79a692971bff"

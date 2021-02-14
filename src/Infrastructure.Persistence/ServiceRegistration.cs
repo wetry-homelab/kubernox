@@ -24,6 +24,15 @@ namespace Infrastructure.Persistence
                 {
                     postgreOpts.EnableRetryOnFailure(10);
                 }));
+
+
+            //services.AddDbContext<ServiceDbContext>(options =>
+            //{
+            //    options.UseSqlServer(connectionString, sqlOptions =>
+            //    {
+            //        sqlOptions.EnableRetryOnFailure(10);
+            //    });
+            //});
      
             services.AddScoped<IClusterRepository, ClusterRepository>();
             services.AddScoped<ISshKeyRepository, SshKeyRepository>();

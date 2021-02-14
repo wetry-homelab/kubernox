@@ -30,12 +30,20 @@ namespace Kubernox.UI
 
         private static void ConfigureCore(WebAssemblyHostBuilder builder)
         {
+#if DEBUG
+            builder.Services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri($"https://localhost:5001")
+            });
+
+            MainLayout.BaseUri = $"https://localhost:5001/";
+#else
             builder.Services.AddScoped(sp => new HttpClient
             {
                 BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}")
             });
-
             MainLayout.BaseUri = builder.HostEnvironment.BaseAddress;
+#endif
 
             builder.Services.AddAntDesign();
             var currentAssembly = typeof(StoreRegistration).Assembly;
