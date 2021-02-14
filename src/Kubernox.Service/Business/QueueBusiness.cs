@@ -2,6 +2,7 @@
 using Application.Messages;
 using Kubernox.Service.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -12,18 +13,22 @@ namespace Kubernox.Service.Business
         private readonly IQueueService queueService;
         private readonly IClusterRepository clusterRepository;
         private readonly IHubContext<AppHub, IAppHub> hubContext;
+        private readonly ILogger<QueueBusiness> logger;
 
-        public QueueBusiness(IQueueService queueService, IHubContext<AppHub, IAppHub> hubContext, IClusterRepository clusterRepository)
+        public QueueBusiness(IQueueService queueService, IHubContext<AppHub, IAppHub> hubContext, IClusterRepository clusterRepository, ILogger<QueueBusiness> logger)
         {
             this.queueService = queueService;
             this.hubContext = hubContext;
             this.clusterRepository = clusterRepository;
+            this.logger = logger;
         }
 
         public async Task StartQueueListener()
         {
             await queueService.OnQueueMessageInit(async (message) =>
             {
+                logger.LogDebug(message);
+
                 var clusterResult = JsonSerializer.Deserialize<ClusterCreationResultMessage>(message);
                 var cluster = await clusterRepository.ReadAsync(c => c.OrderId == clusterResult.Data.OrderId);
 

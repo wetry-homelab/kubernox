@@ -401,7 +401,7 @@ namespace Kubernox.Services
                 {
                     $"Proxmox__APIUser={configuration.Proxmox.Username}@{configuration.Proxmox.AuthType}",
                     $"Proxmox__APIPassword={configuration.Proxmox.Password}",
-                    $"Proxmox__APIUrl={configuration.Proxmox.Host}",
+                    $"Proxmox__APIUrl={configuration.Proxmox.Host}/api2/json",
                     $"RabbitMq__Url=amqp://{configuration.Rabbitmq.Username}:{configuration.Rabbitmq.Password}@{configuration.Rabbitmq.Host}:{configuration.Rabbitmq.Port}"
                 },
                 HostConfig = new HostConfig()
