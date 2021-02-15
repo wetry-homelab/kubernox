@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -75,6 +76,7 @@ namespace Kubernox.Workers.Business
             {
                 foreach (var clusterNode in clusterNodes.Items)
                 {
+                    logger.LogInformation($"Node => {JsonSerializer.Serialize(clusterNode)}");
                     if (clusterNode.Metadata.Name.Contains("master"))
                     {
                         cluster.State = clusterNode.Status.Conditions.FirstOrDefault(c => c.Reason == "KubeletReady")?.Type;
