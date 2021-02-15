@@ -10,3 +10,11 @@ providers:
     password: "kubernoxPassword@0123"
 pilot:
     token: "679a4346-6f15-445c-a697-79a692971bff"
+
+acme:
+    email: "grasseelsp@hotmail.com"
+    storage: "acme.json"
+    entryPoint: "https"
+    onHostRule: true
+    httpChallenge:
+        entryPoint: "http"

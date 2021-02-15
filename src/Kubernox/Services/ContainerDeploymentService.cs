@@ -434,6 +434,10 @@ namespace Kubernox.Services
                 Name = TraefikContainerName,
                 Hostname = TraefikContainerName,
                 ExposedPorts = ports,
+                Env = new List<string>()
+                {
+                    $"GANDIV5_API_KEY={configuration.Traefik.ApiKey}"
+                },
                 HostConfig = new HostConfig()
                 {
                     NetworkMode = "host",

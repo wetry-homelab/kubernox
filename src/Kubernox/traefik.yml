@@ -5,7 +5,7 @@ api:
 providers:
   redis:
     endpoints:
-      - "kubernox_cache:6379"  
+      - "127.0.0.1:6379"  
     rootKey: "traefik"
     password: "kubernoxRedisPassword@0123"
 
@@ -19,3 +19,13 @@ entryPoints:
 
 pilot:
     token: "679a4346-6f15-445c-a697-79a692971bff"
+
+certificatesResolvers:
+  gandiResolver:
+    acme:
+      tlsChallenge: {}
+      email: grasseelsp@hotmail.com
+      storage: acme.json
+      dnsChallenge:
+        provider: gandiv5
+        delayBeforeCheck: 30
