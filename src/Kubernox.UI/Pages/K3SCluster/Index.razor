@@ -121,11 +121,11 @@
                 <div class="block m-2">
                     @if (node.State == "Ready")
                         {
-                            <Tag Color="blue-inverse mb-1">@node.Name / @node.Ip / @node.State</Tag>
+                            <Tag Color="blue-inverse" Class="mb-1">@node.Name / @node.Ip / @node.State</Tag>
                         }
                         else
                         {
-                            <Tag Color="orange mb-1">@node.Name / @node.Ip / @node.State</Tag>
+                            <Tag Color="orange" Class="mb-1">@node.Name / @node.Ip / @node.State</Tag>
                         }
                 </div>
                 }
