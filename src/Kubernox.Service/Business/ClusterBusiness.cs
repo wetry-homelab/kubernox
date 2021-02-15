@@ -146,6 +146,7 @@ namespace Kubernox.Service.Business
                 Data = new Data()
                 {
                     Id = baseId,
+                    Name = request.Name,
                     Config = new Config()
                     {
                         User = "root",

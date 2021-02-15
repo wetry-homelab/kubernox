@@ -65,6 +65,9 @@ namespace Application.Messages
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
         [JsonPropertyName("config")]
         public Config Config { get; set; }
 
