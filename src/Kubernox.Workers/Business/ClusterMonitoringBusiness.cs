@@ -45,7 +45,7 @@ namespace Kubernox.Workers.Business
             try
             {
                 if (!Directory.Exists($"./configs/{cluster.Id}"))
-                    Directory.CreateDirectory($"./configs{cluster.Id}");
+                    Directory.CreateDirectory($"./configs/{cluster.Id}");
 
                 var filePath = $"./configs/{cluster.Id}/kubeconfig";
 

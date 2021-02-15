@@ -79,5 +79,5 @@ traefik:
     path: /home/tech/traefik.yml
 
 kubernox:
-    domain: kubernox.local
+    domain: ice-artefact.com
     ui_port_expose: 7777
