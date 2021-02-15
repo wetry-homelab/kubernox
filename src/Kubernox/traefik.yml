@@ -1,3 +1,9 @@
+log:
+  level: DEBUG
+
+serversTransport:
+  insecureSkipVerify: true
+
 api:
   dashboard: true
   insecure: true

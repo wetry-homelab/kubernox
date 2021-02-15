@@ -51,6 +51,7 @@ namespace Kubernox.Workers.Business
 
                 if (!File.Exists(filePath))
                 {
+                    cluster.KubeConfig.Replace($"server: https://{cluster.Name}.{cluster.Domain}:6443", $"server: https://{cluster.Ip}:6443");
                     await File.WriteAllTextAsync(filePath, cluster.KubeConfig);
                 }
 

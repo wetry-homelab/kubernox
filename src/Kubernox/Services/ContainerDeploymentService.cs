@@ -434,6 +434,14 @@ namespace Kubernox.Services
                 Name = TraefikContainerName,
                 Hostname = TraefikContainerName,
                 ExposedPorts = ports,
+                Labels = new Dictionary<string, string>()
+                {
+                    { "traefik.http.routers.traefik.rule", $"Host(`{configuration.Kubernox.Domain}`) && Path(`/traefik`)" },
+                    { "traefik.http.routers.traefik.tls", "true" },
+                    { "traefik.http.routers.traefik.tls.certresolver", "gandiResolver" },
+                    { "traefik.http.routers.traefik.tls.domains[0].main", $"{configuration.Kubernox.Domain}" },
+                    { "traefik.http.routers.traefik.tls.domains[0].sans", $"*.{configuration.Kubernox.Domain}" }
+                },
                 Env = new List<string>()
                 {
                     $"GANDIV5_API_KEY={configuration.Traefik.ApiKey}"
