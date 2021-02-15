@@ -171,7 +171,7 @@ namespace Kubernox.Service.Business
                 CpuCores = 2,
                 Master = true,
                 Disk = 30,
-                Memory = 1024,
+                Memory = 2048,
                 Ip = $"10.0.{selectedNode.Id}.{baseIp}",
                 ProxmoxNode = selectedNode.Name,
                 Template = template.BaseTemplate
