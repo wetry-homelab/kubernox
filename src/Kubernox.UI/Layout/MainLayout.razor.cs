@@ -1,4 +1,6 @@
 ﻿using AntDesign;
+using Fluxor;
+using Kubernox.UI.Store.Actions.Cluster;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
@@ -12,6 +14,9 @@ namespace Kubernox.UI.Layout
         public static string BaseUri;
 
         HubConnection connection;
+        
+        [Inject]
+        IDispatcher Dispatcher { get; set; }
 
         [Inject]
         NotificationService NotificationService { get; set; }
@@ -24,7 +29,6 @@ namespace Kubernox.UI.Layout
 
             connection.On("NotificationReceived", async (string title, string content, string type) =>
             {
-                Console.WriteLine("Notification Received");
                 await NotificationService.Open(new NotificationConfig()
                 {
                     Message = title,
@@ -32,6 +36,8 @@ namespace Kubernox.UI.Layout
                     NotificationType = GetNotificationType(type),
                     Duration = 8
                 });
+
+                Dispatcher.Dispatch(new FetchClusterAction());
             });
 
             await connection.StartAsync();
