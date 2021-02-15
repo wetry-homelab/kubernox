@@ -26,6 +26,14 @@ namespace Services
             return JsonSerializer.Deserialize<ClusterItemResponse[]>(response);
         }
 
+        public async Task<bool> DeleteClustersAsync(string id)
+        {
+            var httpResponse = await httpClient.DeleteAsync($"api/cluster/{id}");
+            var response = await httpResponse.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<bool>(response);
+        }
+
         public async Task<bool> CreateClustersAsync(ClusterCreateRequest request)
         {
             var httpResponse = await httpClient.PostAsync("api/cluster", GetContent(request));

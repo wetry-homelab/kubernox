@@ -9,5 +9,6 @@ namespace Kubernox.UI.Services.Interfaces
         Task<ClusterItemResponse[]> GetClustersAsync();
         Task<bool> CreateClustersAsync(ClusterCreateRequest request);
         Task<KubeconfigDownloadResponse> DownloadConfigAsync(string id);
+        Task<bool> DeleteClustersAsync(string id);
     }
 }
