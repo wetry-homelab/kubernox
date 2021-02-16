@@ -246,9 +246,14 @@ namespace Kubernox.Service.Business
                 foreach (var node in nodes)
                 {
                     node.DeleteAt = DateTime.UtcNow;
+                    await qemuClient.StopQemu(selectedNode.Name, node.OrderId);
+                    await Task.Delay(5000);
                     await qemuClient.DeleteQemu(selectedNode.Name, node.OrderId);
                     await clusterNodeRepository.UpdateClusterNodeAsync(node);
                 }
+
+                await qemuClient.StopQemu(selectedNode.Name, cluster.OrderId);
+                await Task.Delay(5000);
 
                 return (true, await qemuClient.DeleteQemu(selectedNode.Name, cluster.OrderId));
             }
