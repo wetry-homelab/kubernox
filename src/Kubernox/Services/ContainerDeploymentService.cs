@@ -452,7 +452,8 @@ namespace Kubernox.Services
                     Binds = new List<string>()
                     {
                         $"{configuration.Traefik.Path}:/etc/traefik/traefik.yml",
-                        "/var/run/docker.sock:/var/run/docker.sock"
+                        "/var/run/docker.sock:/var/run/docker.sock",
+                        "/home/tech/traefik-conf:/conf"
                     },
                     RestartPolicy = new RestartPolicy()
                     {

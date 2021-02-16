@@ -12,7 +12,7 @@ namespace Infrastructure.Shared.Services
 
         public TraefikRedisStore(IConfiguration configuration)
         {
-            redis = ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis"));
+            //redis = ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis"));
         }
 
         public async Task StoreValues(List<KeyValuePair<string, string>> routes)
