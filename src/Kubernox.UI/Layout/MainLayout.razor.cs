@@ -21,6 +21,8 @@ namespace Kubernox.UI.Layout
         [Inject]
         NotificationService NotificationService { get; set; }
 
+        public int NotificationsCount { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             connection = new HubConnectionBuilder()
@@ -36,6 +38,8 @@ namespace Kubernox.UI.Layout
                     NotificationType = GetNotificationType(type),
                     Duration = 8
                 });
+
+                NotificationsCount += 1;
 
                 Dispatcher.Dispatch(new FetchClusterAction());
             });
