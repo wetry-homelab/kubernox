@@ -15,6 +15,16 @@ namespace Infrastructure.Shared.Services
             redis = ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis"));
         }
 
+        public async Task DeleteValues(List<string> keys)
+        {
+            var db = redis.GetDatabase();
+
+            foreach (var key in keys)
+            {
+                await db.KeyDeleteAsync(key);
+            }
+        }
+
         public async Task StoreValues(List<KeyValuePair<string, string>> routes)
         {
             var db = redis.GetDatabase();

@@ -30,6 +30,7 @@ namespace Kubernox.Service
                 {
                     services.AddSignalR();
 
+                    services.AddScoped<IDatacenterRepository, DatacenterRepository>();
                     services.AddScoped<IClusterRepository, ClusterRepository>();
                     services.AddScoped<IQueueService, QueueService>();
                     services.AddScoped<IQueueBusiness, QueueBusiness>();

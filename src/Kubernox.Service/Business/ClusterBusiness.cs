@@ -1,18 +1,14 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
 using Application.Messages;
-using Kubernox.Service.Hubs;
 using Domain.Entities;
 using Infrastructure.Contracts.Request;
 using Infrastructure.Contracts.Response;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using ProxmoxVEAPI.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kubernox.Service.Business
@@ -104,6 +100,20 @@ namespace Kubernox.Service.Business
             return false;
         }
 
+        private async Task DeleteClusterCacheConfigurationAsync(Cluster cluster)
+        {
+            var keys = new List<string>()
+            {
+                $"traefik/tcp/routers/{cluster.Name}/rule",
+                $"traefik.tcp.routers.{cluster.Name}.entryPoints.0",
+                $"traefik/tcp/routers/{cluster.Name}/service",
+                $"traefik/tcp/routers/{cluster.Name}/tls/passthrough",
+                $"traefik/tcp/services/{cluster.Name}-tcp-lb/loadbalancer/servers/0/address"
+            };
+
+            await traefikCache.DeleteValues(keys);
+        }
+
         private async Task InjectClusterCacheConfigurationAsync(Cluster newCluster)
         {
             var values = new List<KeyValuePair<string, string>>();
@@ -115,18 +125,18 @@ namespace Kubernox.Service.Business
             values.Add(new KeyValuePair<string, string>($"traefik/tcp/services/{newCluster.Name}-tcp-lb/loadbalancer/servers/0/address", $"{newCluster.Ip}:6443"));
 
             // HTTP Rules
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-http/rule", $"Host(`{newCluster.Name}.{domain}`)"));
-            values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-http.entrypoints/0", $"web"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-http/service", $"{newCluster.Name}-http-lb"));
+            //values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-http/rule", $"Host(`{newCluster.Name}.{domain}`)"));
+            //values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-http.entrypoints/0", $"web"));
+            //values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-http/service", $"{newCluster.Name}-http-lb"));
 
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/rule", $"Host(`{newCluster.Name}.{domain}`)"));
-            values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-https.entrypoints/0", $"websecure"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/service", $"{newCluster.Name}-http-lb"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls/certresolver", $"gandiResolver"));
-            values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-https.tls.domains[0].main", $"{newCluster.Name}.{domain}"));
-            values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-https.tls.domains[0].sans", $"*.{domain}"));
+            //values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/rule", $"Host(`{newCluster.Name}.{domain}`)"));
+            //values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-https.entrypoints/0", $"websecure"));
+            //values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/service", $"{newCluster.Name}-http-lb"));
+            //values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls/certresolver", $"gandiResolver"));
+            //values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-https.tls.domains[0].main", $"{newCluster.Name}.{domain}"));
+            //values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-https.tls.domains[0].sans", $"*.{domain}"));
 
-            values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-http-lb/loadbalancer/servers/0/url", $"http://{newCluster.Ip}:80"));
+            //values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-http-lb/loadbalancer/servers/0/url", $"http://{newCluster.Ip}:80"));
 
             await traefikCache.StoreValues(values);
         }
@@ -247,6 +257,8 @@ namespace Kubernox.Service.Business
 
             if ((await clusterRepository.UpdateClusterAsync(cluster)) > 0)
             {
+                await DeleteClusterCacheConfigurationAsync(cluster);
+
                 var nodes = await clusterNodeRepository.ReadsAsync(c => c.ClusterId == cluster.Id && c.DeleteAt == null);
                 var selectedNode = await datacenterRepository.ReadAsync(f => f.Id == cluster.ProxmoxNodeId);
                 var qemuClient = new QemuClient();
@@ -254,16 +266,12 @@ namespace Kubernox.Service.Business
                 foreach (var node in nodes)
                 {
                     node.DeleteAt = DateTime.UtcNow;
-                    await qemuClient.StopQemu(selectedNode.Name, node.OrderId);
-                    await Task.Delay(5000);
-                    await qemuClient.DeleteQemu(selectedNode.Name, node.OrderId);
                     await clusterNodeRepository.UpdateClusterNodeAsync(node);
                 }
 
-                await qemuClient.StopQemu(selectedNode.Name, cluster.OrderId);
-                await Task.Delay(5000);
+                queueService.QueueClusterDelete(cluster);
 
-                return (true, await qemuClient.DeleteQemu(selectedNode.Name, cluster.OrderId));
+                return (true, true);
             }
 
             return (true, false);

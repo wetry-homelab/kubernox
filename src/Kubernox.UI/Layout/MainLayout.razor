@@ -8,7 +8,7 @@
             <MenuItem RouterLink="/k3s">@Translator.GetString("MENU_K3S")</MenuItem>
             <MenuItem RouterLink="/ssh" style="float:right">@Translator.GetString("MENU_SSH")</MenuItem>
             <MenuItem RouterLink="/template" style="float:right">@Translator.GetString("MENU_TEMPLATE")</MenuItem>
-            <Badge style="float:right" Count="@NotificationsCount">
+            <Badge style="float:right" Status="success" Count="@NotificationsCount" ShowZero>
                 <Icon Type="notification" Theme="outline" />
             </Badge>
         </Menu>

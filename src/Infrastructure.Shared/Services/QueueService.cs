@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Messages;
+using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -32,6 +33,32 @@ namespace Infrastructure.Shared.Services
             this.connectionQueue = factory.CreateConnection();
         }
 
+        public async Task OnQueueDeleteMessageInit(Action<string> processMessage)
+        {
+            using (var channel = connectionQueue.CreateModel())
+            {
+                channel.QueueDeclare(queue: "k3s_queue_delete", true, false, false, null);
+                channel.QueueBind(queue: "k3s_queue_delete",
+                                  exchange: "amq.fanout",
+                                  routingKey: "");
+
+                Console.WriteLine("[*] Waiting for queue => Delete Cluster.");
+
+                var consumer = new EventingBasicConsumer(channel);
+
+                consumer.Received += (model, ea) =>
+                {
+                    logger.LogInformation("Message receive");
+                    var body = ea.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
+                    processMessage.Invoke(message);
+                };
+
+                channel.BasicConsume(queue: "k3s_queue_delete", autoAck: true, consumer: consumer);
+                await Task.Delay(-1);
+            }
+        }
+
         public async Task OnQueueMessageInit(Action<string> processMessage)
         {
             using (var channel = connectionQueue.CreateModel())
@@ -41,7 +68,7 @@ namespace Infrastructure.Shared.Services
                                   exchange: "amq.fanout",
                                   routingKey: "");
 
-                Console.WriteLine(" [*] Waiting for queue.");
+                Console.WriteLine("[*] Waiting for queue => Cluster creation.");
 
                 var consumer = new EventingBasicConsumer(channel);
 
@@ -54,40 +81,43 @@ namespace Infrastructure.Shared.Services
                 };
 
                 channel.BasicConsume(queue: "k3s_queue_result", autoAck: true, consumer: consumer);
-
                 await Task.Delay(-1);
             }
         }
 
         public void QueueClusterCreation(ClusterCreateMessage message)
         {
-            var exchange = "cluster";
-            var routingKey = "cluster";
+            var routingKey = "k3s_queue";
 
-            PublishMessage(message, exchange, routingKey);
+            PublishMessage(message, routingKey);
         }
 
         public void QueueClusterUpdate(ClusterUpdateMessage message)
         {
-            var exchange = "cluster";
-            var routingKey = "cluster";
+            var routingKey = "k3s_queue";
 
-            PublishMessage(message, exchange, routingKey);
+            PublishMessage(message, routingKey);
         }
 
-        private void PublishMessage(object data, string exchange, string routingKey)
+        public void QueueClusterDelete(Cluster message)
+        {
+            var routingKey = "k3s_queue_delete";
+            PublishMessage(message,  routingKey);
+        }
+
+        private void PublishMessage(object data, string routingKey)
         {
             try
             {
                 IModel channel = connectionQueue.CreateModel();
-                channel.QueueDeclare(queue: "k3s_queue", false, false, false, null);
+                channel.QueueDeclare(queue: routingKey, false, false, false, null);
 
-                byte[] messageBodyBytes = System.Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
-                channel.BasicPublish(exchange: "", routingKey: "k3s_queue", body: messageBodyBytes, basicProperties: null);
+                byte[] messageBodyBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
+                channel.BasicPublish(exchange: "", routingKey: routingKey, body: messageBodyBytes, basicProperties: null);
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Exception on publishing message in queue");
+                logger.LogError(e, "Exception on publishing message in queue.");
             }
         }
     }

@@ -6,5 +6,6 @@ namespace Application.Interfaces
     public interface ITraefikRedisStore
     {
         Task StoreValues(List<KeyValuePair<string, string>> routes);
+        Task DeleteValues(List<string> keys);
     }
 }
