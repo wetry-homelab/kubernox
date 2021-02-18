@@ -13,8 +13,6 @@ namespace Kubernox
             => CommandLineApplication.ExecuteAsync<Program>(args);
 
 
-
-
         [Option(CommandOptionType.SingleOrNoValue, ShortName = "u", Description = "Upgrade application stack", LongName = "upgrade")]
         public bool Upgrade { get; } = false;
 
