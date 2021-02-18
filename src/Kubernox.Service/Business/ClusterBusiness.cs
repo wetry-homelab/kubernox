@@ -37,7 +37,6 @@ namespace Kubernox.Service.Business
             this.templateRepository = templateRepository;
             this.traefikCache = traefikCache;
             this.domain = configuration["Kubernox:Domain"];
-            ConfigureClient.Initialise(configuration["Proxmox:Uri"], configuration["Proxmox:Token"]);
         }
 
         public async Task<bool> CreateClusterAsync(ClusterCreateRequest request)

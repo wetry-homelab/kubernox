@@ -16,6 +16,8 @@ using Infrastructure.Persistence.Contexts;
 using System;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using ProxmoxVEAPI.Client;
+using Microsoft.IdentityModel.Logging;
 
 namespace Kubernox.Service
 {
@@ -55,11 +57,15 @@ namespace Kubernox.Service
             services.AddSignalR();
 
             AddBusinessLayer(services);
+            IdentityModelEventSource.ShowPII = true;
+
+            ConfigureClient.Initialise(Configuration["Proxmox:Uri"], Configuration["Proxmox:Token"]);
         }
 
         private void AddBusinessLayer(IServiceCollection services)
         {
             services.AddScoped<IClusterBusiness, ClusterBusiness>();
+            services.AddScoped<IIdentityBusiness, IdentityBusiness>();
             services.AddScoped<IDatacenterBusiness, DatacenterBusiness>();
             services.AddScoped<ISshKeyBusiness, SshKeyBusiness>();
             services.AddScoped<ITemplateBusiness, TemplateBusiness>();

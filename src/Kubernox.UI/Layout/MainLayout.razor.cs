@@ -41,6 +41,8 @@ namespace Kubernox.UI.Layout
 
                 NotificationsCount += 1;
 
+                StateHasChanged();
+
                 Dispatcher.Dispatch(new FetchClusterAction());
             });
 

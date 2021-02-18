@@ -1,4 +1,7 @@
 ﻿using Application.Interfaces;
+using Infrastructure.Contracts.Request;
+using Infrastructure.Contracts.Response;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ProxmoxVEAPI.Client;
 using ProxmoxVEAPI.Client.Contracts.Request;
@@ -12,24 +15,41 @@ namespace Kubernox.Service.Business
 {
     public class IdentityBusiness : IIdentityBusiness
     {
-        public async Task<object> AuthenticateAsync(string username, string password)
+        private readonly IConfiguration configuration;
+
+        public IdentityBusiness(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
+        public async Task<AuthResponse> AuthenticateAsync(AuthRequest request)
         {
             UserClient userClient = new UserClient();
 
             var authResult = await userClient.AuthenticateUser(new AuthenticateContractRequest()
             {
-                Username = username,
-                Password = password
+                Username = $"{request.Username}",
+                Password = request.Password
             });
 
+            if (authResult)
+            {
+                var jwtToken = GenerateJwtToken(request.Username);
+
+                return new AuthResponse()
+                {
+                    Success = true,
+                    Token = jwtToken
+                };
+            }
 
             return null;
         }
 
-        private string GenerateJwtToken(int accountId)
+        private string GenerateJwtToken(string accountId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("[SECRET USED TO SIGN AND VERIFY JWT TOKENS, IT CAN BE ANY STRING]");
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Secret"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", accountId.ToString()) }),
