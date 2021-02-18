@@ -26,5 +26,18 @@ else
             <Button Type="primary" class="mb-6 mt-4" Style="float:right;">Open SSH Console</Button>
             <Button Type="primary" class="mb-6 mt-4 mr-2" Style="float:right;" OnClick="DeleteClusterAsync">Delete</Button>
         </div>
+
+
+        <Tabs>
+            @foreach (var node in ClusterState.Value.Cluster.Nodes)
+            {
+                <TabPane Key="@node.Name">
+                    <Tab>@node.Name</Tab>
+                    <ChildContent>
+                        <ClusterNodePane Node="node" />
+                    </ChildContent>
+                </TabPane>
+            }
+        </Tabs>
     }
 }
