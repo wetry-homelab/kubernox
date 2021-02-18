@@ -20,12 +20,26 @@ namespace Kubernox.UI.Store.Effects
         {
             try
             {
-                var clusters = await clusterService.GetClustersAsync();
-                dispatcher.Dispatch(new FetchClusterSuccessAction(clusters));
+                var cluster = await clusterService.GetClusterAsync(action.ClusterId);
+                dispatcher.Dispatch(new FetchClusterSuccessAction(cluster));
             }
             catch (Exception e)
             {
                 dispatcher.Dispatch(new FetchClusterFailureAction(e.Message));
+            }
+        }
+
+        [EffectMethod]
+        public async Task HandleFetchClustersAction(FetchClustersAction action, IDispatcher dispatcher)
+        {
+            try
+            {
+                var clusters = await clusterService.GetClustersAsync();
+                dispatcher.Dispatch(new FetchClustersSuccessAction(clusters));
+            }
+            catch (Exception e)
+            {
+                dispatcher.Dispatch(new FetchClustersFailureAction(e.Message));
             }
         }
 
@@ -37,7 +51,7 @@ namespace Kubernox.UI.Store.Effects
                 var clusterReactionResult = await clusterService.CreateClustersAsync(action.Request);
 
                 if (clusterReactionResult)
-                    dispatcher.Dispatch(new FetchClusterAction());
+                    dispatcher.Dispatch(new FetchClustersAction());
 
             }
             catch (Exception e)

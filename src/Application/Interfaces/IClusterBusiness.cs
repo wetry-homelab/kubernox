@@ -8,6 +8,7 @@ namespace Application.Interfaces
     public interface IClusterBusiness
     {
         Task<ClusterItemResponse[]> ListClusterAsync();
+        Task<ClusterDetailsResponse> GetClusterAsync(string id);
         Task<bool> CreateClusterAsync(ClusterCreateRequest request);
         Task<(bool found, bool update)> UpdateClusterAsync(string id, ClusterUpdateRequest request);
         Task<(bool found, bool update)> DeleteClusterAsync(string id);

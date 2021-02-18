@@ -1,13 +1,17 @@
 ﻿using Infrastructure.Contracts.Response;
+using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Kubernox.UI.Store.Actions.Cluster
 {
     public class FetchClusterSuccessAction
     {
-        public FetchClusterSuccessAction(IEnumerable<ClusterItemResponse> clusters) =>
-                Clusters = clusters;
+        public FetchClusterSuccessAction(ClusterDetailsResponse cluster)
+        {
+            Cluster = cluster;
+        }
 
-        public IEnumerable<ClusterItemResponse> Clusters { get; }
+        public ClusterDetailsResponse Cluster { get; }
     }
 }

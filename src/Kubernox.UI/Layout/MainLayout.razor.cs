@@ -43,7 +43,7 @@ namespace Kubernox.UI.Layout
 
                 StateHasChanged();
 
-                Dispatcher.Dispatch(new FetchClusterAction());
+                Dispatcher.Dispatch(new FetchClustersAction());
             });
 
             await connection.StartAsync();

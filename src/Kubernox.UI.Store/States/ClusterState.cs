@@ -6,10 +6,13 @@ namespace Kubernox.UI.Store.States
     {
         public ClusterItemResponse[] Clusters { get; }
 
-        public ClusterState(ClusterItemResponse[] clusters, bool isLoading, string error)
+        public ClusterDetailsResponse Cluster { get; }
+
+        public ClusterState(ClusterItemResponse[] clusters, ClusterDetailsResponse cluster, bool isLoading, string error)
         : base(isLoading, error)
         {
             Clusters = clusters;
+            Cluster = cluster;
         }
     }
 }

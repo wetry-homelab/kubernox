@@ -1,5 +1,30 @@
 ﻿@page "/cluster/{ClusterId}"
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<Button Type="primary" class="mb-4 mt-4" Style="float:right;">Open SSH Console</Button>
-<Button Type="primary" class="mb-4 mt-4" Style="float:right;" OnClick="DeleteClusterAsync">Delete</Button>
+@if (ClusterState != null
+&& ClusterState.Value != null
+&& ClusterState.Value.IsLoading)
+{
+    <div class="mt-4" style="width:100%; text-align:center;">
+        <Spin Style="text-align:center; margin:auto" size="large" />
+    </div>
+}
+else
+{
+    @if (ClusterState.Value.Cluster != null)
+    {
+        <div class="mb-6">
+            <Breadcrumb>
+                <BreadcrumbItem>
+                    <a RouterLink="/k3s">Kubernetes</a>
+                </BreadcrumbItem>
+                <BreadcrumbItem>
+                    <a RouterLink="/k3s/@ClusterState.Value.Cluster.Id">@ClusterState.Value.Cluster.Name</a>
+                </BreadcrumbItem>
+            </Breadcrumb>
+        </div>
+
+        <Button Type="primary" class="mb-6 mt-4" Style="float:right;">Open SSH Console</Button>
+        <Button Type="primary" class="mb-6 mt-4 mr-2" Style="float:right;" OnClick="DeleteClusterAsync">Delete</Button>
+    }
+}

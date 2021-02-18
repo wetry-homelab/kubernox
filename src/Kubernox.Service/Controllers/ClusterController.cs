@@ -27,6 +27,16 @@ namespace Kubernox.Service.Controllers
             return Ok(await clusterBusiness.ListClusterAsync());
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDetailsAsync([FromRoute] string id)
+        {
+            var clusterDetails = await clusterBusiness.GetClusterAsync(id);
+            if (clusterDetails != null)
+                return Ok(clusterDetails);
+
+            return NotFound();
+        }
+
         [HttpGet("{id}/metrics")]
         public async Task<IActionResult> GetMetrics([FromRoute] string id)
         {

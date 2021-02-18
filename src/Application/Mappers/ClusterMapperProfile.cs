@@ -15,6 +15,7 @@ namespace Application.Mappers
             CreateMap<Cluster, ClusterItemResponse>();
             CreateMap<Cluster, ClusterDetailsResponse>();
             CreateMap<Cluster, ClusterCreateMessage>();
+            CreateMap<ClusterNode, ClusterNodeDetailsResponse>();
             CreateMap<ClusterUpdateRequest, ClusterUpdateMessage>();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
 using Application.Messages;
+using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Contracts.Request;
 using Infrastructure.Contracts.Response;
@@ -19,15 +20,17 @@ namespace Kubernox.Service.Business
         private readonly IClusterNodeRepository clusterNodeRepository;
         private readonly IDatacenterRepository datacenterRepository;
         private readonly ISshKeyRepository sshKeyRepository;
+        private readonly IMetricRepository metricRepository;
         private readonly IQueueService queueService;
         private readonly ITemplateRepository templateRepository;
         private readonly ITraefikRedisStore traefikCache;
+        private readonly IMapper mapper;
         private readonly string domain;
 
         public ClusterBusiness(IClusterRepository clusterRepository, IDatacenterRepository datacenterRepository,
             ISshKeyRepository sshKeyRepository, IClusterNodeRepository clusterNodeRepository,
             IQueueService queueService, ITemplateRepository templateRepository,
-            IConfiguration configuration, ITraefikRedisStore traefikCache)
+            IConfiguration configuration, ITraefikRedisStore traefikCache, IMetricRepository metricRepository, IMapper mapper)
         {
             this.clusterRepository = clusterRepository;
             this.datacenterRepository = datacenterRepository;
@@ -37,6 +40,8 @@ namespace Kubernox.Service.Business
             this.templateRepository = templateRepository;
             this.traefikCache = traefikCache;
             this.domain = configuration["Kubernox:Domain"];
+            this.metricRepository = metricRepository;
+            this.mapper = mapper;
         }
 
         public async Task<bool> CreateClusterAsync(ClusterCreateRequest request)
@@ -97,6 +102,32 @@ namespace Kubernox.Service.Business
             }
 
             return false;
+        }
+
+        public async Task<ClusterDetailsResponse> GetClusterAsync(string id)
+        {
+            var cluster = await clusterRepository.ReadAsync(c => c.Id == id && c.DeleteAt == null);
+
+            if (cluster != null)
+            {
+                var clusterMetrics = await metricRepository.ReadsMetrics(m => m.EntityId == id);
+                var response = mapper.Map<ClusterDetailsResponse>(cluster);
+                
+                response.MasterMetrics = clusterMetrics.Select(cm => mapper.Map<SimpleMetricItemResponse>(cm)).ToList();
+                response.Nodes = new List<ClusterNodeDetailsResponse>();
+
+                foreach (var node in cluster.Nodes)
+                {
+                    var nodeMetrics = await metricRepository.ReadsMetrics(m => m.EntityId == node.Id);
+                    var nodeMapped = mapper.Map<ClusterNodeDetailsResponse>(node);
+                    nodeMapped.NodeMetrics = nodeMetrics.Select(cm => mapper.Map<SimpleMetricItemResponse>(cm)).ToList();
+                    response.Nodes.Add(nodeMapped);
+                }
+
+                return response;
+            }
+
+            return null;
         }
 
         private async Task DeleteClusterCacheConfigurationAsync(Cluster cluster)

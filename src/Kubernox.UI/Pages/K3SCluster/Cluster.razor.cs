@@ -1,4 +1,7 @@
-﻿using Kubernox.UI.Services.Interfaces;
+﻿using Fluxor;
+using Kubernox.UI.Services.Interfaces;
+using Kubernox.UI.Store.Actions.Cluster;
+using Kubernox.UI.Store.States;
 using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 
@@ -12,8 +15,31 @@ namespace Kubernox.UI.Pages.K3SCluster
         [Inject]
         IClusterService ClusterService { get; set; }
 
+
+        [Inject]
+        IDispatcher Dispatcher { get; set; }
+
+        [Inject]
+        private IState<ClusterState> ClusterState { get; set; }
+
         [Inject]
         NavigationManager NavigationManager { get; set; }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+            {
+                Dispatcher.Dispatch(new FetchClusterAction(ClusterId));
+                ClusterState.StateChanged += ClusterState_StateChanged;
+            }
+
+            base.OnAfterRender(firstRender);
+        }
+
+        private void ClusterState_StateChanged(object sender, ClusterState e)
+        {
+            StateHasChanged();
+        }
 
         protected async Task DeleteClusterAsync()
         {
