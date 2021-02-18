@@ -27,9 +27,8 @@ else
             <Button Type="primary" class="mb-6 mt-4 mr-2" Style="float:right;" OnClick="DeleteClusterAsync">Delete</Button>
         </div>
 
-
-        <Tabs>
-            @foreach (var node in ClusterState.Value.Cluster.Nodes)
+        <Tabs Type="@TabType.Card">
+            @foreach (var node in ClusterState.Value.Cluster.Nodes.OrderBy(c => c.Name).ToArray())
             {
                 <TabPane Key="@node.Name">
                     <Tab>@node.Name</Tab>
