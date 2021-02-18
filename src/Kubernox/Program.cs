@@ -21,7 +21,7 @@ namespace Kubernox
         private Task OnExecute()
         {
             var cancellationToken = new CancellationToken();
-            return orchestratorService.StartDeploymentAsync(cancellationToken);
+            return orchestratorService.StartDeploymentAsync(cancellationToken, Upgrade);
         }
     }
 }
