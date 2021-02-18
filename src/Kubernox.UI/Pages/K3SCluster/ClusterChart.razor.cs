@@ -25,30 +25,24 @@ namespace Kubernox.UI.Pages.K3SCluster
 
         protected PercentStackedAreaConfig chartMetricConfiguration = new PercentStackedAreaConfig();
 
-        protected override void OnAfterRender(bool firstRender)
+        public ClusterChart()
         {
-            if (firstRender)
+            chartMetricConfiguration = new PercentStackedAreaConfig
             {
-                chartMetricConfiguration = new PercentStackedAreaConfig
+                Title = new Title
                 {
-                    Title = new Title
-                    {
-                        Visible = true,
-                        Text = Title
-                    },
-                    XField = "DateValue",
-                    YField = GetYFieldValue(Type),
-                    Color = new[] { "#82d1de" },
-                    AreaStyle = new GraphicStyle
-                    {
-                        FillOpacity = 0.7M
-                    }
-                };
-
-                StateHasChanged();
-            }
-
-            base.OnAfterRender(firstRender);
+                    Visible = true,
+                    Text = Title
+                },
+                Data = Metrics,
+                XField = "DateValue",
+                YField = GetYFieldValue(Type),
+                Color = new[] { "#82d1de" },
+                AreaStyle = new GraphicStyle
+                {
+                    FillOpacity = 0.7M
+                }
+            };
         }
 
         private string GetYFieldValue(ChartType type)
