@@ -16,15 +16,15 @@
            TItem="TemplateResponse"
            DataSource="@TemplateState.Value.Templates">
         @*<Selection Key="@(context.Id.ToString())" />*@
-        <Column @bind-Field="@context.Id" Sortable />
-        <Column @bind-Field="@context.Name" Sortable />
-        <Column @bind-Field="@context.CpuCount" Sortable />
-        <Column @bind-Field="@context.MemoryCount" Sortable>
+        <AntDesign.Column @bind-Field="@context.Id" Sortable />
+        <AntDesign.Column @bind-Field="@context.Name" Sortable />
+        <AntDesign.Column @bind-Field="@context.CpuCount" Sortable />
+        <AntDesign.Column @bind-Field="@context.MemoryCount" Sortable>
             @($"{context.MemoryCount}MB")
-        </Column>
-        <Column @bind-Field="@context.DiskSpace" Sortable>
+        </AntDesign.Column>
+        <AntDesign.Column @bind-Field="@context.DiskSpace" Sortable>
             @($"{context.DiskSpace}GB")
-        </Column>
-        <Column @bind-Field="@context.BaseTemplate" Sortable />
+        </AntDesign.Column>
+        <AntDesign.Column @bind-Field="@context.BaseTemplate" Sortable />
     </Table>
 }

@@ -25,9 +25,9 @@
     <Table @ref="table"
            TItem="SshKeyResponse"
            DataSource="@SshKeyState.Value.SshKeys">
-        <Column @bind-Field="@context.Id" Sortable />
-        <Column @bind-Field="@context.Name" Sortable />
-        <Column @bind-Field="@context.Fingerprint" Sortable />
+        <AntDesign.Column @bind-Field="@context.Id" Sortable />
+        <AntDesign.Column @bind-Field="@context.Name" Sortable />
+        <AntDesign.Column @bind-Field="@context.Fingerprint" Sortable />
         <ActionColumn>
             <Space>
                 @if (context.PemAvailable)

@@ -92,20 +92,20 @@
     <Table @ref="table"
            TItem="ClusterItemResponse"
            DataSource="@ClusterState.Value.Clusters">
-        <Column @bind-Field="@context.Name" Sortable />
-        <Column @bind-Field="@context.Ip" Title="Reverse">
+        <AntDesign.Column @bind-Field="@context.Name" Sortable />
+        <AntDesign.Column @bind-Field="@context.Ip" Title="Reverse">
             <span>@($"{context.Name}.ice-artefact.com")</span>
-        </Column>
-        <Column @bind-Field="@context.Cpu" Sortable>
+        </AntDesign.Column>
+        <AntDesign.Column @bind-Field="@context.Cpu" Sortable>
             @($"{context.Cpu}")
-        </Column>
-        <Column @bind-Field="@context.Memory" Sortable>
+        </AntDesign.Column>
+        <AntDesign.Column @bind-Field="@context.Memory" Sortable>
             @($"{context.Memory}MB")
-        </Column>
-        <Column @bind-Field="@context.Disk" Sortable>
+        </AntDesign.Column>
+        <AntDesign.Column @bind-Field="@context.Disk" Sortable>
             @($"{context.Disk}GB")
-        </Column>
-        <Column @bind-Field="@context.State">
+        </AntDesign.Column>
+        <AntDesign.Column @bind-Field="@context.State">
             @if (context.State == "Ready")
                 {
                 <Tag Color="blue-inverse">Ready</Tag>
@@ -114,8 +114,8 @@
                 {
                 <Tag Color="orange">Not Ready</Tag>
                 }
-        </Column>
-        <Column @bind-Field="@context.Nodes">
+        </AntDesign.Column>
+        <AntDesign.Column @bind-Field="@context.Nodes">
             @foreach (var node in context.Nodes.OrderBy(n => n.Ip).ToList())
                 {
                 <div class="block m-2">
@@ -129,7 +129,7 @@
                         }
                 </div>
                 }
-        </Column>
+        </AntDesign.Column>
         <ActionColumn>
             <Space>
                 <SpaceItem><Button OnClick="() => DownloadKubeConfig(context.Id)">Download KubeConfig</Button></SpaceItem>
