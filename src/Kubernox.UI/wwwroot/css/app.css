@@ -245,6 +245,32 @@ a, .btn-link {
     margin-right: 5rem;
 }
 
+
+.ml-1 {
+    margin-left: 0.8333rem;
+}
+
+.ml-2 {
+    margin-left: 1.66rem;
+}
+
+.ml-3 {
+    margin-left: 2.5rem;
+}
+
+.ml-4 {
+    margin-left: 3.33rem;
+}
+
+.ml-5 {
+    margin-left: 4.10rem;
+}
+
+.ml-6 {
+    margin-left: 5rem;
+}
+
+
 .ant-layout {
     min-height: 100% !important;
 }
