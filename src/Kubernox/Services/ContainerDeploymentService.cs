@@ -22,6 +22,7 @@ namespace Kubernox.Services
 
         private readonly DockerClient client;
 
+        #region Containers Name
         private const string DbContainerName = "kubernox_db";
         private const string QueueContainerName = "kubernox_queue";
         private const string CacheContainerName = "kubernox_cache";
@@ -33,6 +34,14 @@ namespace Kubernox.Services
         private const string KubernoxDeployWorkerContainerName = "kubernox_deploy_worker";
         private const string TraefikContainerName = "kubernox_traefik";
         private const string NetworkName = "kubernox_lan";
+        #endregion
+
+        #region Images Name
+        private const string KubernoxServiceImageName = "kubernox/kubernox-service";
+        private const string KubernoxImageName = "kubernox/kubernox";
+        private const string KubernoxWorkerImageName = "kubernox/kubernox-workers";
+        private const string KubernoxDeployWorkerImageName = "kubernox/kubernox-deploy-worker";
+        #endregion
 
         public ContainerDeploymentService()
         {
@@ -45,6 +54,58 @@ namespace Kubernox.Services
                 return "npipe://./pipe/docker_engine";
 
             return "unix:///var/run/docker.sock";
+        }
+
+        public async Task<bool> UpgradeProcessAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                await client.Containers.RemoveContainerAsync(ServiceContainerName, new ContainerRemoveParameters()
+                {
+                    Force = true
+                }, cancellationToken);
+
+                await client.Images.DeleteImageAsync(KubernoxServiceImageName, new ImageDeleteParameters()
+                {
+                    Force = true
+                }, cancellationToken);
+
+                await client.Containers.RemoveContainerAsync(WorkersContainerName, new ContainerRemoveParameters()
+                {
+                    Force = true
+                }, cancellationToken);
+
+                await client.Images.DeleteImageAsync(KubernoxWorkerImageName, new ImageDeleteParameters()
+                {
+                    Force = true
+                }, cancellationToken);
+
+                await client.Containers.RemoveContainerAsync(KubernoxContainerName, new ContainerRemoveParameters()
+                {
+                    Force = true
+                }, cancellationToken);
+
+                await client.Images.DeleteImageAsync(KubernoxImageName, new ImageDeleteParameters()
+                {
+                    Force = true
+                }, cancellationToken);
+
+                await client.Containers.RemoveContainerAsync(KubernoxDeployWorkerContainerName, new ContainerRemoveParameters()
+                {
+                    Force = true
+                }, cancellationToken);
+
+                await client.Images.DeleteImageAsync(KubernoxDeployWorkerImageName, new ImageDeleteParameters()
+                {
+                    Force = true
+                }, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Error on upgrade process");
+                return false;
+            }
+            return true;
         }
 
         public async Task<bool> InstantiateNetworkAsync()
@@ -297,7 +358,7 @@ namespace Kubernox.Services
         public async Task<bool> InstantiateKubernoxServiceContainer(Configuration configuration, CancellationToken cancellationToken)
         {
             logger.Information("---- Starting Deploy Kubernox Container ----");
-            await DownloadImage("kubernox/kubernox-service", cancellationToken);
+            await DownloadImage(KubernoxServiceImageName, cancellationToken);
             var ports = new Dictionary<string, EmptyStruct>();
             ports.Add("80/tcp", new EmptyStruct());
 
@@ -329,7 +390,7 @@ namespace Kubernox.Services
         public async Task<bool> InstantiateKubernoxWorkersContainer(Configuration configuration, CancellationToken cancellationToken)
         {
             logger.Information("---- Starting Deploy Kubernox Datacenter Worker Container ----");
-            await DownloadImage("kubernox/kubernox-workers", cancellationToken);
+            await DownloadImage(KubernoxWorkerImageName, cancellationToken);
 
             var createParameters = new CreateContainerParameters()
             {
@@ -350,7 +411,7 @@ namespace Kubernox.Services
         public async Task<bool> InstantiateKubernoxUiContainer(Configuration configuration, CancellationToken cancellationToken)
         {
             logger.Information("---- Starting Deploy Kubernox Container ----");
-            await DownloadImage("kubernox/kubernox", cancellationToken);
+            await DownloadImage(KubernoxImageName, cancellationToken);
 
             var ports = new Dictionary<string, EmptyStruct>();
             ports.Add("80/tcp", new EmptyStruct());
@@ -390,7 +451,7 @@ namespace Kubernox.Services
         public async Task<bool> InstantiateDeployWorkerContainer(Configuration configuration, CancellationToken cancellationToken)
         {
             logger.Information("---- Starting Deploy Deploy Worker Container ----");
-            await DownloadImage("kubernox/kubernox-deploy-worker", "latest", cancellationToken);
+            await DownloadImage(KubernoxDeployWorkerImageName, "latest", cancellationToken);
 
             var createParameters = new CreateContainerParameters()
             {

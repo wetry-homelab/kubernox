@@ -28,10 +28,19 @@ namespace Kubernox.Services
 
         }
 
-        public async Task StartDeploymentAsync(CancellationToken cancellationToken)
+        public async Task StartDeploymentAsync(CancellationToken cancellationToken, bool upgrade = false)
         {
             PrintHeader();
             configuration = await ExtractConfigurationAsync();
+
+            if (upgrade)
+            {
+                if (!await containerDeploymentService.UpgradeProcessAsync(cancellationToken))
+                {
+                    logger.Error($"Upgrade failed.");
+                    return;
+                }
+            }
 
             if (!await InitialiseNetworkAsync(cancellationToken))
             {

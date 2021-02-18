@@ -6,6 +6,7 @@ namespace Kubernox.Interfaces
 {
     public interface IContainerDeploymentService
     {
+        Task<bool> UpgradeProcessAsync(CancellationToken cancellationToken);
         Task<bool> InstantiateNetworkAsync();
         Task<bool> InstantiateDatabaseContainer(PostgreDatabaseProvider database, CancellationToken cancellationToken);
         Task<bool> InstantiateQueueContainer(RabbitMqProvider queue, CancellationToken cancellationToken);

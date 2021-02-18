@@ -5,6 +5,6 @@ namespace Kubernox.Interfaces
 {
     public interface IOrchestratorService
     {
-        Task StartDeploymentAsync(CancellationToken cancellationToken);
+        Task StartDeploymentAsync(CancellationToken cancellationToken, bool upgrade = false);
     }
 }
