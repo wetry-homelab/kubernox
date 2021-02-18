@@ -23,7 +23,7 @@ namespace Kubernox.UI.Pages.K3SCluster
         [Parameter]
         public ChartType Type { get; set; }
 
-        protected PercentStackedAreaConfig chartMetricConfiguration;
+        protected PercentStackedAreaConfig chartMetricConfiguration = new PercentStackedAreaConfig();
 
         protected override void OnAfterRender(bool firstRender)
         {
