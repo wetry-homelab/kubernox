@@ -112,15 +112,19 @@ namespace Kubernox.Service.Business
             {
                 var clusterMetrics = await metricRepository.ReadsMetrics(m => m.EntityId == id);
                 var response = mapper.Map<ClusterDetailsResponse>(cluster);
-                
-                response.MasterMetrics = clusterMetrics.Select(cm => mapper.Map<SimpleMetricItemResponse>(cm)).ToList();
+
+                response.MasterMetrics = clusterMetrics.Select(cm => mapper.Map<SimpleMetricItemResponse>(cm))
+                                            .OrderByDescending(o => o.DateValue)
+                                            .Take(10).ToList();
                 response.Nodes = new List<ClusterNodeDetailsResponse>();
 
                 foreach (var node in cluster.Nodes)
                 {
                     var nodeMetrics = await metricRepository.ReadsMetrics(m => m.EntityId == node.Id);
                     var nodeMapped = mapper.Map<ClusterNodeDetailsResponse>(node);
-                    nodeMapped.NodeMetrics = nodeMetrics.Select(cm => mapper.Map<SimpleMetricItemResponse>(cm)).ToList();
+                    nodeMapped.NodeMetrics = nodeMetrics.Select(cm => mapper.Map<SimpleMetricItemResponse>(cm))
+                                                .OrderByDescending(o => o.DateValue)
+                                                .Take(10).ToList();
                     response.Nodes.Add(nodeMapped);
                 }
 
