@@ -13,30 +13,58 @@ else
 {
     @if (ClusterState.Value.Cluster != null)
     {
-        <div class="mb-6">
-            <Breadcrumb Style="float:left;">
-                <BreadcrumbItem>
-                    <a RouterLink="/k3s">Kubernetes</a>
-                </BreadcrumbItem>
-                <BreadcrumbItem>
-                    <a RouterLink="/k3s/@ClusterState.Value.Cluster.Id">@ClusterState.Value.Cluster.Name</a>
-                </BreadcrumbItem>
-            </Breadcrumb>
-
-            <Button Type="primary" class="mb-6 mt-4" Style="float:right;">Open SSH Console</Button>
-            <Button Type="primary" class="mb-6 mt-4 mr-2" Style="float:right;" OnClick="DeleteClusterAsync">Delete</Button>
+        <div class="mb-6 mt-3">
+            <Row>
+                <GridCol Span="12">
+                    <Breadcrumb Style="float:left;">
+                        <BreadcrumbItem>
+                            <a RouterLink="/k3s">Kubernetes</a>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <a RouterLink="/k3s/@ClusterState.Value.Cluster.Id">@ClusterState.Value.Cluster.Name</a>
+                        </BreadcrumbItem>
+                    </Breadcrumb>
+                </GridCol>
+                <GridCol Span="12">
+                    <Button Type="primary" disabled Style="float:right;">Open SSH Console</Button>
+                    <Button Type="primary" disabled class="mr-2" Style="float:right;" OnClick="DeleteClusterAsync">Delete</Button>
+                </GridCol>
+            </Row>
         </div>
 
-        <Tabs Type="@TabType.Card">
-            @foreach (var node in ClusterState.Value.Cluster.Nodes.OrderBy(c => c.Name).ToArray())
-            {
-                <TabPane Key="@node.Name">
-                    <Tab>@node.Name</Tab>
-                    <ChildContent>
-                        <ClusterNodePane Node="node" />
-                    </ChildContent>
-                </TabPane>
-            }
-        </Tabs>
+        <Card Class="mb-3" Title="@ClusterState.Value.Cluster.Name">
+            <Body>
+                <Row>
+                    <GridCol Span="6">
+                        <h3>CPU : @ClusterState.Value.Cluster.Cpu vCpu</h3>
+                        <h3>RAM : @ClusterState.Value.Cluster.Memory Mb</h3>
+                        <h3>DISK : @ClusterState.Value.Cluster.Disk Gb</h3>
+                        <h3>IP : @ClusterState.Value.Cluster.Ip</h3>
+                    </GridCol>
+                    <GridCol Span="2" />
+                    <GridCol Span="8">
+                        <ClusterChart Height="160" Metrics="ClusterState.Value.Cluster.MasterMetrics" Type="ClusterChart.ChartType.CPU" />
+                    </GridCol>
+                    <GridCol Span="8">
+                        <ClusterChart Height="160" Metrics="ClusterState.Value.Cluster.MasterMetrics" Type="ClusterChart.ChartType.RAM" />
+                    </GridCol>
+
+                </Row>
+            </Body>
+        </Card>
+
+        <div class="tab-container mt-3">
+            <Tabs Type="@TabType.Line">
+                @foreach (var node in ClusterState.Value.Cluster.Nodes.OrderBy(c => c.Name).ToArray())
+                {
+                    <TabPane Key="@node.Name">
+                        <Tab>@node.Name</Tab>
+                        <ChildContent>
+                            <ClusterNodePane Node="node" />
+                        </ChildContent>
+                    </TabPane>
+                }
+            </Tabs>
+        </div>
     }
 }

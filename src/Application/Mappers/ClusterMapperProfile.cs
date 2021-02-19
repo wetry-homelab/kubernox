@@ -13,7 +13,8 @@ namespace Application.Mappers
             CreateMap<ClusterCreateRequest, Cluster>();
             CreateMap<ClusterUpdateRequest, Cluster>();
             CreateMap<Cluster, ClusterItemResponse>();
-            CreateMap<Cluster, ClusterDetailsResponse>();
+            CreateMap<Cluster, ClusterDetailsResponse>()
+                     .ForMember(m => m.Disk, me => me.MapFrom(met => met.Storage));
             CreateMap<Cluster, ClusterCreateMessage>();
             CreateMap<ClusterNode, ClusterNodeDetailsResponse>();
             CreateMap<ClusterUpdateRequest, ClusterUpdateMessage>();

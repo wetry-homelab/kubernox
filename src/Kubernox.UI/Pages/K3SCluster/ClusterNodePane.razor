@@ -1,10 +1,10 @@
 ﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
-
 <Row>
-    <GridCol Span="12">
-        <ClusterChart Metrics="Node.NodeMetrics" Type="ClusterChart.ChartType.CPU" />
+    <GridCol Span="10">
+        <ClusterChart Height="160" Metrics="Node.NodeMetrics" Type="ClusterChart.ChartType.CPU" />
     </GridCol>
-    <GridCol Span="12">
-        <ClusterChart Metrics="Node.NodeMetrics" Type="ClusterChart.ChartType.RAM" />
+    <GridCol Span="4" />
+    <GridCol Span="10">
+        <ClusterChart Height="160" Metrics="Node.NodeMetrics" Type="ClusterChart.ChartType.RAM" />
     </GridCol>
 </Row>

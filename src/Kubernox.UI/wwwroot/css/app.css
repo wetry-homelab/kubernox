@@ -274,3 +274,12 @@ a, .btn-link {
 .ant-layout {
     min-height: 100% !important;
 }
+
+.chart-container {
+    background: #FFFFFF;
+}
+
+.tab-container {
+    background: #FFFFFF;
+    padding: 10px;
+}
