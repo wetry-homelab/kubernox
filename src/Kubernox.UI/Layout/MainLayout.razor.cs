@@ -21,7 +21,7 @@ namespace Kubernox.UI.Layout
         [Inject]
         NotificationService NotificationService { get; set; }
 
-        public int NotificationsCount { get; set; }
+        public int NotificationsCount { get; set; } = 10;
 
         protected override async Task OnInitializedAsync()
         {

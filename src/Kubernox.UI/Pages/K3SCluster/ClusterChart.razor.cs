@@ -3,6 +3,8 @@ using Infrastructure.Contracts.Response;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Kubernox.UI.Pages.K3SCluster
 {
@@ -24,6 +26,19 @@ namespace Kubernox.UI.Pages.K3SCluster
         public ChartType Type { get; set; }
 
         protected PercentStackedAreaConfig chartMetricConfiguration = new PercentStackedAreaConfig();
+
+        IChartComponent chartRef;
+
+        protected override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                Console.WriteLine(JsonSerializer.Serialize(Metrics));
+                chartRef.ChangeData(Metrics, true);
+            }
+
+            return base.OnAfterRenderAsync(firstRender);
+        }
 
         public ClusterChart()
         {
