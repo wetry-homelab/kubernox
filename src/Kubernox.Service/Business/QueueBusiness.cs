@@ -43,7 +43,7 @@ namespace Kubernox.Service.Business
                     cluster.KubeConfig = clusterResult.Data.KubeConfig.Replace($"server: https://{cluster.Ip}:6443", $"server: https://{cluster.Name}.{cluster.Domain}:6443");
                     cluster.KubeConfigJson = clusterResult.Data.KubeConfigAsJson;
 
-                    if ((await clusterRepository.UpdateClusterAsync(cluster)) > 0)
+                    if ((await clusterRepository.UpdateAsync(cluster)) > 0)
                     {
                         await hubContext.Clients.All.NotificationReceived("Cluster ready", "Cluster created and ready to use.", "success");
                     }

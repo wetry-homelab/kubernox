@@ -74,7 +74,7 @@ namespace Kubernox.Service.Business
                     SshKey = selectedSshKey.Public
                 };
 
-                if ((await clusterRepository.InsertClusterAsync(newCluster)) > 0)
+                if ((await clusterRepository.InsertAsync(newCluster)) > 0)
                 {
                     var nodeList = new List<ClusterNode>();
 
@@ -89,7 +89,7 @@ namespace Kubernox.Service.Business
                         });
                     }
 
-                    if ((await clusterNodeRepository.InsertClusterNodesAsync(nodeList.ToArray()) == request.Node))
+                    if ((await clusterNodeRepository.InsertsAsync(nodeList.ToArray()) == request.Node))
                     {
                         ClusterCreateMessage message = GenerateQueueMessage(request, newCluster, selectedSshKey, selectedNode, template, baseIp, baseId);
                         queueService.QueueClusterCreation(message);
@@ -110,7 +110,7 @@ namespace Kubernox.Service.Business
 
             if (cluster != null)
             {
-                var clusterMetrics = await metricRepository.ReadsMetrics(m => m.EntityId == id);
+                var clusterMetrics = await metricRepository.ReadsAsync(m => m.EntityId == id);
                 var response = mapper.Map<ClusterDetailsResponse>(cluster);
 
                 response.MasterMetrics = clusterMetrics.Select(cm => mapper.Map<SimpleMetricItemResponse>(cm))
@@ -120,7 +120,7 @@ namespace Kubernox.Service.Business
 
                 foreach (var node in cluster.Nodes)
                 {
-                    var nodeMetrics = await metricRepository.ReadsMetrics(m => m.EntityId == node.Id);
+                    var nodeMetrics = await metricRepository.ReadsAsync(m => m.EntityId == node.Id);
                     var nodeMapped = mapper.Map<ClusterNodeDetailsResponse>(node);
                     nodeMapped.NodeMetrics = nodeMetrics.Select(cm => mapper.Map<SimpleMetricItemResponse>(cm))
                                                 .OrderByDescending(o => o.DateValue)
@@ -289,7 +289,7 @@ namespace Kubernox.Service.Business
 
             cluster.DeleteAt = DateTime.UtcNow;
 
-            if ((await clusterRepository.UpdateClusterAsync(cluster)) > 0)
+            if ((await clusterRepository.UpdateAsync(cluster)) > 0)
             {
                 await DeleteClusterCacheConfigurationAsync(cluster);
 
@@ -300,7 +300,7 @@ namespace Kubernox.Service.Business
                 foreach (var node in nodes)
                 {
                     node.DeleteAt = DateTime.UtcNow;
-                    await clusterNodeRepository.UpdateClusterNodeAsync(node);
+                    await clusterNodeRepository.UpdateAsync(node);
                 }
 
                 queueService.QueueClusterDelete(cluster);
