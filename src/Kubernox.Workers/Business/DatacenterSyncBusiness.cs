@@ -63,7 +63,7 @@ namespace Kubernox.Workers.Business
                 selectedNode.Uptime = nodeDetails.Uptime;
                 selectedNode.RamUsed = nodeDetails.Memory.Used;
 
-                if ((await datacenterRepository.UpdateDatacenterNodeAsync(selectedNode)) > 0)
+                if ((await datacenterRepository.UpdateAsync(selectedNode)) > 0)
                 {
                     logger.LogInformation("Existing node update in database.");
                 }
@@ -98,7 +98,7 @@ namespace Kubernox.Workers.Business
                     RootFsUsed = nodeDetails.RootFs.Used
                 };
 
-                if ((await datacenterRepository.InsertDatacenterNodeAsync(selectedNode)) > 0)
+                if ((await datacenterRepository.InsertAsync(selectedNode)) > 0)
                 {
                     logger.LogInformation("New node insert in database.");
                 }

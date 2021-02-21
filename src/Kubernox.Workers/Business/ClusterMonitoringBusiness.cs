@@ -41,7 +41,7 @@ namespace Kubernox.Workers.Business
             }
         }
 
-        private async Task MonitorClusterAsync(Domain.Entities.Cluster cluster)
+        private async Task MonitorClusterAsync(Cluster cluster)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace Kubernox.Workers.Business
             }
         }
 
-        private async Task ProcessStateAsync(Domain.Entities.Cluster cluster, k8s.Models.V1NodeList clusterNodes)
+        private async Task ProcessStateAsync(Cluster cluster, k8s.Models.V1NodeList clusterNodes)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace Kubernox.Workers.Business
                     if (clusterNode.Metadata.Name.Contains("master"))
                     {
                         cluster.State = clusterNode.Status.Conditions.FirstOrDefault(c => c.Reason == "KubeletReady")?.Type;
-                        var _ = await clusterRepository.UpdateClusterAsync(cluster);
+                        var _ = await clusterRepository.UpdateAsync(cluster);
                     }
                     else
                     {
@@ -88,7 +88,7 @@ namespace Kubernox.Workers.Business
                         if (node != null)
                         {
                             node.State = clusterNode.Status.Conditions.FirstOrDefault(c => c.Reason == "KubeletReady")?.Type;
-                            var __ = await clusterNodeRepository.UpdateClusterNodeAsync(node);
+                            var __ = await clusterNodeRepository.UpdateAsync(node);
                         }
                     }
                 }
@@ -99,7 +99,7 @@ namespace Kubernox.Workers.Business
             }
         }
 
-        private async Task ProcessMetricsAsync(Domain.Entities.Cluster cluster, Kubernetes client)
+        private async Task ProcessMetricsAsync(Cluster cluster, Kubernetes client)
         {
             try
             {
