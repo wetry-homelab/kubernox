@@ -2,7 +2,9 @@
 using Domain.Entities;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Repositories
@@ -36,6 +38,36 @@ namespace Infrastructure.Persistence.Repositories
         {
             serviceDbContext.Entry(sshKey).State = EntityState.Modified;
             return serviceDbContext.SaveChangesAsync();
+        }
+
+        public Task<SshKey> ReadAsync(Expression<Func<SshKey, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SshKey[]> ReadsAsync(Expression<Func<SshKey, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> InsertsAsync(SshKey[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdatesAsync(SshKey[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> DeleteAsync(SshKey entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> DeletesAsync(SshKey[] entities)
+        {
+            throw new NotImplementedException();
         }
     }
 }

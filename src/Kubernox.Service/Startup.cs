@@ -1,23 +1,22 @@
 using Application.Interfaces;
 using Application.Mappers;
-using AutoMapper;
-using Kubernox.Service.Business;
-using Kubernox.Service.Hubs;
 using FluentValidation.AspNetCore;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Contexts;
+using Infrastructure.Persistence.Seeds;
 using Infrastructure.Shared;
+using Kubernox.Service.Business;
+using Kubernox.Service.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Infrastructure.Persistence.Contexts;
-using System;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using ProxmoxVEAPI.Client;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.OpenApi.Models;
+using ProxmoxVEAPI.Client;
+using System;
 
 namespace Kubernox.Service
 {
@@ -45,21 +44,26 @@ namespace Kubernox.Service
 
             services.AddSharedInfrastructure();
             services.AddPersistenceInfrastructure(Configuration);
+            services.AddSignalR();
 
+            ConfigureCors(services);
+            AddBusinessLayer(services);
+
+            ConfigureClient.Initialise(Configuration["Proxmox:Uri"], Configuration["Proxmox:Token"]);
+        }
+
+        private static void ConfigureCors(IServiceCollection services)
+        {
             services.AddCors(cors =>
             {
                 cors.AddDefaultPolicy(policy =>
                 {
-                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    policy.AllowCredentials()
+                            .SetIsOriginAllowed(o => true)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
                 });
             });
-
-            services.AddSignalR();
-
-            AddBusinessLayer(services);
-            IdentityModelEventSource.ShowPII = true;
-
-            ConfigureClient.Initialise(Configuration["Proxmox:Uri"], Configuration["Proxmox:Token"]);
         }
 
         private void AddBusinessLayer(IServiceCollection services)
@@ -76,6 +80,7 @@ namespace Kubernox.Service
         {
             if (env.IsDevelopment())
             {
+                IdentityModelEventSource.ShowPII = true;
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kubernox.Service v1"));
@@ -102,79 +107,11 @@ namespace Kubernox.Service
             try
             {
                 serviceDbContext.Database.Migrate();
-                SeedTemplate(serviceDbContext);
+                TemplateSeed.GenerateBaseTemplateSeeds(serviceDbContext);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-            }
-        }
-
-        private static void SeedTemplate(ServiceDbContext serviceDbContext)
-        {
-            if (!serviceDbContext.Template.Any())
-            {
-                serviceDbContext.Template.Add(new Domain.Entities.Template()
-                {
-                    BaseTemplate = "k3s-template",
-                    CpuCount = 1,
-                    DiskSpace = 20,
-                    MemoryCount = 1024,
-                    Name = "Small",
-                    Type = "k3s"
-                });
-
-                serviceDbContext.Template.Add(new Domain.Entities.Template()
-                {
-                    BaseTemplate = "k3s-template",
-                    CpuCount = 1,
-                    DiskSpace = 30,
-                    MemoryCount = 2048,
-                    Name = "Medium",
-                    Type = "k3s"
-                });
-
-                serviceDbContext.Template.Add(new Domain.Entities.Template()
-                {
-                    BaseTemplate = "k3s-template",
-                    CpuCount = 2,
-                    DiskSpace = 40,
-                    MemoryCount = 4096,
-                    Name = "Large",
-                    Type = "k3s"
-                });
-
-                serviceDbContext.Template.Add(new Domain.Entities.Template()
-                {
-                    BaseTemplate = "k3s-template",
-                    CpuCount = 4,
-                    DiskSpace = 50,
-                    MemoryCount = 4096,
-                    Name = "XLarge",
-                    Type = "k3s"
-                });
-
-                serviceDbContext.Template.Add(new Domain.Entities.Template()
-                {
-                    BaseTemplate = "k3s-template",
-                    CpuCount = 4,
-                    DiskSpace = 80,
-                    MemoryCount = 6144,
-                    Name = "XXLarge",
-                    Type = "k3s"
-                });
-
-                serviceDbContext.Template.Add(new Domain.Entities.Template()
-                {
-                    BaseTemplate = "k3s-template",
-                    CpuCount = 2,
-                    DiskSpace = 200,
-                    MemoryCount = 4096,
-                    Name = "Storage",
-                    Type = "k3s"
-                });
-
-                serviceDbContext.SaveChanges();
             }
         }
     }

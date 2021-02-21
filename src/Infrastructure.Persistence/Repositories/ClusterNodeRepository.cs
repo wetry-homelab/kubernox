@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Core;
+using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -31,22 +32,45 @@ namespace Infrastructure.Persistence.Repositories
             return serviceDbContext.ClusterNode.Where(predicate).ToArrayAsync();
         }
 
-        public Task<int> InsertClusterNodeAsync(ClusterNode entity)
+        public Task<int> InsertAsync(ClusterNode entity)
         {
             serviceDbContext.ClusterNode.Add(entity);
             return serviceDbContext.SaveChangesAsync();
         }
 
-        public Task<int> UpdateClusterNodeAsync(ClusterNode entity)
+        public Task<int> UpdateAsync(ClusterNode entity)
         {
             serviceDbContext.Entry(entity).State = EntityState.Modified;
             return serviceDbContext.SaveChangesAsync();
         }
 
-        public Task<int> InsertClusterNodesAsync(ClusterNode[] entity)
+        public Task<int> InsertsAsync(ClusterNode[] entity)
         {
             serviceDbContext.ClusterNode.AddRange(entity);
             return serviceDbContext.SaveChangesAsync();
+        }
+
+        public Task<ClusterNode[]> ReadsAsync()
+        {
+            return serviceDbContext.ClusterNode.ToArrayAsync();
+        }
+
+        public async Task<int> UpdatesAsync(ClusterNode[] entities)
+        {
+            var result = 0;
+            foreach (var entity in entities)
+                result = await UpdateAsync(entity);
+            return result;
+        }
+
+        public Task<int> DeleteAsync(ClusterNode entity)
+        {
+            return UpdateAsync(entity);
+        }
+
+        public Task<int> DeletesAsync(ClusterNode[] entities)
+        {
+            return UpdatesAsync(entities);
         }
     }
 }

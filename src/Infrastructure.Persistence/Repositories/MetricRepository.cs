@@ -21,12 +21,12 @@ namespace Infrastructure.Persistence.Repositories
             this.serviceDbContext = clusterDbContext;
         }
 
-        public Task<Metric[]> ReadsMetrics(Expression<Func<Metric, bool>> predicate)
+        public Task<Metric[]> ReadsAsync(Expression<Func<Metric, bool>> predicate)
         {
             return serviceDbContext.Metric.Where(predicate).ToArrayAsync();
         }
 
-        public Task<int> InsertMetricsAsync(Metric[] metrics)
+        public Task<int> InsertsAsync(Metric[] metrics)
         {
             serviceDbContext.Metric.AddRange(metrics);
             return serviceDbContext.SaveChangesAsync();
@@ -44,6 +44,41 @@ namespace Infrastructure.Persistence.Repositories
                     transaction.Commit();
                 }
             });
+        }
+
+        public Task<Metric> ReadAsync(Expression<Func<Metric, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Metric[]> ReadsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> InsertAsync(Metric entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdateAsync(Metric entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdatesAsync(Metric[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> DeleteAsync(Metric entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> DeletesAsync(Metric[] entities)
+        {
+            throw new NotImplementedException();
         }
     }
 }

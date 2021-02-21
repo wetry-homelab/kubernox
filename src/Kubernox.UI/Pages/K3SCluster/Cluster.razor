@@ -1,4 +1,4 @@
-﻿@page "/cluster/{ClusterId}"
+﻿@page "/k3s/{ClusterId}"
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @if (ClusterState != null
@@ -13,7 +13,7 @@ else
 {
     @if (ClusterState.Value.Cluster != null)
     {
-        <div class="mb-6 mt-3">
+        <div class="mb-3 mt-3">
             <Row>
                 <GridCol Span="12">
                     <Breadcrumb Style="float:left;">
@@ -27,7 +27,7 @@ else
                 </GridCol>
                 <GridCol Span="12">
                     <Button Type="primary" disabled Style="float:right;">Open SSH Console</Button>
-                    <Button Type="primary" disabled class="mr-2" Style="float:right;" OnClick="DeleteClusterAsync">Delete</Button>
+                    <Button Type="primary" class="mr-2" Style="float:right;" OnClick="DeleteClusterAsync">Delete</Button>
                 </GridCol>
             </Row>
         </div>

@@ -39,5 +39,30 @@ namespace Infrastructure.Persistence.Repositories
             serviceDbContext.Entry(entity).State = EntityState.Modified;
             return serviceDbContext.SaveChangesAsync();
         }
+
+        public Task<Template[]> ReadsAsync(Expression<Func<Template, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> InsertsAsync(Template[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdatesAsync(Template[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> DeleteAsync(Template entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> DeletesAsync(Template[] entities)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

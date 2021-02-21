@@ -31,13 +31,13 @@ namespace Infrastructure.Persistence.Repositories
             return serviceDbContext.Cluster.Include(i => i.Nodes).Where(predicate).ToArrayAsync();
         }
 
-        public Task<int> InsertClusterAsync(Cluster entity)
+        public Task<int> InsertAsync(Cluster entity)
         {
             serviceDbContext.Cluster.Add(entity);
             return serviceDbContext.SaveChangesAsync();
         }
 
-        public Task<int> UpdateClusterAsync(Cluster entity)
+        public Task<int> UpdateAsync(Cluster entity)
         {
             serviceDbContext.Entry(entity).State = EntityState.Modified;
             return serviceDbContext.SaveChangesAsync();
@@ -46,6 +46,35 @@ namespace Infrastructure.Persistence.Repositories
         public Task<int> GetMaxOrder()
         {
             return serviceDbContext.Cluster.MaxAsync(c => c.OrderId);
+        }
+
+        public Task<Cluster[]> ReadsAsync()
+        {
+            return serviceDbContext.Cluster.ToArrayAsync();
+        }
+
+        public Task<int> InsertsAsync(Cluster[] entities)
+        {
+            serviceDbContext.Cluster.AddRange(entities);
+            return serviceDbContext.SaveChangesAsync();
+        }
+
+        public async Task<int> UpdatesAsync(Cluster[] entities)
+        {
+            var result = 0;
+            foreach (var entity in entities)
+                result = await UpdateAsync(entity);
+            return result;
+        }
+
+        public Task<int> DeleteAsync(Cluster entity)
+        {
+            return UpdateAsync(entity);
+        }
+
+        public Task<int> DeletesAsync(Cluster[] entities)
+        {
+            return UpdatesAsync(entities);
         }
     }
 }

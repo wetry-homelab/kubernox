@@ -1,15 +1,9 @@
-﻿using Domain.Entities;
-using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using Application.Core;
+using Domain.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IDatacenterRepository
+    public interface IDatacenterRepository : BaseRepository<DatacenterNode>
     {
-        Task<DatacenterNode[]> ReadsAsync();
-        Task<DatacenterNode> ReadAsync(Expression<Func<DatacenterNode, bool>> predicate);
-        Task<int> InsertDatacenterNodeAsync(DatacenterNode entity);
-        Task<int> UpdateDatacenterNodeAsync(DatacenterNode entity);
     }
 }

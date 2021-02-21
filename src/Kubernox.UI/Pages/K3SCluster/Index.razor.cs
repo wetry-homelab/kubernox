@@ -183,7 +183,7 @@ namespace Kubernox.UI.Pages.K3SCluster
 
         protected async Task ViewDetails(string id)
         {
-            NavigationManager.NavigateTo($"/cluster/{id}");
+            NavigationManager.NavigateTo($"/k3s/{id}");
         }
     }
 }
