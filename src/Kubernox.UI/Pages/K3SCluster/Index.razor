@@ -4,12 +4,12 @@
 <Button Type="primary" class="mb-4 mt-4" Style="float:right;" OnClick="@(()=>{ visible = true; })">Deploy new cluster</Button>
 
 <Modal Title="Deploy new cluster"
-       OnOk="@HandleOk"
-       OnCancel="@HandleCancel"
-       Visible="@visible"
-       OkText="@("Deploy cluster")">
+OnOk="@HandleOk"
+OnCancel="@HandleCancel"
+Visible="@visible"
+OkText="@("Deploy cluster")">
     <Form Layout="@Layout"
-          Model="@clusterCreateRequest">
+Model="@clusterCreateRequest">
         <FormItem Label="Cluster name">
             <Input @bind-Value="@context.Name" />
         </FormItem>
@@ -17,36 +17,36 @@
         <FormItem Label="Cluster template">
             <RadioGroup @bind-Value="@context.SelectedTemplate" TValue="int" OnChange="@ChangeTemplate">
                 @foreach (var template in TemplateState.Value.Templates)
-                {
-                    <Radio RadioButton Value="@template.Id">@template.Name</Radio>
-                }
+                                {
+                <Radio RadioButton Value="@template.Id">@template.Name</Radio>
+                    }
                 <Radio RadioButton Value="@(-1)">Custom</Radio>
             </RadioGroup>
         </FormItem>
 
         <Row>
             <Col Span="8">
-            <FormItem Label="CPU">
-                <AntDesign.InputNumber Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Cpu" Min="1" Max="8" DefaultValue="1"></AntDesign.InputNumber>
-            </FormItem>
+                <FormItem Label="CPU">
+                    <AntDesign.InputNumber Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Cpu" Min="1" Max="8" DefaultValue="1"></AntDesign.InputNumber>
+                </FormItem>
             </Col>
             <Col Span="8">
-            <FormItem Label="Memory">
-                <AntDesign.InputNumber Formatter="FormatMB" Parser="ParseMB" Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Memory" Min="1024" Max="8192" DefaultValue="1024"></AntDesign.InputNumber>
-            </FormItem>
+                <FormItem Label="Memory">
+                    <AntDesign.InputNumber Formatter="FormatMB" Parser="ParseMB" Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Memory" Min="1024" Max="8192" DefaultValue="1024"></AntDesign.InputNumber>
+                </FormItem>
             </Col>
             <Col Span="8">
-            <FormItem Label="Disk">
-                <AntDesign.InputNumber Formatter="FormatGB" Parser="ParseGB" Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Storage" Min="20" Max="100" DefaultValue="20"></AntDesign.InputNumber>
-            </FormItem>
+                <FormItem Label="Disk">
+                    <AntDesign.InputNumber Formatter="FormatGB" Parser="ParseGB" Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Storage" Min="20" Max="100" DefaultValue="20"></AntDesign.InputNumber>
+                </FormItem>
             </Col>
         </Row>
 
         <FormItem Label="Select SSH Key">
             <Select DataSource="@SshKeyState.Value.SshKeys"
-                    @bind-Value="@context.SshKeyId"
-                    ValueName="@nameof(SshKeyResponse.Id)"
-                    LabelName="@nameof(SshKeyResponse.Name)">
+            @bind-Value="@context.SshKeyId"
+ValueName="@nameof(SshKeyResponse.Id)"
+LabelName="@nameof(SshKeyResponse.Name)">
             </Select>
         </FormItem>
 
@@ -56,31 +56,28 @@
 
         <FormItem Label="Select deploy node">
             <Select DataSource="@DatacenterState.Value.Nodes"
-                    @bind-Value="@context.DeployNodeId"
-                    ValueName="@nameof(DatacenterNodeResponse.Id)"
-                    LabelName="@nameof(DatacenterNodeResponse.Name)">
+            @bind-Value="@context.DeployNodeId"
+ValueName="@nameof(DatacenterNodeResponse.Id)"
+LabelName="@nameof(DatacenterNodeResponse.Name)">
             </Select>
         </FormItem>
         @if (context.DeployNodeId != -1 && !Overheat())
-        {
-            <FormItem Label="Node availability">
+                {
+        <FormItem Label="Node availability">
 
-                <div class="node-usage mt-2">
-                    <div class="used" style="width:@GetRamUsedWidth()%"></div>
-                    <div class="claim" style="width:@GetRamToClaimWidth()%"></div>
-                </div>
-            </FormItem>
+            <div class="node-usage mt-2">
+                <div class="used" style="width:@GetRamUsedWidth()%"></div>
+                <div class="claim" style="width:@GetRamToClaimWidth()%"></div>
+            </div>
+        </FormItem>
         }
         else
         {
-            if (Overheat())
-            {
-                <Alert Type="@AlertType.Error"
-                       Message="Error"
-                       Description="This cluster cannot be deploy on this node, not enough resources."
-                       ShowIcon />
-            }
+        if (Overheat())
+        {
+        <Alert Type="@AlertType.Error" Message="Error" Description="This cluster cannot be deploy on this node, not enough resources." ShowIcon />
         }
+                }
     </Form>
 </Modal>
 
@@ -89,52 +86,52 @@
 
 @if (!IsLoad)
 {
-    <Table @ref="table"
-           TItem="ClusterItemResponse"
-           DataSource="@ClusterState.Value.Clusters">
-        <AntDesign.Column @bind-Field="@context.Name" Sortable />
-        <AntDesign.Column @bind-Field="@context.Ip" Title="Reverse">
-            <span>@($"{context.Name}.ice-artefact.com")</span>
-        </AntDesign.Column>
-        <AntDesign.Column @bind-Field="@context.Cpu" Sortable>
-            @($"{context.Cpu}")
-        </AntDesign.Column>
-        <AntDesign.Column @bind-Field="@context.Memory" Sortable>
-            @($"{context.Memory}MB")
-        </AntDesign.Column>
-        <AntDesign.Column @bind-Field="@context.Disk" Sortable>
-            @($"{context.Disk}GB")
-        </AntDesign.Column>
-        <AntDesign.Column @bind-Field="@context.State">
-            @if (context.State == "Ready")
+<Table @ref="table"
+TItem="ClusterItemResponse"
+DataSource="@ClusterState.Value.Clusters">
+    <AntDesign.Column @bind-Field="@context.Name" Sortable />
+    <AntDesign.Column @bind-Field="@context.Ip" Title="Reverse">
+        <span>@($"{context.Name}.ice-artefact.com")</span>
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.Cpu" Sortable>
+        @($"{context.Cpu}")
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.Memory" Sortable>
+        @($"{context.Memory}MB")
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.Disk" Sortable>
+        @($"{context.Disk}GB")
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.State">
+        @if (context.State == "Ready")
                 {
-                <Tag Color="blue-inverse">Ready</Tag>
-                }
-                else
+        <Tag Color="blue-inverse">Ready</Tag>
+        }
+        else
+        {
+        <Tag Color="orange">Not Ready</Tag>
+        }
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.Nodes">
+        @foreach (var node in context.Nodes.OrderBy(n => n.Ip).ToList())
                 {
-                <Tag Color="orange">Not Ready</Tag>
-                }
-        </AntDesign.Column>
-        <AntDesign.Column @bind-Field="@context.Nodes">
-            @foreach (var node in context.Nodes.OrderBy(n => n.Ip).ToList())
-                {
-                <div class="block m-2">
-                    @if (node.State == "Ready")
+        <div class="block m-2">
+            @if (node.State == "Ready")
                         {
-                        <Tag Color="blue-inverse" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
-                        }
-                        else
-                        {
-                        <Tag Color="orange" Class="mb-1" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
-                        }
-                </div>
-                }
-        </AntDesign.Column>
-        <ActionColumn>
-            <Space>
-                <SpaceItem><Button OnClick="() => DownloadKubeConfig(context.Id)">Download KubeConfig</Button></SpaceItem>
-                <SpaceItem><Button OnClick="() => ViewDetails(context.Id)">View Cluster</Button></SpaceItem>
-            </Space>
-        </ActionColumn>
-    </Table>
+            <Tag Color="blue-inverse" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
+            }
+            else
+            {
+            <Tag Color="orange" Class="mb-1" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
+            }
+        </div>
+        }
+    </AntDesign.Column>
+    <ActionColumn>
+        <Space>
+            <SpaceItem><Button OnClick="() => DownloadKubeConfig(context.Id)">Download KubeConfig</Button></SpaceItem>
+            <SpaceItem><Button OnClick="() => ViewDetails(context.Id)">View Cluster</Button></SpaceItem>
+        </Space>
+    </ActionColumn>
+</Table>
 }
