@@ -1,15 +1,7 @@
-﻿using AntDesign;
-using Fluxor;
-using Infrastructure.Contracts.Request;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
-using Services;
+﻿using Fluxor;
 using Kubernox.UI.Store.Actions.SshKey;
 using Kubernox.UI.Store.States;
-using System.Threading.Tasks;
-using Kubernox.UI.Utils;
-using Kubernox.UI.Services.Interfaces;
+using Microsoft.AspNetCore.Components;
 
 namespace Kubernox.UI.Pages.Ssh
 {
@@ -21,16 +13,7 @@ namespace Kubernox.UI.Pages.Ssh
         [Inject]
         IDispatcher Dispatcher { get; set; }
 
-        [Inject]
-        ISshKeyService SshKeyService { get; set; }
-
-        [Inject]
-        IJSRuntime JSRuntime { get; set; }
-
-        protected ITable table;
         protected bool visible = false;
-
-        protected SshKeyCreateRequest sshKeyCreateRequest = new SshKeyCreateRequest();
 
         protected override void OnInitialized()
         {
@@ -42,39 +25,6 @@ namespace Kubernox.UI.Pages.Ssh
         private void SshKeyState_StateChanged(object sender, SshKeyState e)
         {
             StateHasChanged();
-        }
-
-        void ToggleAutogenerate(bool value)
-        {
-            sshKeyCreateRequest.AutoGenerate = !sshKeyCreateRequest.AutoGenerate;
-        }
-
-        protected async Task DeleteAsync(int id)
-        {
-            Dispatcher.Dispatch(new DeleteSshKeyAction(id));
-        }
-
-        protected async Task DownloadPem(int id)
-        {
-            var download = await SshKeyService.DownloadKeyAsync(id, "PEM");
-            await FileUtil.SaveAs(JSRuntime, download.Name, System.Text.Encoding.UTF8.GetBytes(download.Content));
-        }
-
-        protected async Task DownloadPpk(int id)
-        {
-            var download = await SshKeyService.DownloadKeyAsync(id, "PPK");
-            await FileUtil.SaveAs(JSRuntime, download.Name, System.Text.Encoding.UTF8.GetBytes(download.Content));
-        }
-
-        private void HandleOk(MouseEventArgs e)
-        {
-            Dispatcher.Dispatch(new CreateSshKeyAction(sshKeyCreateRequest));
-            visible = false;
-        }
-
-        private void HandleCancel(MouseEventArgs e)
-        {
-            visible = false;
         }
     }
 }

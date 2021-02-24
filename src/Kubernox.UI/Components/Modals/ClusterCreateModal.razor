@@ -1,0 +1,39 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@inject IStringLocalizer<App> Translator
+@inject IDispatcher Dispatcher
+@using Infrastructure.Contracts.Request
+@using Kubernox.UI.Store.Actions.Cluster
+
+<Modal Title="Deploy new cluster"
+OnOk="@HandleOk"
+OnCancel="@HandleCancel"
+Visible="@Visible"
+OkText="@("Deploy cluster")">
+    <CreateClusterForm ClusterCreateRequest="ClusterCreateRequest" />
+</Modal>
+
+@code{
+    [Parameter]
+    public bool Visible { get; set; }
+
+    public ClusterCreateRequest ClusterCreateRequest { get; set; } = new ClusterCreateRequest()
+    {
+        Memory = 1024,
+        Cpu = 1,
+        SelectedTemplate = -1,
+        Storage = 20,
+        Node = 2,
+        DeployNodeId = -1
+    };
+
+    private async Task HandleOk(MouseEventArgs e)
+    {
+        Dispatcher.Dispatch(new CreateClusterAction(ClusterCreateRequest));
+        Visible = false;
+    }
+    
+    private void HandleCancel(MouseEventArgs e)
+    {
+        Visible = false;
+    }
+}

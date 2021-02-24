@@ -1,9 +1,11 @@
 ﻿using AntDesign;
 using Fluxor;
 using Kubernox.UI.Store.Actions.Cluster;
+using Kubernox.UI.Store.Actions.Datacenter;
+using Kubernox.UI.Store.Actions.SshKey;
+using Kubernox.UI.Store.Actions.Template;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using System;
 using System.Threading.Tasks;
 
 namespace Kubernox.UI.Layout
@@ -14,7 +16,7 @@ namespace Kubernox.UI.Layout
         public static string BaseUri;
 
         HubConnection connection;
-        
+
         [Inject]
         IDispatcher Dispatcher { get; set; }
 
@@ -25,10 +27,22 @@ namespace Kubernox.UI.Layout
 
         protected override async Task OnInitializedAsync()
         {
+
+            Dispatcher.Dispatch(new FetchTemplateAction());
+            Dispatcher.Dispatch(new FetchSshKeyAction());
+            Dispatcher.Dispatch(new FetchClustersAction());
+            Dispatcher.Dispatch(new FetchDatacenterAction());
+
             connection = new HubConnectionBuilder()
                                 .WithUrl($"{BaseUri}ws/notifications")
                                 .Build();
+            BindWsCallbacks();
 
+            await connection.StartAsync();
+        }
+
+        private void BindWsCallbacks()
+        {
             connection.On("NotificationReceived", async (string title, string content, string type) =>
             {
                 await NotificationService.Open(new NotificationConfig()
@@ -46,7 +60,23 @@ namespace Kubernox.UI.Layout
                 Dispatcher.Dispatch(new FetchClustersAction());
             });
 
-            await connection.StartAsync();
+            connection.On("StateChange", (string type) =>
+            {
+                switch (type)
+                {
+                    case "Cluster":
+                        Dispatcher.Dispatch(new FetchClustersAction());
+                        break;
+
+                    case "Ssh":
+                        Dispatcher.Dispatch(new FetchSshKeyAction());
+                        break;
+
+                    case "Template":
+                        Dispatcher.Dispatch(new FetchTemplateAction());
+                        break;
+                }
+            });
         }
 
         private NotificationType GetNotificationType(string type)

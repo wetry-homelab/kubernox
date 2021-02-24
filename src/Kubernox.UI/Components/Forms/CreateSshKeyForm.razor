@@ -1,4 +1,6 @@
-﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+﻿@using Infrastructure.Contracts.Request
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <Form Layout="@Layout"
       Model="@SshKeyCreateRequest">
@@ -14,3 +16,15 @@
         <TextArea Placeholder="Paste public key for import" Disabled="SshKeyCreateRequest.AutoGenerate" MinRows="3" MaxRows="5" @bind-Value="@context.Public" />
     </FormItem>
 </Form>
+
+@code{
+    public string Layout { get; set; } = FormLayout.Vertical;
+
+    [Parameter]
+    public SshKeyCreateRequest SshKeyCreateRequest { get; set; } = new SshKeyCreateRequest();
+
+    void ToggleAutogenerate(bool value)
+    {
+        SshKeyCreateRequest.AutoGenerate = !SshKeyCreateRequest.AutoGenerate;
+    }
+}

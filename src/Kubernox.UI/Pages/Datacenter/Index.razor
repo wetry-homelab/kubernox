@@ -1,41 +1,18 @@
 ﻿@page "/"
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-
 @if (DatacenterState != null && DatacenterState.Value != null && DatacenterState.Value.IsLoading)
 {
     <div class="mt-4" style="width:100%; text-align:center;">
-        <Spin Style="text-align:center; margin:auto" size="large" />
+        <Spin Style="text-align:center; margin:auto" size="large"></Spin>
     </div>
 }
-
-@if (DatacenterState != null && DatacenterState.Value != null && DatacenterState.Value.Nodes != null)
+else
 {
-    <div class="mt-4">
-        <Table @ref="table"
-               TItem="DatacenterNodeResponse"
-               DataSource="@DatacenterState.Value.Nodes">
-            <AntDesign.Column @bind-Field="@context.Id" Sortable />
-            <AntDesign.Column @bind-Field="@context.Name" Sortable />
-            <AntDesign.Column @bind-Field="@context.Ip" Sortable />
-            <AntDesign.Column @bind-Field="@context.Model" Sortable />
-            <AntDesign.Column @bind-Field="@context.Core" Sortable>
-                @($"{context.Core} / {context.Thread} - ({context.Mhz* 1000}Mhz) ({context.Socket})")
-            </AntDesign.Column>
-            <AntDesign.Column @bind-Field="@context.RamTotal" Sortable>
-                @($"{context.RamUsed / (1024 * 1024)}MB / {context.RamTotal / (1024 * 1024)}MB")
-            </AntDesign.Column>
-            <AntDesign.Column @bind-Field="@context.SwapTotal" Sortable>
-                @($"{context.SwapUsed / (1024 * 1024)}MB / {context.SwapTotal / (1024 * 1024)}MB")
-            </AntDesign.Column>
-            <AntDesign.Column @bind-Field="@context.RootFsTotal" Sortable>
-                @($"{context.RootFsUsed / (1024 * 1024)}MB / {context.RootFsTotal / (1024 * 1024)}MB")
-            </AntDesign.Column>
-            <ActionColumn>
-                <Space>
-                    <SpaceItem><Button OnClick="() => ViewDetails(context.Id)">Details</Button></SpaceItem>
-                </Space>
-            </ActionColumn>
-        </Table>
-    </div>
+    if (DatacenterState.Value.Nodes != null)
+    {
+        <div class="mt-4">
+            <DatacenterNodeTable />
+        </div>
+    }
 }

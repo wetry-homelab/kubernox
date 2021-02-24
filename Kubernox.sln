@@ -49,7 +49,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53230E60
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kubernox.UI.Tests", "tests\Kubernox.UI.Tests\Kubernox.UI.Tests.csproj", "{7C812DC7-15F6-40CB-B43E-1844682A3D39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernox.Tests", "tests\Kubernox.Tests\Kubernox.Tests.csproj", "{724FFBBB-35B3-4D42-AC56-B6191CCAFEEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kubernox.Tests", "tests\Kubernox.Tests\Kubernox.Tests.csproj", "{724FFBBB-35B3-4D42-AC56-B6191CCAFEEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

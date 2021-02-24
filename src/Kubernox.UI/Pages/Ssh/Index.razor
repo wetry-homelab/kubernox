@@ -4,14 +4,7 @@
 
 <Button Type="primary" class="mb-4 mt-4" Style="float:right;" OnClick="@(()=>{ visible = true; })">Create or import SSH Key</Button>
 
-<Modal Title="@Translator.GetString("SSH_CREATE_OR_IMPORT_BTN")"
-       Visible="@visible"
-       OnOk="@HandleOk"
-       OnCancel="@HandleCancel"
-       OkText="@(sshKeyCreateRequest.AutoGenerate ? "Auto generate" : "Import")">
-
-    <CreateModalComponent SshKeyCreateRequest="sshKeyCreateRequest" />
-</Modal>
+<SshKeyCreateModal Visible="@visible" />
 
 @if (SshKeyState != null && SshKeyState.Value != null && SshKeyState.Value.IsLoading)
 {
@@ -22,29 +15,5 @@
 
 @if (SshKeyState != null && SshKeyState.Value != null && SshKeyState.Value.SshKeys != null)
 {
-    <Table @ref="table"
-           TItem="SshKeyResponse"
-           DataSource="@SshKeyState.Value.SshKeys">
-        <AntDesign.Column @bind-Field="@context.Id" Sortable />
-        <AntDesign.Column @bind-Field="@context.Name" Sortable />
-        <AntDesign.Column @bind-Field="@context.Fingerprint" Sortable />
-        <ActionColumn>
-            <Space>
-                @if (context.PemAvailable)
-                {
-                    <SpaceItem><Button OnClick="()=> DownloadPem(context.Id)">Download PEM</Button></SpaceItem>
-                }
-
-                @if (context.PpkAvailable)
-                {
-                    <SpaceItem><Button OnClick="() => DownloadPpk(context.Id)">Download PPK</Button></SpaceItem>
-                }
-            </Space>
-        </ActionColumn>
-        <ActionColumn>
-            <Space>
-                <SpaceItem><Button Danger OnClick="()=> DeleteAsync(context.Id)">@Translator.GetString("GENERIC_DELETE")</Button></SpaceItem>
-            </Space>
-        </ActionColumn>
-    </Table>
+    <SshKeyTable />
 }
