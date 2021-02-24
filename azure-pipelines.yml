@@ -21,7 +21,13 @@ steps:
     command: 'build'
     projects: '**/*.csproj'
     arguments: '--configuration Release'
-    
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/Kubernox.Tests.csproj'
+    testRunTitle: 'Kubernox Tests'
+
 - task: Docker@2
   displayName: Build an Kubernox Service Image
   inputs:
