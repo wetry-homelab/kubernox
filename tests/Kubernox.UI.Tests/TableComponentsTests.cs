@@ -15,12 +15,34 @@ namespace Kubernox.UI.Tests
 {
     public class TableComponentsTests
     {
-        [Theory]
-        [InlineData(0, "TestSshKey", "00:00:00:00:00:00:00:00:00:01")]
-        public void SshTableRendersCorrectly(int id, string name, string fingerprint)
+        public TestContext MakeSut()
         {
             using var ctx = new TestContext();
             ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+
+            var dispatcherMock = new Mock<IDispatcher>();
+            var actionSubscriberMock = new Mock<IActionSubscriber>();
+            var componentIdGeneratorMock = new Mock<IComponentIdGenerator>();
+            var sshKeyServiceMock = new Mock<ISshKeyService>();
+            var translatorMock = new Mock<IStringLocalizer<App>>();
+
+            ctx.Services.AddSingleton(dispatcherMock.Object);
+            ctx.Services.AddSingleton(actionSubscriberMock.Object);
+            ctx.Services.AddSingleton(new DomEventService(ctx.JSInterop.JSRuntime));
+            ctx.Services.AddSingleton(new IconService(ctx.JSInterop.JSRuntime));
+            ctx.Services.AddSingleton(sshKeyServiceMock.Object);
+            ctx.Services.AddSingleton(translatorMock.Object);
+            ctx.Services.AddSingleton(componentIdGeneratorMock.Object);
+
+            return ctx;
+        }
+
+        [Theory]
+        [InlineData(0, "TestSshKey", "00:00:00:00:00:00:00:00:00:01")]
+        [InlineData(1, "TestSshKey02", "00:00:00:00:00:00:00:00:00:02")]
+        public void SshTableRendersCorrectly(int id, string name, string fingerprint)
+        {
+            using var ctx = MakeSut();
 
             var stateMock = new Mock<IState<SshKeyState>>();
             stateMock.Setup(s => s.Value)
@@ -32,20 +54,9 @@ namespace Kubernox.UI.Tests
                             Fingerprint = fingerprint
                         }
                     }, true, string.Empty));
-            var dispatcherMock = new Mock<IDispatcher>();
-            var actionSubscriberMock = new Mock<IActionSubscriber>();
-            var componentIdGeneratorMock = new Mock<IComponentIdGenerator>();
-            var sshKeyServiceMock = new Mock<ISshKeyService>();
-            var translatorMock = new Mock<IStringLocalizer<App>>();
+
 
             ctx.Services.AddSingleton(stateMock.Object);
-            ctx.Services.AddSingleton(dispatcherMock.Object);
-            ctx.Services.AddSingleton(actionSubscriberMock.Object);
-            ctx.Services.AddSingleton(new DomEventService(ctx.JSInterop.JSRuntime));
-            ctx.Services.AddSingleton(new IconService(ctx.JSInterop.JSRuntime));
-            ctx.Services.AddSingleton(sshKeyServiceMock.Object);
-            ctx.Services.AddSingleton(translatorMock.Object);
-            ctx.Services.AddSingleton(componentIdGeneratorMock.Object);
             var cut = ctx.RenderComponent<Components.Tables.SshKeyTable>();
 
             var tableElementRendered = cut.Find("table");
