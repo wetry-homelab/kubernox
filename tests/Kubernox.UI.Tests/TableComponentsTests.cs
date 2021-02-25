@@ -10,11 +10,35 @@ using Xunit;
 using Kubernox.UI.Services.Interfaces;
 using Microsoft.Extensions.Localization;
 using Infrastructure.Contracts.Response;
+using Xunit.Extensions;
 
 namespace Kubernox.UI.Tests
 {
     public class TableComponentsTests
     {
+
+        public static SshKeyResponse[] SshKeysData
+        {
+            get
+            {
+                return new SshKeyResponse[]
+                {
+                    new SshKeyResponse()
+                    {
+                        Id = 0,
+                        Name = "TestKey01",
+                        Fingerprint = "00:00:00:00:00:00:00:00:00:01"
+                    },
+                    new SshKeyResponse()
+                    {
+                        Id = 0,
+                        Name = "TestKey02",
+                        Fingerprint = "00:00:00:00:00:00:00:00:00:02"
+                    }
+                };
+            }
+        }
+
         public TestContext MakeSut()
         {
             using var ctx = new TestContext();
@@ -63,6 +87,26 @@ namespace Kubernox.UI.Tests
 
             Assert.Contains(name, tableElementRendered.InnerHtml);
             Assert.Contains(fingerprint, tableElementRendered.InnerHtml);
+        }
+
+        [Fact]
+        public void SshTableRenderCorrectlyMultipleKeys()
+        {
+            using var ctx = MakeSut();
+
+            var stateMock = new Mock<IState<SshKeyState>>();
+            stateMock.Setup(s => s.Value)
+                    .Returns(new SshKeyState(SshKeysData, true, string.Empty));
+
+            ctx.Services.AddSingleton(stateMock.Object);
+            var cut = ctx.RenderComponent<Components.Tables.SshKeyTable>();
+            var tableElementRendered = cut.Find("table");
+
+            foreach (var key in SshKeysData)
+            {
+                Assert.Contains(key.Name, tableElementRendered.InnerHtml);
+                Assert.Contains(key.Fingerprint, tableElementRendered.InnerHtml);
+            }
         }
     }
 }
