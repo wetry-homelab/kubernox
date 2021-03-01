@@ -1,12 +1,13 @@
 using Application.Interfaces;
-using Kubernox.Service.Business;
-using Kubernox.Service.Workers;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Shared.Services;
+using Kubernox.Service.Business;
+using Kubernox.Service.Workers;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace Kubernox.Service
 {
@@ -36,6 +37,8 @@ namespace Kubernox.Service
                     services.AddScoped<IQueueBusiness, QueueBusiness>();
 
                     services.AddHostedService<ClusterQueueWorker>();
-                });
+                })
+                .UseSerilog((hostingContext, loggerConfiguration) =>
+                    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
     }
 }

@@ -374,6 +374,7 @@ namespace Kubernox.Services
                     $"Kubernox__Domain={configuration.Kubernox.Domain}",
                     $"Proxmox__Uri={configuration.Proxmox.Host}",
                     $"Proxmox__Token=PVEAPIToken={configuration.Proxmox.Username}@{configuration.Proxmox.AuthType}!{configuration.Proxmox.TokenId}={configuration.Proxmox.AccessToken}",
+                    $"Serilog__WriteTo__1__Args__connectionString=Host={configuration.Postgre.Host};Database={configuration.Postgre.DbName};Username={configuration.Postgre.Username};Password={configuration.Postgre.Password}",
                     $"ConnectionStrings__Default=Host={configuration.Postgre.Host};Database={configuration.Postgre.DbName};Username={configuration.Postgre.Username};Password={configuration.Postgre.Password}",
                     $"ConnectionStrings__Redis={configuration.Redis.Host},password={configuration.Redis.Password}",
                     $"RabbitMq__User={configuration.Rabbitmq.Username}",
