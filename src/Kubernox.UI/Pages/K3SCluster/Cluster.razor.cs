@@ -15,7 +15,6 @@ namespace Kubernox.UI.Pages.K3SCluster
         [Inject]
         IClusterService ClusterService { get; set; }
 
-
         [Inject]
         IDispatcher Dispatcher { get; set; }
 

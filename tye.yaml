@@ -1,0 +1,48 @@
+name: kubernox
+namespace: kubernox
+network: kubernox_network
+extensions:
+- name: zipkin
+
+services:
+- name: kubernox-host
+  project: src/Kubernox.Host/Kubernox.Host.csproj
+  replicas: 1
+  bindings:
+  - port: 4000
+
+- name: kubernox-service
+  project: src/Kubernox.Service/Kubernox.Service.csproj
+  replicas: 1
+  bindings:
+  - port: 4001
+  env:
+  - name: ASPNETCORE_ENVIRONMENT
+    value: Development
+
+- name: kubernox-workers
+  project: src/Kubernox.Workers/Kubernox.Workers.csproj
+  replicas: 1
+  bindings:
+  - port: 4002
+  env:
+  - name: ASPNETCORE_ENVIRONMENT
+    value: Development
+
+ingress:
+  - name: ingress
+    bindings:
+      - port: 80
+    rules:
+      - path: /
+        service: kubernox-host
+      - path: /cluster
+        service: kubernox-service
+      - path: /datacenter
+        service: kubernox-service
+      - path: /sshkey
+        service: kubernox-service
+      - path: /template
+        service: kubernox-service
+      - path: /identity
+        service: kubernox-service

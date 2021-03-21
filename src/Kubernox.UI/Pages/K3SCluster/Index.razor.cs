@@ -49,6 +49,9 @@ namespace Kubernox.UI.Pages.K3SCluster
             SshKeyState.StateChanged += SshKeyState_StateChanged;
             TemplateState.StateChanged += TemplateState_StateChanged;
             DatacenterState.StateChanged += DatacenterState_StateChanged;
+
+            Dispatcher.Dispatch(new FetchClustersAction());
+
             base.OnInitialized();
         }
 

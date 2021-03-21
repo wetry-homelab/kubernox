@@ -3,14 +3,19 @@ using Fluxor;
 using Infrastructure.Contracts.Request;
 using Kubernox.UI.Store.States;
 using Microsoft.AspNetCore.Components;
+using System;
 using System.Linq;
+using System.Text.Json;
 
 namespace Kubernox.UI.Components.Forms
 {
     public partial class CreateClusterForm : Fluxor.Blazor.Web.Components.FluxorComponent
     {
+        [Inject]
         public IState<SshKeyState> SshKeyState { get; set; }
+        [Inject]
         public IState<TemplateState> TemplateState { get; set; }
+        [Inject]
         public IState<DatacenterState> DatacenterState { get; set; }
 
         public string Layout { get; set; } = FormLayout.Vertical;
@@ -18,7 +23,17 @@ namespace Kubernox.UI.Components.Forms
         protected bool visible = false;
 
         [Parameter]
-        public ClusterCreateRequest ClusterCreateRequest { get; set; } 
+        public ClusterCreateRequest CreateRequest
+        {
+            get; set;
+        }
+
+        protected override void OnInitialized()
+        {
+            Console.WriteLine(JsonSerializer.Serialize(CreateRequest));
+
+            base.OnInitialized();
+        }
 
         private string FormatMB(int value)
         {
@@ -48,9 +63,9 @@ namespace Kubernox.UI.Components.Forms
 
                 if (template != null)
                 {
-                    ClusterCreateRequest.Cpu = template.CpuCount;
-                    ClusterCreateRequest.Memory = template.MemoryCount;
-                    ClusterCreateRequest.Storage = template.DiskSpace;
+                    CreateRequest.Cpu = template.CpuCount;
+                    CreateRequest.Memory = template.MemoryCount;
+                    CreateRequest.Storage = template.DiskSpace;
                     StateHasChanged();
                 }
             }
@@ -58,7 +73,7 @@ namespace Kubernox.UI.Components.Forms
 
         private double GetRamUsedWidth()
         {
-            var node = DatacenterState.Value.Nodes.FirstOrDefault(f => f.Id == ClusterCreateRequest.DeployNodeId);
+            var node = DatacenterState.Value.Nodes.FirstOrDefault(f => f.Id == CreateRequest.DeployNodeId);
             if (node != null)
             {
                 return ((((double)node.RamUsed / (1024 * 1024)) / ((double)node.RamTotal / (1024 * 1024))) * 100);
@@ -68,10 +83,10 @@ namespace Kubernox.UI.Components.Forms
 
         private double GetRamToClaimWidth()
         {
-            var node = DatacenterState.Value.Nodes.FirstOrDefault(f => f.Id == ClusterCreateRequest.DeployNodeId);
+            var node = DatacenterState.Value.Nodes.FirstOrDefault(f => f.Id == CreateRequest.DeployNodeId);
             if (node != null)
             {
-                return (((double)(ClusterCreateRequest.Memory * (ClusterCreateRequest.Node + 1)) / ((double)node.RamTotal / (1024 * 1024))) * 100);
+                return (((double)(CreateRequest.Memory * (CreateRequest.Node + 1)) / ((double)node.RamTotal / (1024 * 1024))) * 100);
             }
             return 0;
         }

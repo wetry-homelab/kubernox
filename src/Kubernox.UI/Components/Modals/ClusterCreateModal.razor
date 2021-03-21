@@ -9,7 +9,7 @@ OnOk="@HandleOk"
 OnCancel="@HandleCancel"
 Visible="@Visible"
 OkText="@("Deploy cluster")">
-    <CreateClusterForm ClusterCreateRequest="ClusterCreateRequest" />
+    <CreateClusterForm CreateRequest="@ClusterCreateRequest" />
 </Modal>
 
 @code{
