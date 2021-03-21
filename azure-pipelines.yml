@@ -8,60 +8,79 @@ pool:
 variables:
   tag: '$(Build.BuildId)'
 
-steps:
-- task: UseDotNet@2
-  displayName: 'Install .NET Core SDK'
-  inputs:
-    version: 5.0.x
-    performMultiLevelLookup: true
-    includePreviewVersions: true # Required for preview versions
-- task: DotNetCoreCLI@2
-  displayName: Build project
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--configuration Release'
+jobs:
+- job: BuildTests
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core SDK'
+    inputs:
+      version: 5.0.x
+      performMultiLevelLookup: true
+      includePreviewVersions: true # Required for preview versions
+  - task: DotNetCoreCLI@2
+    displayName: Build project
+    inputs:
+      command: 'build'
+      projects: '**/*.csproj'
+      arguments: '--configuration Release'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: |
-      **/Kubernox.Tests.csproj
-      **/Kubernox.UI.Tests.csproj
-    testRunTitle: 'Kubernox Tests'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      projects: |
+        **/Kubernox.Tests.csproj
+        **/Kubernox.UI.Tests.csproj
+      testRunTitle: 'Kubernox Tests'
 
-- task: Docker@2
-  displayName: Build an Kubernox Service Image
-  inputs:
-    containerRegistry: 'Docker Hub'
-    repository: 'kubernox/kubernox-service'
-    command: 'buildAndPush'
-    Dockerfile: 'src/Kubernox.Service/Dockerfile'
-    buildContext: '.'
-    tags: |
-      $(tag)
-      latest
+- job: BuildImageService
+  dependsOn: BuildTests
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Docker@2
+    displayName: Build an Kubernox Service Image
+    inputs:
+      containerRegistry: 'Docker Hub'
+      repository: 'kubernox/kubernox-service'
+      command: 'buildAndPush'
+      Dockerfile: 'src/Kubernox.Service/Dockerfile'
+      buildContext: '.'
+      tags: |
+        $(tag)
+        latest
 
-- task: Docker@2
-  displayName: Build an Kubernox Workers Image
-  inputs:
-    containerRegistry: 'Docker Hub'
-    repository: 'kubernox/kubernox-workers'
-    command: 'buildAndPush'
-    Dockerfile: 'src/Kubernox.Workers/Dockerfile'
-    buildContext: '.'
-    tags: |
-      $(tag)
-      latest
+- job: BuildImageWorkers
+  dependsOn: BuildTests
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Docker@2
+    displayName: Build an Kubernox Workers Image
+    inputs:
+      containerRegistry: 'Docker Hub'
+      repository: 'kubernox/kubernox-workers'
+      command: 'buildAndPush'
+      Dockerfile: 'src/Kubernox.Workers/Dockerfile'
+      buildContext: '.'
+      tags: |
+        $(tag)
+        latest
 
-- task: Docker@2
-  displayName: Build an Kubernox UI Image
-  inputs:
-    containerRegistry: 'Docker Hub'
-    repository: 'kubernox/kubernox'
-    command: 'buildAndPush'
-    Dockerfile: 'src/Kubernox.Host/Dockerfile'
-    buildContext: '.'
-    tags: |
-      $(tag)
-      latest
+- job: BuildImageUi
+  dependsOn: BuildTests
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Docker@2
+    displayName: Build an Kubernox UI Image
+    inputs:
+      containerRegistry: 'Docker Hub'
+      repository: 'kubernox/kubernox'
+      command: 'buildAndPush'
+      Dockerfile: 'src/Kubernox.Host/Dockerfile'
+      buildContext: '.'
+      tags: |
+        $(tag)
+        latest
