@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Kubernox.Service.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class DatacenterController : ControllerBase
     {
         private readonly ILogger<DatacenterController> logger;

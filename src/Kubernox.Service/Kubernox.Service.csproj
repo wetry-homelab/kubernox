@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.2.0" />
+    <PackageReference Include="Serilog.Sinks.PostgreSQL.Configuration" Version="1.0.0" />
     <PackageReference Include="Serilog.UI.PostgreSqlProvider" Version="2.0.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.5" />

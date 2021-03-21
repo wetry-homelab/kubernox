@@ -34,15 +34,9 @@ ingress:
     bindings:
       - port: 80
     rules:
+      - path: /api
+        service: kubernox-service
+      - path: /logs
+        service: kubernox-service
       - path: /
         service: kubernox-host
-      - path: /cluster
-        service: kubernox-service
-      - path: /datacenter
-        service: kubernox-service
-      - path: /sshkey
-        service: kubernox-service
-      - path: /template
-        service: kubernox-service
-      - path: /identity
-        service: kubernox-service

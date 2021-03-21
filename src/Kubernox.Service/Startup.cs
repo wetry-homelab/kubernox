@@ -48,7 +48,10 @@ namespace Kubernox.Service
             services.AddSharedInfrastructure();
             services.AddPersistenceInfrastructure(Configuration);
             services.AddSignalR();
-            services.AddSerilogUi(options => options.UseNpgSql(Configuration.GetConnectionString("Default"), "Logs"));
+            services.AddSerilogUi(options =>
+            {
+                options.UseNpgSql(Configuration.GetConnectionString("Default"), "logs");
+            });
 
             ConfigureCors(services);
             AddBusinessLayer(services);
@@ -96,9 +99,7 @@ namespace Kubernox.Service
 
             app.UseCors();
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseSerilogUi();
 
             app.UseEndpoints(endpoints =>

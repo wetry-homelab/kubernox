@@ -5,12 +5,15 @@ using Kubernox.UI.Services.Interfaces;
 using Kubernox.UI.Store;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using Services;
 using System;
+using System.Linq;
 using System.Net.Http;
 
 namespace Kubernox.Host
@@ -39,20 +42,14 @@ namespace Kubernox.Host
 
         private static void ConfigureCore(IServiceCollection services)
         {
-            //#if DEBUG
-            services.AddScoped(sp => new HttpClient
+            services.AddSingleton<HttpClient>(sp =>
             {
-                BaseAddress = new Uri($"http://5.196.159.55:7777/")
+                var server = sp.GetRequiredService<IServer>();
+                var addressFeature = server.Features.Get<IServerAddressesFeature>();
+                string baseAddress = addressFeature.Addresses.First();
+                MainLayout.BaseUri = $"{baseAddress}";
+                return new HttpClient { BaseAddress = new Uri(baseAddress) };
             });
-
-            MainLayout.BaseUri = $"http://5.196.159.55:7777/";
-            //#else
-            //            builder.Services.AddScoped(sp => new HttpClient
-            //            {
-            //                BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}")
-            //            });
-            //            MainLayout.BaseUri = builder.HostEnvironment.BaseAddress;
-            //#endif
 
             services.AddAntDesign();
             var currentAssembly = typeof(StoreRegistration).Assembly;

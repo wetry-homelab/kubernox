@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Kubernox.Service.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class IdentityController : ControllerBase
     {
         private readonly ILogger<IdentityController> logger;
