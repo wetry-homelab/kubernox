@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Application.Messages
 {
-    public class ClusterCreateMessage
+    public class ClusterMessage
     {
         [JsonPropertyName("pattern")]
         public string Pattern { get; set; }

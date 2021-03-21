@@ -35,6 +35,7 @@ namespace Kubernox.UI
             {
                 BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}")
             });
+
             MainLayout.BaseUri = builder.HostEnvironment.BaseAddress;
 
             builder.Services.AddAntDesign();

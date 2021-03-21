@@ -71,7 +71,7 @@ namespace Kubernox.Service.Business
                     OrderId = baseId,
                     Memory = request.Memory,
                     Ip = $"10.0.{selectedNode.Id}.{baseIp}",
-                    SshKey = selectedSshKey.Public
+                    SshKeyId = selectedSshKey.Id
                 };
 
                 if ((await clusterRepository.InsertAsync(newCluster)) > 0)
@@ -91,7 +91,7 @@ namespace Kubernox.Service.Business
 
                     if ((await clusterNodeRepository.InsertsAsync(nodeList.ToArray()) == request.Node))
                     {
-                        ClusterCreateMessage message = GenerateQueueMessage(request, newCluster, selectedSshKey, selectedNode, template, baseIp, baseId);
+                        ClusterMessage message = GenerateCreateQueueMessage(request, newCluster, selectedSshKey, selectedNode, template, baseIp, baseId);
                         queueService.QueueClusterCreation(message);
 
                         await InjectClusterCacheConfigurationAsync(newCluster);
@@ -193,10 +193,10 @@ namespace Kubernox.Service.Business
             return -1;
         }
 
-        private ClusterCreateMessage GenerateQueueMessage(ClusterCreateRequest request, Cluster newCluster, SshKey selectedSshKey, DatacenterNode selectedNode, Template template, int baseIp, int baseId)
+        private ClusterMessage GenerateCreateQueueMessage(ClusterCreateRequest request, Cluster newCluster, SshKey selectedSshKey, DatacenterNode selectedNode, Template template, int baseIp, int baseId)
         {
 
-            var message = new ClusterCreateMessage()
+            var message = new ClusterMessage()
             {
                 Pattern = "create",
                 Data = new Data()
@@ -251,6 +251,63 @@ namespace Kubernox.Service.Business
             return message;
         }
 
+        private ClusterMessage GenerateDeleteQueueMessage(Cluster cluster, SshKey selectedSshKey, DatacenterNode selectedNode, int baseIp, int baseId)
+        {
+            var message = new ClusterMessage()
+            {
+                Pattern = "delete",
+                Data = new Data()
+                {
+                    Id = baseId,
+                    Name = cluster.Name,
+                    Config = new Config()
+                    {
+                        User = "root",
+                        Password = "homelab0123",
+                        Ssh = new Ssh()
+                        {
+                            PrivateKey = selectedSshKey.Pem,
+                            PublicKey = selectedSshKey.Public
+                        }
+                    },
+                    Nodes = new List<Node>()
+                }
+            };
+
+            var master = new Node()
+            {
+                Id = baseId,
+                CpuCores = 2,
+                Master = true,
+                Disk = 30,
+                Memory = 2048,
+                Ip = $"10.0.{selectedNode.Id}.{baseIp}",
+                ProxmoxNode = selectedNode.Name,
+                Template = cluster.BaseTemplate
+            };
+
+            message.Data.Nodes.Add(master);
+
+            for (var i = 0; i < cluster.Node; i++)
+            {
+                var node = new Node()
+                {
+                    Id = baseId + i + 1,
+                    CpuCores = cluster.Cpu,
+                    Master = false,
+                    Disk = cluster.Storage,
+                    Memory = cluster.Memory,
+                    Ip = $"10.0.{selectedNode.Id}.{baseIp + i + 1}",
+                    ProxmoxNode = selectedNode.Name,
+                    Template = cluster.BaseTemplate
+                };
+
+                message.Data.Nodes.Add(node);
+            }
+
+            return message;
+        }
+
         public async Task<ClusterItemResponse[]> ListClusterAsync()
         {
             var dbClusters = await clusterRepository.ReadsAsync(c => !c.DeleteAt.HasValue);
@@ -291,10 +348,14 @@ namespace Kubernox.Service.Business
 
             if ((await clusterRepository.UpdateAsync(cluster)) > 0)
             {
+                var selectedSshKey = await sshKeyRepository.ReadAsync(cluster.SshKeyId);
+                var selectedNode = await datacenterRepository.ReadAsync(f => f.Id == cluster.ProxmoxNodeId);
+
+
                 await DeleteClusterCacheConfigurationAsync(cluster);
 
                 var nodes = await clusterNodeRepository.ReadsAsync(c => c.ClusterId == cluster.Id && c.DeleteAt == null);
-                var selectedNode = await datacenterRepository.ReadAsync(f => f.Id == cluster.ProxmoxNodeId);
+                //var selectedNode = await datacenterRepository.ReadAsync(f => f.Id == cluster.ProxmoxNodeId);
                 var qemuClient = new QemuClient();
 
                 foreach (var node in nodes)
@@ -303,14 +364,15 @@ namespace Kubernox.Service.Business
                     await clusterNodeRepository.UpdateAsync(node);
                 }
 
-                queueService.QueueClusterDelete(cluster);
+                var message = GenerateDeleteQueueMessage(cluster, selectedSshKey, selectedNode, int.Parse(cluster.Ip.Split(".").Last()), cluster.ProxmoxNodeId);
+
+                queueService.QueueClusterDelete(message);
 
                 return (true, true);
             }
 
             return (true, false);
         }
-
 
         public async Task<(bool found, bool restart)> RestartClusterMasterAsync(string id)
         {

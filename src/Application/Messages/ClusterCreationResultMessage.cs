@@ -6,6 +6,7 @@ namespace Application.Messages
     {
         [JsonPropertyName("pattern")]
         public string Pattern { get; set; }
+
         [JsonPropertyName("data")]
         public ClusterData Data { get; set; }
     }

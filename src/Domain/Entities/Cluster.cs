@@ -24,6 +24,9 @@ namespace Domain.Entities
         public int ProxmoxNodeId { get; set; }
 
         [Required]
+        public int SshKeyId { get; set; }
+
+        [Required]
         public int Node { get; set; } = 2;
 
         [Required]
@@ -43,7 +46,7 @@ namespace Domain.Entities
         public string KubeConfigJson { get; set; }
 
         [Required]
-        public string SshKey { get; set; }
+        public string BaseTemplate { get; set; }
 
         [Required]
         public string User { get; set; } = "root";
@@ -57,5 +60,7 @@ namespace Domain.Entities
         public DateTime? DeleteAt { get; set; }
 
         public virtual ICollection<ClusterNode> Nodes { get; set; }
+
+        public SshKey SshKey { get; set; }
     }
 }

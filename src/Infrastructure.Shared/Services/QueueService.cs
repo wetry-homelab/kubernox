@@ -85,7 +85,7 @@ namespace Infrastructure.Shared.Services
             }
         }
 
-        public void QueueClusterCreation(ClusterCreateMessage message)
+        public void QueueClusterCreation(ClusterMessage message)
         {
             var routingKey = "k3s_queue";
 
@@ -99,7 +99,7 @@ namespace Infrastructure.Shared.Services
             PublishMessage(message, routingKey);
         }
 
-        public void QueueClusterDelete(Cluster message)
+        public void QueueClusterDelete(ClusterMessage message)
         {
             var routingKey = "k3s_queue_delete";
             PublishMessage(message,  routingKey);

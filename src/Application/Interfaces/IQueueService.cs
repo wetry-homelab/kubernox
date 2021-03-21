@@ -8,9 +8,9 @@ namespace Application.Interfaces
     public interface IQueueService
     {
         Task OnQueueMessageInit(Action<string> processMessage);
-        void QueueClusterCreation(ClusterCreateMessage message);
+        void QueueClusterCreation(ClusterMessage message);
         void QueueClusterUpdate(ClusterUpdateMessage message);
         Task OnQueueDeleteMessageInit(Action<string> processMessage);
-        void QueueClusterDelete(Cluster message);
+        void QueueClusterDelete(ClusterMessage message);
     }
 }

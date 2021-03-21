@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
@@ -25,5 +26,8 @@ namespace Domain.Entities
         public DateTime CreateAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? DeleteAt { get; set; }
+
+        public virtual ICollection<Cluster> Clusters { get; set; }
+
     }
 }

@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using ProxmoxVEAPI.Client;
+using Serilog.Ui.ElasticSearchProvider;
 using Serilog.Ui.PostgreSqlProvider.Extensions;
 using Serilog.Ui.Web;
 using System;
@@ -48,6 +49,7 @@ namespace Kubernox.Service
             services.AddSharedInfrastructure();
             services.AddPersistenceInfrastructure(Configuration);
             services.AddSignalR();
+
             services.AddSerilogUi(options =>
             {
                 options.UseNpgSql(Configuration.GetConnectionString("Default"), "logs");
@@ -105,7 +107,7 @@ namespace Kubernox.Service
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<AppHub>("/ws/notifications");
+                endpoints.MapHub<AppHub>("/notifications");
             });
         }
 

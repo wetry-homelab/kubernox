@@ -15,7 +15,7 @@ namespace Application.Mappers
             CreateMap<Cluster, ClusterItemResponse>();
             CreateMap<Cluster, ClusterDetailsResponse>()
                      .ForMember(m => m.Disk, me => me.MapFrom(met => met.Storage));
-            CreateMap<Cluster, ClusterCreateMessage>();
+            CreateMap<Cluster, ClusterMessage>();
             CreateMap<ClusterNode, ClusterNodeDetailsResponse>();
             CreateMap<ClusterUpdateRequest, ClusterUpdateMessage>();
         }

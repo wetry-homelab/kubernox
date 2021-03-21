@@ -28,6 +28,10 @@ namespace Infrastructure.Persistence.Contexts
             modelBuilder.Entity<Cluster>()
                         .HasMany(c => c.Nodes)
                         .WithOne(n => n.Cluster);
+
+            modelBuilder.Entity<Cluster>()
+                        .HasOne(c => c.SshKey)
+                        .WithMany(n => n.Clusters);
         }
     }
 }
