@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Kubernox.Service.Controllers
@@ -14,6 +15,9 @@ namespace Kubernox.Service.Controllers
 
         public DatacenterController(ILogger<DatacenterController> logger, IDatacenterBusiness datacenterBusiness)
         {
+            if (datacenterBusiness == null)
+                throw new ArgumentNullException(nameof(datacenterBusiness));
+
             this.logger = logger;
             this.datacenterBusiness = datacenterBusiness;
         }

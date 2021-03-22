@@ -2,6 +2,7 @@
 using Infrastructure.Contracts.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Kubernox.Service.Controllers
@@ -15,6 +16,9 @@ namespace Kubernox.Service.Controllers
 
         public SshKeyController(ILogger<SshKeyController> logger, ISshKeyBusiness sshKeyBusiness)
         {
+            if (sshKeyBusiness == null)
+                throw new ArgumentNullException(nameof(sshKeyBusiness));
+
             this.logger = logger;
             this.sshKeyBusiness = sshKeyBusiness;
         }

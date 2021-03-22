@@ -1,9 +1,8 @@
-﻿using Infrastructure.Contracts.Response;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using AutoMapper;
+using Infrastructure.Contracts.Response;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +16,11 @@ namespace Kubernox.Service.Business
 
         public DatacenterBusiness(ILogger<DatacenterBusiness> logger, IDatacenterRepository datacenterRepository, IMapper mapper)
         {
+            if (datacenterRepository == null)
+                throw new ArgumentNullException(nameof(datacenterRepository));
+            if (mapper == null)
+                throw new ArgumentNullException(nameof(mapper));
+
             this.logger = logger;
             this.datacenterRepository = datacenterRepository;
             this.mapper = mapper;

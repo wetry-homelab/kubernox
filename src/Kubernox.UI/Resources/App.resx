@@ -123,6 +123,12 @@
   <data name="MENU_DATACENTER" xml:space="preserve">
     <value>Datacenter</value>
   </data>
+  <data name="MENU_DOMAIN_SSL" xml:space="preserve">
+    <value>Domain &amp; SSL</value>
+  </data>
+  <data name="MENU_INFRA" xml:space="preserve">
+    <value>Infrastructure</value>
+  </data>
   <data name="MENU_INSTANCE" xml:space="preserve">
     <value>Instance</value>
   </data>

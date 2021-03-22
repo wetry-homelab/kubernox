@@ -17,10 +17,10 @@ namespace Kubernox.UI
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            //builder.RootComponents.Add<App>("#app");
+            builder.RootComponents.Add<App>("#app");
 
             ConfigureCore(builder);
-
+            
             ConfigureLocalization(builder);
 
             ConfigureDependencyInjection(builder);

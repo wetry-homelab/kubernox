@@ -5,6 +5,7 @@ using Kubernox.Service.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using ProxmoxVEAPI.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -22,6 +23,15 @@ namespace Kubernox.Service.Business
 
         public QueueBusiness(IQueueService queueService, IHubContext<AppHub, IAppHub> hubContext, IClusterRepository clusterRepository, ILogger<QueueBusiness> logger, IDatacenterRepository datacenterRepository)
         {
+            if (queueService == null)
+                throw new ArgumentNullException(nameof(queueService));
+
+            if (clusterRepository == null)
+                throw new ArgumentNullException(nameof(clusterRepository));
+
+            if (datacenterRepository == null)
+                throw new ArgumentNullException(nameof(datacenterRepository));
+
             this.queueService = queueService;
             this.hubContext = hubContext;
             this.clusterRepository = clusterRepository;

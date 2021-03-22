@@ -6,10 +6,14 @@
         <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Horizontal">
             <MenuItem RouterLink="/">@Translator.GetString("MENU_DATACENTER")</MenuItem>
             <MenuItem RouterLink="/k3s">@Translator.GetString("MENU_K3S")</MenuItem>
-            <MenuItem RouterLink="/ssh" style="float:right">@Translator.GetString("MENU_SSH")</MenuItem>
-            <MenuItem RouterLink="/template" style="float:right">@Translator.GetString("MENU_TEMPLATE")</MenuItem>
+
+            <SubMenu title="@Translator.GetString("MENU_INFRA")" style="float:right">
+                <MenuItem RouterLink="/domain-ssl">@Translator.GetString("MENU_DOMAIN_SSL")</MenuItem>
+                <MenuItem RouterLink="/ssh">@Translator.GetString("MENU_SSH")</MenuItem>
+                <MenuItem RouterLink="/template">@Translator.GetString("MENU_TEMPLATE")</MenuItem>
+            </SubMenu>
             @*<MenuItem RouterLink="/notification" style="float:right">
-                @Translator.GetString("MENU_NOTIFICATION")<Badge Style="margin-left:5px" Status="success" Count="NotificationsCount" ShowZero="false" />
+            @Translator.GetString("MENU_NOTIFICATION")<Badge Style="margin-left:5px" Status="success" Count="NotificationsCount" ShowZero="false" />
             </MenuItem>*@
         </Menu>
     </Header>

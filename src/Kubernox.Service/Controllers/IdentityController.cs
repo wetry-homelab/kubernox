@@ -2,6 +2,7 @@
 using Infrastructure.Contracts.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Kubernox.Service.Controllers
@@ -15,6 +16,9 @@ namespace Kubernox.Service.Controllers
 
         public IdentityController(ILogger<IdentityController> logger, IIdentityBusiness identityBusiness)
         {
+            if (identityBusiness == null)
+                throw new ArgumentNullException(nameof(identityBusiness));
+
             this.logger = logger;
             this.identityBusiness = identityBusiness;
         }

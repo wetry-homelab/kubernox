@@ -24,18 +24,11 @@ namespace Infrastructure.Persistence
                 {
                     postgreOpts.EnableRetryOnFailure(10);
                 }));
-
-
-            //services.AddDbContext<ServiceDbContext>(options =>
-            //{
-            //    options.UseSqlServer(connectionString, sqlOptions =>
-            //    {
-            //        sqlOptions.EnableRetryOnFailure(10);
-            //    });
-            //});
      
             services.AddScoped<IClusterRepository, ClusterRepository>();
             services.AddScoped<ISshKeyRepository, SshKeyRepository>();
+            services.AddScoped<ISubDomainRepository, SubDomainRepository>();
+            services.AddScoped<IDomainNameRepository, DomainNameRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITemplateRepository, TemplateRepository>();
             services.AddScoped<IDatacenterRepository, DatacenterRepository>();

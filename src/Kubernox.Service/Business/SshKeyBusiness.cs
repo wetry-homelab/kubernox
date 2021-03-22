@@ -19,6 +19,11 @@ namespace Kubernox.Service.Business
 
         public SshKeyBusiness(ILogger<SshKeyBusiness> logger, ISshKeyRepository sshKeyRepository, IMapper mapper)
         {
+            if (sshKeyRepository == null)
+                throw new ArgumentNullException(nameof(sshKeyRepository));
+            if (mapper == null)
+                throw new ArgumentNullException(nameof(mapper));
+
             this.logger = logger;
             this.sshKeyRepository = sshKeyRepository;
             this.mapper = mapper;

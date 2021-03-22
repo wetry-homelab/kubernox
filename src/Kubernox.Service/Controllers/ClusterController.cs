@@ -17,6 +17,9 @@ namespace Kubernox.Service.Controllers
 
         public ClusterController(ILogger<ClusterController> logger, IClusterBusiness clusterBusiness)
         {
+            if (clusterBusiness == null)
+                throw new ArgumentNullException(nameof(clusterBusiness));
+
             this.logger = logger;
             this.clusterBusiness = clusterBusiness;
         }
@@ -33,6 +36,16 @@ namespace Kubernox.Service.Controllers
             var clusterDetails = await clusterBusiness.GetClusterAsync(id);
             if (clusterDetails != null)
                 return Ok(clusterDetails);
+
+            return NotFound();
+        }
+
+        [HttpGet("{id}/refresh-dns")]
+        public async Task<IActionResult> GetRefreshDns([FromRoute] string id)
+        {
+            var clusterDetails = await clusterBusiness.RefreshClusterRulesAsync(id);
+            if (clusterDetails)
+                return Ok();
 
             return NotFound();
         }

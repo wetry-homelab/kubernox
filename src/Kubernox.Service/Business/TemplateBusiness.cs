@@ -18,6 +18,12 @@ namespace Kubernox.Service.Business
 
         public TemplateBusiness(ILogger<TemplateBusiness> logger, ITemplateRepository templateRepository, IMapper mapper)
         {
+            if (templateRepository == null)
+                throw new ArgumentNullException(nameof(templateRepository));
+
+            if (mapper == null)
+                throw new ArgumentNullException(nameof(mapper));
+            
             this.logger = logger;
             this.templateRepository = templateRepository;
             this.mapper = mapper;

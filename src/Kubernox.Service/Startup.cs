@@ -1,5 +1,6 @@
 using Application.Interfaces;
 using Application.Mappers;
+using DnsClient;
 using FluentValidation.AspNetCore;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Contexts;
@@ -21,6 +22,7 @@ using Serilog.Ui.PostgreSqlProvider.Extensions;
 using Serilog.Ui.Web;
 using System;
 using System.Configuration;
+using System.Net;
 
 namespace Kubernox.Service
 {
@@ -58,6 +60,12 @@ namespace Kubernox.Service
             ConfigureCors(services);
             AddBusinessLayer(services);
 
+            services.AddSingleton<ILookupClient>(c =>
+            {
+                var endpoint = new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53);
+                return new LookupClient(endpoint);
+            });
+
             ConfigureClient.Initialise(Configuration["Proxmox:Uri"], Configuration["Proxmox:Token"]);
         }
 
@@ -82,6 +90,7 @@ namespace Kubernox.Service
             services.AddScoped<IDatacenterBusiness, DatacenterBusiness>();
             services.AddScoped<ISshKeyBusiness, SshKeyBusiness>();
             services.AddScoped<ITemplateBusiness, TemplateBusiness>();
+            services.AddScoped<IDomaineNameBusiness, DomaineNameBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

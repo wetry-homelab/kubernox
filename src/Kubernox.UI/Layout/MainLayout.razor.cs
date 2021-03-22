@@ -33,12 +33,12 @@ namespace Kubernox.UI.Layout
             Dispatcher.Dispatch(new FetchClustersAction());
             Dispatcher.Dispatch(new FetchDatacenterAction());
 
-            //connection = new HubConnectionBuilder()
-            //                    .WithUrl($"{BaseUri}/ws/notifications")
-            //                    .Build();
-            //BindWsCallbacks();
+            connection = new HubConnectionBuilder()
+                                .WithUrl($"{BaseUri}ws/notifications")
+                                .Build();
+            BindWsCallbacks();
 
-            //await connection.StartAsync();
+            await connection.StartAsync();
         }
 
         private void BindWsCallbacks()

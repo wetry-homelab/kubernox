@@ -38,5 +38,7 @@ ingress:
         service: kubernox-service
       - path: /logs
         service: kubernox-service
+      - path: /ws
+        service: kubernox-service
       - path: /
         service: kubernox-host

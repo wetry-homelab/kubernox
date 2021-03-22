@@ -2,6 +2,7 @@
 using Infrastructure.Contracts.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Kubernox.Service.Controllers
@@ -15,6 +16,9 @@ namespace Kubernox.Service.Controllers
 
         public TemplateController(ILogger<TemplateController> logger, ITemplateBusiness templateBusiness)
         {
+            if (templateBusiness == null)
+                throw new ArgumentNullException(nameof(templateBusiness));
+
             this.logger = logger;
             this.templateBusiness = templateBusiness;
         }

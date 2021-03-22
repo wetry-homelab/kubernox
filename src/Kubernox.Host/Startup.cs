@@ -94,10 +94,10 @@ namespace Kubernox.Host
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                //endpoints.MapFallbackToFile("index.html");
+                endpoints.MapFallbackToFile("index.html");
 
-                endpoints.MapRazorPages(); // <- Add this
-                endpoints.MapFallbackToPage("/_Host"); // <- Change method + file
+                //endpoints.MapRazorPages(); // <- Add this
+                //endpoints.MapFallbackToPage("index.html"); // <- Change method + file
             });
         }
     }
