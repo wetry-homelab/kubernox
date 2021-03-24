@@ -10,18 +10,18 @@ namespace Kubernox.Service.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DomaineNameController : ControllerBase
+    public class DomainNameController : ControllerBase
     {
-        private readonly ILogger<DomaineNameController> logger;
+        private readonly ILogger<DomainNameController> logger;
         private readonly IDomaineNameBusiness domaineNameBusiness;
 
-        public DomaineNameController(ILogger<DomaineNameController> logger, IDomaineNameBusiness clusterBusiness)
+        public DomainNameController(ILogger<DomainNameController> logger, IDomaineNameBusiness domaineNameBusiness)
         {
             if (domaineNameBusiness == null)
                 throw new ArgumentNullException(nameof(domaineNameBusiness));
 
             this.logger = logger;
-            this.domaineNameBusiness = clusterBusiness;
+            this.domaineNameBusiness = domaineNameBusiness;
         }
 
         [HttpGet]

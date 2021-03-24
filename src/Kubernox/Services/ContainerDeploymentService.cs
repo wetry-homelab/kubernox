@@ -504,10 +504,11 @@ namespace Kubernox.Services
                     { "traefik.http.routers.traefik.tls.domains[0].main", $"{configuration.Kubernox.Domain}" },
                     { "traefik.http.routers.traefik.tls.domains[0].sans", $"*.{configuration.Kubernox.Domain}" }
                 },
-                Env = new List<string>()
-                {
-                    $"GANDIV5_API_KEY={configuration.Traefik.ApiKey}"
-                },
+                Env = configuration.Traefik.LetsencryptProviders.Select(s => $"{s.Key}={s.Value}").ToList(),
+                //Env = new List<string>()
+                //{
+                //    $"GANDIV5_API_KEY={configuration.Traefik.GandiApiKey}"
+                //},
                 HostConfig = new HostConfig()
                 {
                     NetworkMode = "host",

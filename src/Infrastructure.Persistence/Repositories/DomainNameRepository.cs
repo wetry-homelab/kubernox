@@ -45,17 +45,17 @@ namespace Infrastructure.Persistence.Repositories
 
         public Task<DomainName> ReadAsync(Expression<Func<DomainName, bool>> predicate)
         {
-            return serviceDbContext.DomainName.Include(i => i.SubDomains).FirstOrDefaultAsync(predicate);
+            return serviceDbContext.DomainName.FirstOrDefaultAsync(predicate);
         }
 
         public Task<DomainName[]> ReadsAsync()
         {
-            return serviceDbContext.DomainName.Include(i => i.SubDomains).ToArrayAsync();
+            return serviceDbContext.DomainName.ToArrayAsync();
         }
 
         public Task<DomainName[]> ReadsAsync(Expression<Func<DomainName, bool>> predicate)
         {
-            return serviceDbContext.DomainName.Include(i => i.SubDomains).Where(predicate).ToArrayAsync();
+            return serviceDbContext.DomainName.Where(predicate).ToArrayAsync();
         }
 
         public Task<int> UpdateAsync(DomainName entity)

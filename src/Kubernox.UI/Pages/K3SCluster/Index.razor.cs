@@ -1,16 +1,9 @@
-﻿using AntDesign;
-using Fluxor;
-using Infrastructure.Contracts.Request;
-using Kubernox.UI.Services.Interfaces;
+﻿using Fluxor;
 using Kubernox.UI.Store.Actions.Cluster;
-using Kubernox.UI.Store.Actions.Datacenter;
-using Kubernox.UI.Store.Actions.SshKey;
-using Kubernox.UI.Store.Actions.Template;
 using Kubernox.UI.Store.States;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
-using System.Threading.Tasks;
+using System;
 
 namespace Kubernox.UI.Pages.K3SCluster
 {
@@ -72,6 +65,18 @@ namespace Kubernox.UI.Pages.K3SCluster
 
         private void SshKeyState_StateChanged(object sender, SshKeyState e)
         {
+            StateHasChanged();
+        }
+
+        private void DisplayModal()
+        {
+            Visible = true;
+            StateHasChanged();
+        }
+
+        private void HideModal(MouseEventArgs e)
+        {
+            Visible = false;
             StateHasChanged();
         }
     }

@@ -2,18 +2,18 @@
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 @inject IStringLocalizer<App> Translator
 
-<Button Type="primary" class="mb-4 mt-4" Style="float:right;" OnClick="@(()=>{ visible = true; })">Create or import SSH Key</Button>
+<Button Type="primary" class="mb-4 mt-4" Style="float:right;" OnClick="@(()=>{ visible = true; StateHasChanged(); })">Create or import SSH Key</Button>
 
-<SshKeyCreateModal Visible="@visible" />
+<SshKeyCreateModal Visible="@visible" OnCloseCallback="@HideModal" />
 
 @if (SshKeyState != null && SshKeyState.Value != null && SshKeyState.Value.IsLoading)
 {
-    <div class="mt-4" style="width:100%; text-align:center;">
-        <Spin Style="text-align:center; margin:auto" size="large" />
-    </div>
+<div class="mt-4" style="width:100%; text-align:center;">
+    <Spin Style="text-align:center; margin:auto" size="large" />
+</div>
 }
 
 @if (SshKeyState != null && SshKeyState.Value != null && SshKeyState.Value.SshKeys != null)
 {
-    <SshKeyTable />
+<SshKeyTable />
 }

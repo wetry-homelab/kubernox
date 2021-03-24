@@ -1,5 +1,6 @@
 using Fluxor;
 using Kubernox.UI.Layout;
+using Kubernox.UI.Services;
 using Kubernox.UI.Services.Interfaces;
 using Kubernox.UI.Store;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -55,6 +56,7 @@ namespace Kubernox.UI
             builder.Services.AddScoped<IDatacenterService, DatacenterService>();
             builder.Services.AddScoped<ITemplateService, TemplateService>();
             builder.Services.AddScoped<ISshKeyService, SshKeyService>();
+            builder.Services.AddScoped<IDomainNameService, DomainNameService>();
         }
     }
 }

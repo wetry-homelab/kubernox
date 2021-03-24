@@ -77,7 +77,8 @@ prometheus:
 # Configure traefik provider
 traefik:
     path: /home/tech/traefik.yml
-    api_key: 6BRQMprek9288sSA55C9bhsa
+    letsencrypt_providers:
+        GANDIV5_API_KEY: 6BRQMprek9288sSA55C9bhsa
 
 kubernox:
     domain: ice-artefact.com

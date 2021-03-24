@@ -12,7 +12,6 @@ namespace Infrastructure.Persistence.Contexts
         public DbSet<DomainName> DomainName { get; set; }
         public DbSet<Metric> Metric { get; set; }
         public DbSet<SshKey> SshKey { get; set; }
-        public DbSet<SubDomain> SubDomain { get; set; }
         public DbSet<Template> Template { get; set; }
         public DbSet<User> User { get; set; }
 
@@ -34,10 +33,6 @@ namespace Infrastructure.Persistence.Contexts
             modelBuilder.Entity<Cluster>()
                         .HasOne(c => c.SshKey)
                         .WithMany(n => n.Clusters);
-
-            modelBuilder.Entity<DomainName>()
-                        .HasMany(c => c.SubDomains)
-                        .WithOne(n => n.DomainName);
         }
     }
 }

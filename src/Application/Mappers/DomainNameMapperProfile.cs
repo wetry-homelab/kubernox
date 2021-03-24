@@ -9,7 +9,8 @@ namespace Application.Mappers
     {
         public DomainNameMapperProfile()
         {
-            CreateMap<DomainName, DomainNameItemResponse>();
+            CreateMap<DomainName, DomainNameItemResponse>()
+                .ForMember(d => d.RootDomain, (e) => e.MapFrom(p => p.Value));
             CreateMap<DomainNameCreateRequest, DomainName>();
         }
     }

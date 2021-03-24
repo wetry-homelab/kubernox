@@ -20,6 +20,12 @@ providers:
 entryPoints:
   web:
     address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
   websecure:
     address: ":443"
   k3s:
@@ -29,6 +35,14 @@ pilot:
     token: "679a4346-6f15-445c-a697-79a692971bff"
 
 certificatesResolvers:
+  certificatesresolvers:
+    acme:
+      tlsChallenge: {}
+      email: grasseelsp@hotmail.com
+      storage: acme.json
+      httpChallenge:
+        entryPoint: "websecure"
+
   gandiResolver:
     acme:
       tlsChallenge: {}
@@ -36,4 +50,13 @@ certificatesResolvers:
       storage: acme.json
       dnsChallenge:
         provider: gandiv5
+        delayBeforeCheck: 30
+
+  ovhResolver:
+    acme:
+      tlsChallenge: {}
+      email: grasseelsp@hotmail.com
+      storage: acme.json
+      dnsChallenge:
+        provider: ovh
         delayBeforeCheck: 30

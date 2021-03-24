@@ -2,6 +2,7 @@
 using Kubernox.UI.Store.Actions.SshKey;
 using Kubernox.UI.Store.States;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Kubernox.UI.Pages.Ssh
 {
@@ -24,6 +25,12 @@ namespace Kubernox.UI.Pages.Ssh
 
         private void SshKeyState_StateChanged(object sender, SshKeyState e)
         {
+            StateHasChanged();
+        }
+
+        private void HideModal(MouseEventArgs e)
+        {
+            visible = false;
             StateHasChanged();
         }
     }

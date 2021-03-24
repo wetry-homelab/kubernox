@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
@@ -12,10 +11,14 @@ namespace Domain.Entities
         public string Name { get; set; }
 
         [Required]
-        public string RootDomain { get; set; }
+        public string Value { get; set; }
 
         [Required]
         public string ValidationKey { get; set; }
+
+        public string RootDomainId { get; set; }
+
+        public string ClusterId { get; set; }
 
         public DateTime? ValidationDate { get; set; }
 
@@ -23,7 +26,5 @@ namespace Domain.Entities
         public DateTime CreateAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? DeleteAt { get; set; }
-
-        public virtual ICollection<SubDomain> SubDomains { get; set; }
     }
 }

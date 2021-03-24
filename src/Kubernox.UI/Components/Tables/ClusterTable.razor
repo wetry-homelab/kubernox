@@ -21,32 +21,37 @@
     </AntDesign.Column>
     <AntDesign.Column @bind-Field="@context.State">
         @if (context.State == "Ready")
-                {
-        <Tag Color="blue-inverse">Ready</Tag>
+        {
+            <Tag Color="green">Ready</Tag>
         }
         else
         {
-        <Tag Color="orange">Not Ready</Tag>
+            <Tag Color="orange">Not Ready</Tag>
         }
     </AntDesign.Column>
     <AntDesign.Column @bind-Field="@context.Nodes">
         @foreach (var node in context.Nodes.OrderBy(n => n.Ip).ToList())
-                {
+        {
         <div class="block m-2">
             @if (node.State == "Ready")
-                        {
-            <Tag Color="blue-inverse" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
+            {
+                <Tag Color="green" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
             }
             else
             {
-            <Tag Color="orange" Class="mb-1" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
+                <Tag Color="orange" Class="mb-1" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
             }
         </div>
         }
     </AntDesign.Column>
     <ActionColumn>
         <Space>
-            <SpaceItem><Button OnClick="() => DownloadKubeConfig(context.Id)">Download KubeConfig</Button></SpaceItem>
+            <SpaceItem>
+                @if (context.State == "Ready")
+                {
+                    <Button OnClick="() => DownloadKubeConfig(context.Id)">Download KubeConfig</Button>
+                }
+            </SpaceItem>
             <SpaceItem><Button OnClick="() => ViewDetails(context.Id)">View Cluster</Button></SpaceItem>
         </Space>
     </ActionColumn>

@@ -14,7 +14,6 @@ namespace Kubernox.UI.Pages.Template
         [Inject]
         IDispatcher Dispatcher { get; set; }
         
-        public string Layout { get; set; } = FormLayout.Vertical;
         protected ITable table;
         protected bool visible = false;
 

@@ -3,6 +3,8 @@ namespace: kubernox
 network: kubernox_network
 extensions:
 - name: zipkin
+- name: seq
+  logPath: ./.logs
 
 services:
 - name: kubernox-host
@@ -20,19 +22,15 @@ services:
   - name: ASPNETCORE_ENVIRONMENT
     value: Development
 
-- name: kubernox-workers
-  project: src/Kubernox.Workers/Kubernox.Workers.csproj
-  replicas: 1
-  bindings:
-  - port: 4002
-  env:
-  - name: ASPNETCORE_ENVIRONMENT
-    value: Development
-
 ingress:
   - name: ingress
     bindings:
       - port: 80
+        protocol: http
+        name: http-redirect
+      - port: 443
+        protocol: https
+        name: https-redirect
     rules:
       - path: /api
         service: kubernox-service

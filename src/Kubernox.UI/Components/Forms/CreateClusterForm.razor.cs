@@ -30,8 +30,6 @@ namespace Kubernox.UI.Components.Forms
 
         protected override void OnInitialized()
         {
-            Console.WriteLine(JsonSerializer.Serialize(CreateRequest));
-
             base.OnInitialized();
         }
 

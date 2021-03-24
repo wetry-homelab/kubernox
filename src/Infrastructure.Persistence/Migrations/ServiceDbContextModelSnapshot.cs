@@ -34,7 +34,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 3, 22, 13, 50, 46, 846, DateTimeKind.Utc).AddTicks(1870));
+                        .HasDefaultValue(new DateTime(2021, 3, 24, 20, 24, 26, 762, DateTimeKind.Utc).AddTicks(3640));
 
                     b.Property<DateTime?>("DeleteAt")
                         .HasColumnType("timestamp without time zone");
@@ -222,6 +222,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<string>("ClusterId")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -231,14 +234,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("RootDomain")
-                        .IsRequired()
+                    b.Property<string>("RootDomainId")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("ValidationDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ValidationKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -305,48 +311,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SshKey");
-                });
-
-            modelBuilder.Entity("Domain.Entities.SubDomain", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Challenge")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ChallengeType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DeleteAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("DomainNameId")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ExpiryDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("FullChain")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PrivateKey")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Sub")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DomainNameId");
-
-                    b.ToTable("SubDomain");
                 });
 
             modelBuilder.Entity("Domain.Entities.Template", b =>
@@ -435,23 +399,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Cluster");
                 });
 
-            modelBuilder.Entity("Domain.Entities.SubDomain", b =>
-                {
-                    b.HasOne("Domain.Entities.DomainName", "DomainName")
-                        .WithMany("SubDomains")
-                        .HasForeignKey("DomainNameId");
-
-                    b.Navigation("DomainName");
-                });
-
             modelBuilder.Entity("Domain.Entities.Cluster", b =>
                 {
                     b.Navigation("Nodes");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DomainName", b =>
-                {
-                    b.Navigation("SubDomains");
                 });
 
             modelBuilder.Entity("Domain.Entities.SshKey", b =>

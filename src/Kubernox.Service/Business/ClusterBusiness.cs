@@ -26,6 +26,7 @@ namespace Kubernox.Service.Business
         private readonly ITraefikRedisStore traefikCache;
         private readonly IMapper mapper;
         private readonly string domain;
+        private readonly string defaultResolver;
 
         public ClusterBusiness(IClusterRepository clusterRepository, IDatacenterRepository datacenterRepository,
             ISshKeyRepository sshKeyRepository, IClusterNodeRepository clusterNodeRepository,
@@ -60,6 +61,7 @@ namespace Kubernox.Service.Business
             this.templateRepository = templateRepository;
             this.traefikCache = traefikCache;
             this.domain = configuration["Kubernox:Domain"];
+            this.defaultResolver = configuration["Kubernox:DefaultResolver"];
             this.metricRepository = metricRepository;
             this.mapper = mapper;
         }
@@ -205,32 +207,27 @@ namespace Kubernox.Service.Business
             values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls", "true"));
             values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/service", $"{newCluster.Name}-https-lb"));
             values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/rule", $"Host(`{newCluster.Name}.{domain}`)"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls/domains/0/main", $"{newCluster.Name}.{domain}"));
             values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls/domains/0/sans/0", $"*.{domain}"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls/certresolver", $"gandiResolver"));
-
-            // HTTPS Custom Rules
-            values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-https-custom-lb/loadbalancer/servers/0/url", $"https://{newCluster.Ip}:443"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/entrypoints/0", $"websecure"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls", "true"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/service", $"{newCluster.Name}-https-custom-lb"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/rule", $"Host(`epic.{domain}`)"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls/domains/0/main", $"epic.{domain}"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls/domains/0/sans/0", $"*.{domain}"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls/certresolver", $"gandiResolver"));
-
-
-            //values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/rule", $"Host(`{newCluster.Name}.{domain}`)"));
-            //values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-https.entrypoints/0", $"websecure"));
-            //values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/service", $"{newCluster.Name}-http-lb"));
-            //values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls/certresolver", $"gandiResolver"));
-            //values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-https.tls.domains[0].main", $"{newCluster.Name}.{domain}"));
-            //values.Add(new KeyValuePair<string, string>($"traefik.http.routers.{newCluster.Name}-https.tls.domains[0].sans", $"*.{domain}"));
-
-            //values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-http-lb/loadbalancer/servers/0/url", $"http://{newCluster.Ip}:80"));
+            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls/certresolver", $"{defaultResolver}"));
 
             await traefikCache.StoreValues(values);
         }
+
+        //private async Task LinkDomainToClusterAsync()
+        //{
+        //    var values = new List<KeyValuePair<string, string>>();
+
+        //    values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-https-custom-lb/loadbalancer/servers/0/url", $"https://{newCluster.Ip}:443"));
+        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/entrypoints/0", $"websecure"));
+        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls", "true"));
+        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/service", $"{newCluster.Name}-https-custom-lb"));
+        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/rule", $"Host(`epic.{domain}`)"));
+        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls/domains/0/main", $"epic.{domain}"));
+        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls/domains/0/sans/0", $"*.{domain}"));
+        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls/certresolver", $"gandiResolver"));
+
+        //    await traefikCache.StoreValues(values);
+        //}
 
         private int ExtractBaseId(int valueMaxOrder)
         {
