@@ -20,9 +20,11 @@
                     </Select>
                 }
             </FormItem>
-            <FormItem Label="Full Chain" Style="padding:1em">
-                <TextArea Disabled="@DisableCertificateField()" @bind-Value="@context.CertificateFile" MinRows="6" rows="6" />
-            </FormItem>
+            @if(DiplayCertificateField()){
+                <FormItem Label="Full Chain" Style="padding:1em">
+                        <TextArea Disabled="@DisableCertificateField()" @bind-Value="@context.CertificateFile" MinRows="6" rows="6" />
+                </FormItem>
+            }
         </AntDesign.Col>
         <AntDesign.Col Span="7">
             <FormItem Label="Resolver" Style="padding:1em">
@@ -36,9 +38,11 @@
                     </SelectOptions>
                 </Select>
             </FormItem>
-            <FormItem Label="Private Key" Style="padding:1em">
-                <TextArea Disabled="@DisableCertificateField()" @bind-Value="@context.KeyFile" MinRows="6" rows="6" />
-            </FormItem>
+            @if(DiplayCertificateField()){
+                <FormItem Label="Private Key" Style="padding:1em">
+                    <TextArea Disabled="@DisableCertificateField()" @bind-Value="@context.KeyFile" MinRows="6" rows="6" />
+                </FormItem>
+            }
         </AntDesign.Col>
         <AntDesign.Col Span="2" Style="padding:1em">
             @if (Entry != null)
