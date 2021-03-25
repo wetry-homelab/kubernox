@@ -51,7 +51,7 @@ namespace Kubernox.Workers.Business
             }
         }
 
-        private async Task ProcessNode(ProxmoxVEAPI.Client.Contracts.Response.Node[] proxmoxNodes, Domain.Entities.DatacenterNode[] databaseNodes, ProxmoxVEAPI.Client.Contracts.Response.ClusterStatus node)
+        private async Task ProcessNode(ProxmoxVEAPI.Client.Contracts.Response.Node[] proxmoxNodes, Application.Entities.DatacenterNode[] databaseNodes, ProxmoxVEAPI.Client.Contracts.Response.ClusterStatus node)
         {
             var selectedNode = databaseNodes.FirstOrDefault(n => n.Name == node.Name && n.Ip == node.Ip);
             var proxmoxNode = proxmoxNodes.FirstOrDefault(n => n.NodeName == node.Name);
@@ -70,7 +70,7 @@ namespace Kubernox.Workers.Business
             }
             else
             {
-                selectedNode = new Domain.Entities.DatacenterNode()
+                selectedNode = new Application.Entities.DatacenterNode()
                 {
                     Ip = node.Ip,
                     Name = node.Name,

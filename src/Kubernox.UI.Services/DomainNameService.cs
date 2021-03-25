@@ -23,12 +23,20 @@ namespace Kubernox.UI.Services
             return httpResponse.IsSuccessStatusCode;
         }
 
-        public async Task<DomainNameItemResponse[]> GetDomainsAsync()
+        public async Task<DomainItemResponse[]> GetDomainsAsync()
         {
             var httpResponse = await httpClient.GetAsync("api/domainname");
             var response = await httpResponse.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<DomainNameItemResponse[]>(response);
+            return JsonSerializer.Deserialize<DomainItemResponse[]>(response);
+        }
+
+        public async Task<ClusterDomainItemResponse[]> GetDomainsForClusterAsync(string clusterId)
+        {
+            var httpResponse = await httpClient.GetAsync($"api/domainname/cluster/{clusterId}");
+            var response = await httpResponse.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<ClusterDomainItemResponse[]>(response);
         }
 
         public async Task<bool> ValidateDomainNameAsync(string id)

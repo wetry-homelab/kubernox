@@ -1,9 +1,9 @@
 ﻿using Application.Core;
-using Domain.Entities;
+using Application.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IDomainNameRepository : BaseRepository<DomainName>
+    public interface IDomainNameRepository : BaseRepository<Domain>
     {
 
     }

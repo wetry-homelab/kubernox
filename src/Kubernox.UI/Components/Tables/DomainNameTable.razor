@@ -5,7 +5,7 @@
 @inject IJSRuntime JSRuntime
 @inject IStringLocalizer<App> Translator
 
-<Table @ref="table" TItem="DomainNameItemResponse" DataSource="@DomainNameState.Value.DomainNames">
+<Table @ref="table" TItem="DomainItemResponse" DataSource="@DomainNameState.Value.DomainNames">
     <AntDesign.Column @bind-Field="@context.RootDomain" Sortable />
     <AntDesign.ActionColumn style="max-width:40%" Title="Validation state">
         @if (context.ValidationDate != null)

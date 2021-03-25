@@ -6,8 +6,11 @@ namespace Application.Interfaces
 {
     public interface IDomaineNameBusiness
     {
-        Task<DomainNameItemResponse[]> ListDomainsAsync();
+        Task<DomainItemResponse[]> ListDomainsAsync();
+        Task<DomainItemResponse[]> ListDomainsForClusterAsync(string clusterId);
+
         Task<bool> CreateDomainAsync(DomainNameCreateRequest request);
         Task<bool> ValidateDomainAsync(string id);
+        Task<bool> DeleteDomainAsync(string id);
     }
 }

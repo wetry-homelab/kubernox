@@ -1,5 +1,5 @@
 ﻿using Application.Messages;
-using Domain.Entities;
+using Application.Entities;
 using System;
 using System.Threading.Tasks;
 

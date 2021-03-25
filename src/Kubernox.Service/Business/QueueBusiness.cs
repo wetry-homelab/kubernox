@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Messages;
-using Domain.Entities;
+using Application.Entities;
 using Kubernox.Service.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;

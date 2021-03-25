@@ -19,7 +19,7 @@ namespace Infrastructure.Persistence.Migrations
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("Domain.Entities.Cluster", b =>
+            modelBuilder.Entity("Application.Entities.Cluster", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -34,7 +34,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 3, 24, 20, 24, 26, 762, DateTimeKind.Utc).AddTicks(3640));
+                        .HasDefaultValue(new DateTime(2021, 3, 25, 8, 44, 30, 358, DateTimeKind.Utc).AddTicks(6560));
 
                     b.Property<DateTime?>("DeleteAt")
                         .HasColumnType("timestamp without time zone");
@@ -95,7 +95,45 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Cluster");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ClusterNode", b =>
+            modelBuilder.Entity("Application.Entities.ClusterDomain", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClusterId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DeleteAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("FullChain")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrivateKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Resolver")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RootDomainId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClusterDomain");
+                });
+
+            modelBuilder.Entity("Application.Entities.ClusterNode", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -131,7 +169,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("ClusterNode");
                 });
 
-            modelBuilder.Entity("Domain.Entities.DatacenterNode", b =>
+            modelBuilder.Entity("Application.Entities.DatacenterNode", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -217,12 +255,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("DatacenterNode");
                 });
 
-            modelBuilder.Entity("Domain.Entities.DomainName", b =>
+            modelBuilder.Entity("Application.Entities.Domain", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClusterId")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreateAt")
@@ -232,9 +267,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RootDomainId")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("ValidationDate")
@@ -250,10 +282,10 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DomainName");
+                    b.ToTable("Domain");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Metric", b =>
+            modelBuilder.Entity("Application.Entities.Metric", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -277,7 +309,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Metric");
                 });
 
-            modelBuilder.Entity("Domain.Entities.SshKey", b =>
+            modelBuilder.Entity("Application.Entities.SshKey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -313,7 +345,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("SshKey");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Template", b =>
+            modelBuilder.Entity("Application.Entities.Template", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -352,7 +384,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Template");
                 });
 
-            modelBuilder.Entity("Domain.Entities.User", b =>
+            modelBuilder.Entity("Application.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -379,9 +411,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Cluster", b =>
+            modelBuilder.Entity("Application.Entities.Cluster", b =>
                 {
-                    b.HasOne("Domain.Entities.SshKey", "SshKey")
+                    b.HasOne("Application.Entities.SshKey", "SshKey")
                         .WithMany("Clusters")
                         .HasForeignKey("SshKeyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -390,21 +422,21 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("SshKey");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ClusterNode", b =>
+            modelBuilder.Entity("Application.Entities.ClusterNode", b =>
                 {
-                    b.HasOne("Domain.Entities.Cluster", "Cluster")
+                    b.HasOne("Application.Entities.Cluster", "Cluster")
                         .WithMany("Nodes")
                         .HasForeignKey("ClusterId");
 
                     b.Navigation("Cluster");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Cluster", b =>
+            modelBuilder.Entity("Application.Entities.Cluster", b =>
                 {
                     b.Navigation("Nodes");
                 });
 
-            modelBuilder.Entity("Domain.Entities.SshKey", b =>
+            modelBuilder.Entity("Application.Entities.SshKey", b =>
                 {
                     b.Navigation("Clusters");
                 });

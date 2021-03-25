@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Infrastructure.Contracts.Response
 {
-    public class DomainNameItemResponse
+    public class DomainItemResponse
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }

@@ -3,7 +3,7 @@ using Application.Interfaces;
 using AutoMapper;
 using DnsClient;
 using DnsClient.Protocol;
-using Domain.Entities;
+using Application.Entities;
 using Infrastructure.Contracts.Request;
 using Infrastructure.Contracts.Response;
 using System;
@@ -47,10 +47,16 @@ namespace Kubernox.Service.Business
             this.clusterRepository = clusterRepository;
         }
 
-        public async Task<DomainNameItemResponse[]> ListDomainsAsync()
+        public async Task<DomainItemResponse[]> ListDomainsAsync()
         {
-            var domains = await domainNameRepository.ReadsAsync();
-            return domains.Select(d => mapper.Map<DomainNameItemResponse>(d)).OrderBy(d => d.RootDomain).ToArray();
+            var domains = await domainNameRepository.ReadsAsync(d => d.DeleteAt == null);
+            return domains.Select(d => mapper.Map<DomainItemResponse>(d)).OrderBy(d => d.RootDomain).ToArray();
+        }
+
+        public async Task<DomainItemResponse[]> ListDomainsForClusterAsync(string clusterId)
+        {
+            var domains = await domainNameRepository.ReadsAsync(d => d.DeleteAt == null);
+            return domains.Select(d => mapper.Map<DomainItemResponse>(d)).OrderBy(d => d.RootDomain).ToArray();
         }
 
         public async Task<bool> CreateDomainAsync(DomainNameCreateRequest request)
@@ -60,7 +66,7 @@ namespace Kubernox.Service.Business
             if (domainExist != null)
                 throw new DuplicateException();
 
-            var domainNameToCreate = mapper.Map<DomainName>(request);
+            var domainNameToCreate = mapper.Map<Domain>(request);
             domainNameToCreate.Value = request.RootDomain;
             domainNameToCreate.ValidationKey = GenerateChallenge(48);
 
@@ -95,12 +101,12 @@ namespace Kubernox.Service.Business
             if (domainName == null)
                 throw new NotFoundException();
 
-            var subDomains = await domainNameRepository.ReadsAsync(d => d.RootDomainId == id);
+            //var subDomains = await domainNameRepository.ReadsAsync(d => d.RootDomainId == id);
 
-            if (await domainNameRepository.DeleteAsync(domainName) > 0)
-            {
-                return await domainNameRepository.DeletesAsync(subDomains) == subDomains.Length;
-            }
+            //if (await domainNameRepository.DeleteAsync(domainName) > 0)
+            //{
+            //    return await domainNameRepository.DeletesAsync(subDomains) == subDomains.Length;
+            //}
 
             return false;
         }
@@ -116,11 +122,7 @@ namespace Kubernox.Service.Business
 
             if (domainName.ValidationDate.HasValue)
             {
-                if (request.LinkRoot)
-                {
-                    domainName.ClusterId = cluster.Id;
-                }
-                else if (!string.IsNullOrEmpty(request.Resolver))
+                if (!string.IsNullOrEmpty(request.Resolver))
                 {
 
                 }
@@ -131,6 +133,11 @@ namespace Kubernox.Service.Business
             }
 
             return false;
+        }
+
+        private async Task RefreshClusterCacheRouting()
+        {
+
         }
 
         private async Task LinkDomainToClusterCacheAsync(string clusterName, string ip, string domain, string resolver)

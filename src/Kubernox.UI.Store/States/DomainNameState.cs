@@ -4,15 +4,22 @@ namespace Kubernox.UI.Store.States
 {
     public class DomainNameState : BaseState
     {
-        public DomainNameItemResponse[] DomainNames { get; }
+        public DomainItemResponse[] DomainNames { get; }
+        public ClusterDomainItemResponse[] ClusterDomainNames { get; }
+        public DomainItemResponse DomainName { get; }
 
-        public DomainNameItemResponse DomainName { get; }
-
-        public DomainNameState(DomainNameItemResponse[] domainNames, DomainNameItemResponse domainName, bool isLoading, string error)
+        public DomainNameState(DomainItemResponse[] domainNames, 
+            DomainItemResponse domainName, bool isLoading, string error)
             : base(isLoading, error)
         {
             DomainNames = domainNames;
             DomainName = domainName;
+        }
+
+        public DomainNameState(ClusterDomainItemResponse[] clusterDomainNames, bool isLoading, string error)
+            : base(isLoading, error)
+        {
+            ClusterDomainNames = clusterDomainNames;
         }
     }
 }

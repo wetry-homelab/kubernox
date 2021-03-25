@@ -6,7 +6,8 @@ namespace Kubernox.UI.Services.Interfaces
 {
     public interface IDomainNameService
     {
-        Task<DomainNameItemResponse[]> GetDomainsAsync();
+        Task<DomainItemResponse[]> GetDomainsAsync();
+        Task<ClusterDomainItemResponse[]> GetDomainsForClusterAsync(string clusterId);
         Task<bool> CreateDomainNameAsync(DomainNameCreateRequest request);
         Task<bool> ValidateDomainNameAsync(string id);
     }

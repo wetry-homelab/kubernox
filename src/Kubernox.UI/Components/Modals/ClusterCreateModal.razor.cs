@@ -46,6 +46,7 @@ namespace Kubernox.UI.Components.Modals
         private void HandleCancel(MouseEventArgs e)
         {
             OnCloseCallback.InvokeAsync(e).Wait();
+            StateHasChanged();
         }
     }
 }

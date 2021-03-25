@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
+using Application.Entities;
 using k8s;
 using Microsoft.Extensions.Logging;
 using System;

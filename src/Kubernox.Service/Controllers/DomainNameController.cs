@@ -30,8 +30,14 @@ namespace Kubernox.Service.Controllers
             return Ok(await domaineNameBusiness.ListDomainsAsync());
         }
 
+        [HttpGet("cluster/{id}")]
+        public async Task<IActionResult> GetClusterDomain(string clusterId)
+        {
+            return Ok(await domaineNameBusiness.ListDomainsForClusterAsync(clusterId));
+        }
+
         [HttpPost]
-        public async Task<IActionResult> CreateDomainName([FromBody] DomainNameCreateRequest request)
+        public async Task<IActionResult> CreateDomainNameAsync([FromBody] DomainNameCreateRequest request)
         {
             try
             {
@@ -71,6 +77,29 @@ namespace Kubernox.Service.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "Error on validate domain.");
+            }
+
+            return BadRequest();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDomainNameAsync([FromRoute] string id)
+        {
+            try
+            {
+                if ((await domaineNameBusiness.DeleteDomainAsync(id)))
+                {
+                    return Ok();
+                }
+            }
+            catch (NotFoundException ex)
+            {
+                logger.LogWarning(ex, "Error on delete domain.");
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error on delete domain.");
             }
 
             return BadRequest();

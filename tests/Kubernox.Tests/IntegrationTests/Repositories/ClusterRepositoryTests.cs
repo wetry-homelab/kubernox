@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Application.Entities;
 using Infrastructure.Persistence.Repositories;
 using Kubernox.Tests.Fixtures;
 using Kubernox.Tests.Helpers;

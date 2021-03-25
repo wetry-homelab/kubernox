@@ -16,6 +16,9 @@ services:
 - name: kubernox-service
   project: src/Kubernox.Service/Kubernox.Service.csproj
   replicas: 1
+  liveness:
+    http:
+      path: /health
   bindings:
   - port: 4001
   env:

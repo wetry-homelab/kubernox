@@ -1,5 +1,5 @@
 ﻿using Application.Core;
-using Domain.Entities;
+using Application.Entities;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;

@@ -4,6 +4,7 @@ using Infrastructure.Contracts.Request;
 using Infrastructure.Validators;
 using Kubernox.UI.Core;
 using Kubernox.UI.Services.Interfaces;
+using Kubernox.UI.Store.Actions.DomainName;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
@@ -70,6 +71,7 @@ namespace Kubernox.UI.Components.DomainName
                 if (claimResult)
                 {
                     DomainNameCreateRequest = new DomainNameCreateRequest();
+                    Dispatcher.Dispatch(new FetchDomainNameAction());
 
                     await OnCloseCallback.InvokeAsync(e);
 

@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Contracts.Response;
 using AutoMapper;
-using Domain.Entities;
+using Application.Entities;
 
 namespace Application.Mappers
 {

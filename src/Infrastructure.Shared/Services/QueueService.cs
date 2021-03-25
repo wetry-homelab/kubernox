@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Messages;
-using Domain.Entities;
+using Application.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;

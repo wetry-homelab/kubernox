@@ -1,6 +1,6 @@
 ﻿using Application.Core;
 using Application.Interfaces;
-using Domain.Entities;
+using Application.Entities;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

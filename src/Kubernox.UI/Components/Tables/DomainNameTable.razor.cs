@@ -36,6 +36,7 @@ namespace Kubernox.UI.Components.Tables
             {
                 Dispatcher.Dispatch(new FetchDomainNameAction());
                 ValidationInProgress = false;
+                StateHasChanged();
 
                 await NotificationService.Open(new NotificationConfig()
                 {
@@ -47,6 +48,8 @@ namespace Kubernox.UI.Components.Tables
             else
             {
                 ValidationInProgress = false;
+                StateHasChanged();
+
                 await NotificationService.Open(new NotificationConfig()
                 {
                     Message = Translator.GetString("CLAIM_SUCCESS_NOTIFICATION_TITLE").Value,

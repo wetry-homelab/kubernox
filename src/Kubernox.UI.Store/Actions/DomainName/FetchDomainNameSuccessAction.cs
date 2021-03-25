@@ -4,9 +4,9 @@ namespace Kubernox.UI.Store.Actions.DomainName
 {
     public class FetchDomainNameSuccessAction
     {
-        public DomainNameItemResponse[] DomainNames { get; }
+        public DomainItemResponse[] DomainNames { get; }
 
-        public FetchDomainNameSuccessAction(DomainNameItemResponse[] domainNames)
+        public FetchDomainNameSuccessAction(DomainItemResponse[] domainNames)
         {
             DomainNames = domainNames;
         }

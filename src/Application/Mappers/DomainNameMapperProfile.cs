@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Entities;
+using Application.Entities;
 using Infrastructure.Contracts.Request;
 using Infrastructure.Contracts.Response;
 
@@ -9,9 +9,9 @@ namespace Application.Mappers
     {
         public DomainNameMapperProfile()
         {
-            CreateMap<DomainName, DomainNameItemResponse>()
+            CreateMap<Domain, DomainItemResponse>()
                 .ForMember(d => d.RootDomain, (e) => e.MapFrom(p => p.Value));
-            CreateMap<DomainNameCreateRequest, DomainName>();
+            CreateMap<DomainNameCreateRequest, Domain>();
         }
     }
 }

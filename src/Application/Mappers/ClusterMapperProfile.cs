@@ -2,7 +2,7 @@
 using Infrastructure.Contracts.Response;
 using Application.Messages;
 using AutoMapper;
-using Domain.Entities;
+using Application.Entities;
 
 namespace Application.Mappers
 {

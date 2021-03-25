@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Application.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -8,8 +8,9 @@ namespace Infrastructure.Persistence.Contexts
     {
         public DbSet<Cluster> Cluster { get; set; }
         public DbSet<ClusterNode> ClusterNode { get; set; }
+        public DbSet<ClusterDomain> ClusterDomain { get; set; }
         public DbSet<DatacenterNode> DatacenterNode { get; set; }
-        public DbSet<DomainName> DomainName { get; set; }
+        public DbSet<Domain> Domain { get; set; }
         public DbSet<Metric> Metric { get; set; }
         public DbSet<SshKey> SshKey { get; set; }
         public DbSet<Template> Template { get; set; }

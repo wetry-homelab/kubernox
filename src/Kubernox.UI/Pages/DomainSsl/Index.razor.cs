@@ -30,7 +30,6 @@ namespace Kubernox.UI.Pages.DomainSsl
         protected override void OnInitialized()
         {
             DomainNameState.StateChanged += DomainNameState_StateChanged;
-
             Dispatcher.Dispatch(new FetchDomainNameAction());
             base.OnInitialized();
         }

@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 using AutoMapper;
-using Domain.Entities;
+using Application.Entities;
 using Infrastructure.Contracts.Request;
 using Infrastructure.Contracts.Response;
 using Microsoft.Extensions.Logging;

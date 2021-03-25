@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Application.Entities;
 using System.Threading.Tasks;
 
 namespace Application.Interfaces

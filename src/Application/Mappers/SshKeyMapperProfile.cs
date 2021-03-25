@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Entities;
+using Application.Entities;
 using Infrastructure.Contracts.Response;
 
 namespace Application.Mappers

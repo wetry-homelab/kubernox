@@ -1,0 +1,52 @@
+﻿<hr />
+<Form Layout="@Layout" Model="@DomainLinkingRequestContract">
+    <AntDesign.Row>
+        <AntDesign.Col Span="6">
+            <FormItem Label="Subdomain" Style="padding:1em">
+                <Input @bind-Value="@context.SubDomain" />
+            </FormItem>
+        </AntDesign.Col>
+        <AntDesign.Col Span="7">
+            <FormItem Label="Domain" Style="padding:1em">
+                @if (DomainNameState != null && DomainNameState.Value != null && DomainNameState.Value.DomainNames.Any())
+                {
+                    <Select @bind-Value="@context.DomainNameId" TItemValue="string" TItem="string">
+                        <SelectOptions>
+                            @foreach (var domain in DomainNameState.Value.DomainNames)
+                            {
+                                <SelectOption TItemValue="string" TItem="string" Value="@domain.Id" Label="@domain.RootDomain" />
+                            }
+                        </SelectOptions>
+                    </Select>
+                }
+            </FormItem>
+            <FormItem Label="Full Chain" Style="padding:1em">
+                <TextArea Disabled="@DisableCertificateField()" @bind-Value="@context.CertificateFile" MinRows="6" rows="6" />
+            </FormItem>
+        </AntDesign.Col>
+        <AntDesign.Col Span="7">
+            <FormItem Label="Resolver" Style="padding:1em">
+                <Select @bind-Value="@context.Resolver" TItemValue="string" TItem="string" DefaultValue="@("none")">
+                    <SelectOptions>
+                        <SelectOption TItemValue="string" TItem="string" Value="@("none")" Label="None" />
+                        @foreach (var resolver in resolvers)
+                        {
+                            <SelectOption TItemValue="string" TItem="string" Value="@resolver" Label="@resolver" />
+                        }
+                    </SelectOptions>
+                </Select>
+            </FormItem>
+            <FormItem Label="Private Key" Style="padding:1em">
+                <TextArea Disabled="@DisableCertificateField()" @bind-Value="@context.KeyFile" MinRows="6" rows="6" />
+            </FormItem>
+        </AntDesign.Col>
+        <AntDesign.Col Span="2" Style="padding:1em">
+            @if (Entry != null)
+            {
+                <Button Type="primary" Style="margin:2em">Save changes</Button>
+            }else{
+                <Button Type="primary" Style="margin:2em">Add domain to cluster</Button>
+            }
+        </AntDesign.Col>
+    </AntDesign.Row>
+</Form>

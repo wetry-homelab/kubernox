@@ -51,6 +51,7 @@ namespace Kubernox.Service
             services.AddSharedInfrastructure();
             services.AddPersistenceInfrastructure(Configuration);
             services.AddSignalR();
+            services.AddHealthChecks();
 
             services.AddSerilogUi(options =>
             {
@@ -117,6 +118,7 @@ namespace Kubernox.Service
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<AppHub>("/notifications");
+                endpoints.MapHealthChecks("/health");
             });
         }
 

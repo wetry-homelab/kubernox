@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
+using Application.Entities;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -21,50 +21,50 @@ namespace Infrastructure.Persistence.Repositories
             this.serviceDbContext = clusterDbContext;
         }
 
-        public Task<int> DeleteAsync(DomainName entity)
+        public Task<int> DeleteAsync(Domain entity)
         {
             return UpdateAsync(entity);
         }
 
-        public Task<int> DeletesAsync(DomainName[] entities)
+        public Task<int> DeletesAsync(Domain[] entities)
         {
             return UpdatesAsync(entities);
         }
 
-        public Task<int> InsertAsync(DomainName entity)
+        public Task<int> InsertAsync(Domain entity)
         {
-            serviceDbContext.DomainName.Add(entity);
+            serviceDbContext.Domain.Add(entity);
             return serviceDbContext.SaveChangesAsync();
         }
 
-        public Task<int> InsertsAsync(DomainName[] entities)
+        public Task<int> InsertsAsync(Domain[] entities)
         {
-            serviceDbContext.DomainName.AddRange(entities);
+            serviceDbContext.Domain.AddRange(entities);
             return serviceDbContext.SaveChangesAsync();
         }
 
-        public Task<DomainName> ReadAsync(Expression<Func<DomainName, bool>> predicate)
+        public Task<Domain> ReadAsync(Expression<Func<Domain, bool>> predicate)
         {
-            return serviceDbContext.DomainName.FirstOrDefaultAsync(predicate);
+            return serviceDbContext.Domain.FirstOrDefaultAsync(predicate);
         }
 
-        public Task<DomainName[]> ReadsAsync()
+        public Task<Domain[]> ReadsAsync()
         {
-            return serviceDbContext.DomainName.ToArrayAsync();
+            return serviceDbContext.Domain.ToArrayAsync();
         }
 
-        public Task<DomainName[]> ReadsAsync(Expression<Func<DomainName, bool>> predicate)
+        public Task<Domain[]> ReadsAsync(Expression<Func<Domain, bool>> predicate)
         {
-            return serviceDbContext.DomainName.Where(predicate).ToArrayAsync();
+            return serviceDbContext.Domain.Where(predicate).ToArrayAsync();
         }
 
-        public Task<int> UpdateAsync(DomainName entity)
+        public Task<int> UpdateAsync(Domain entity)
         {
             serviceDbContext.Entry(entity).State = EntityState.Modified;
             return serviceDbContext.SaveChangesAsync();
         }
 
-        public async Task<int> UpdatesAsync(DomainName[] entities)
+        public async Task<int> UpdatesAsync(Domain[] entities)
         {
             var result = 0;
             foreach (var entity in entities)

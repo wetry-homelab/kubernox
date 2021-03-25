@@ -16,10 +16,6 @@ namespace Domain.Entities
         [Required]
         public string ValidationKey { get; set; }
 
-        public string RootDomainId { get; set; }
-
-        public string ClusterId { get; set; }
-
         public DateTime? ValidationDate { get; set; }
 
         [Required]

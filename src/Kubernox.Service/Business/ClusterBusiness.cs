@@ -2,7 +2,7 @@
 using Application.Interfaces;
 using Application.Messages;
 using AutoMapper;
-using Domain.Entities;
+using Application.Entities;
 using Infrastructure.Contracts.Request;
 using Infrastructure.Contracts.Response;
 using Microsoft.Extensions.Configuration;
