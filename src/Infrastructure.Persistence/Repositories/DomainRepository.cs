@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Repositories
 {
-    public class DomainNameRepository : IDomainNameRepository
+    public class DomainRepository : IDomainRepository
     {
-        private readonly ILogger<DomainNameRepository> logger;
+        private readonly ILogger<DomainRepository> logger;
         private readonly ServiceDbContext serviceDbContext;
 
-        public DomainNameRepository(ILogger<DomainNameRepository> logger, ServiceDbContext clusterDbContext)
+        public DomainRepository(ILogger<DomainRepository> logger, ServiceDbContext clusterDbContext)
         {
             this.logger = logger;
             this.serviceDbContext = clusterDbContext;

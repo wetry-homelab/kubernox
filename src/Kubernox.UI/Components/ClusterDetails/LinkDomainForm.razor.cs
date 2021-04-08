@@ -2,16 +2,21 @@
 using Fluxor;
 using Infrastructure.Contracts.Request;
 using Infrastructure.Contracts.Response;
+using Kubernox.UI.Core;
+using Kubernox.UI.Services.Interfaces;
+using Kubernox.UI.Store.Actions.DomainName;
 using Kubernox.UI.Store.States;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Kubernox.UI.Components.ClusterDetails
 {
-    public partial class LinkDomainForm : ComponentBase
+    public partial class LinkDomainForm : CoreComponent
     {
         [Inject]
-        private IState<DomainNameState> DomainNameState { get; set; }
+        private IState<DomainState> DomainState { get; set; }
 
         private List<string> resolvers = new List<string>() {
             "HTTP", "OVH", "GANDIV5"
@@ -20,31 +25,32 @@ namespace Kubernox.UI.Components.ClusterDetails
         public string Layout { get; set; } = FormLayout.Vertical;
 
         [Inject]
-        IDispatcher Dispatcher { get; set; }
+        public IDomainService DomainService { get; set; }
 
         [Parameter]
         public string ClusterId { get; set; }
 
-        [Parameter]
-        public ClusterDomainItemResponse Entry { get; set; }
+        [Inject]
+        public NotificationService NotificationService { get; set; }
 
         public DomainLinkingRequestContract DomainLinkingRequestContract { get; set; } = new DomainLinkingRequestContract();
 
+        private bool isLoading;
+
         protected override void OnInitialized()
         {
-            DomainNameState.StateChanged += DomainNameState_StateChanged;
-            //Dispatcher.Dispatch(new FetchDomainNameAction());
+            DomainState.StateChanged += DomainNameState_StateChanged;
             base.OnInitialized();
         }
 
-        private void DomainNameState_StateChanged(object sender, DomainNameState e)
+        private void DomainNameState_StateChanged(object sender, DomainState e)
         {
             StateHasChanged();
         }
 
         private void OnSelectedItemChangedHandler(string value)
         {
-            DomainLinkingRequestContract.DomainNameId = value;
+            DomainLinkingRequestContract.DomainId = value;
         }
 
         private bool DisableCertificateField()
@@ -54,30 +60,36 @@ namespace Kubernox.UI.Components.ClusterDetails
 
         private bool DiplayCertificateField()
         {
-            return DomainLinkingRequestContract != null && (DomainLinkingRequestContract.Resolver == "none");
+            return DomainLinkingRequestContract != null && (DomainLinkingRequestContract.Resolver == "none") && DomainLinkingRequestContract.Protocol != "HTTP";
         }
 
-        protected override void OnParametersSet()
+        public async Task LinkClusterDomainAsync()
         {
-            if (Entry != null)
+            isLoading = true;
+            DomainLinkingRequestContract.ClusterId = ClusterId;
+
+            if (await DomainService.LinkDomainToClusterAsync(DomainLinkingRequestContract))
             {
-                DomainLinkingRequestContract = new DomainLinkingRequestContract()
+                Dispatcher.Dispatch(new FetchClusterDomainNameAction(ClusterId));
+                isLoading = false;
+
+                await NotificationService.Open(new NotificationConfig()
                 {
-                    SubDomain = Entry.Value,
-                    DomainNameId = Entry.RootDomainId,
-                    Resolver = Entry.Resolver,
-                    ClusterId = Entry.ClusterId
-                };
+                    Message = Translator.GetString("LINK_DOMAIN_SUCCESS_NOTIFICATION_TITLE").Value,
+                    Description = Translator.GetString("LINK_DOMAIN_SUCCESS_NOTIFICATION_CONTENT").Value,
+                    NotificationType = NotificationType.Success
+                });
             }
             else
             {
-                DomainLinkingRequestContract = new DomainLinkingRequestContract()
+                isLoading = false;
+                await NotificationService.Open(new NotificationConfig()
                 {
-                    ClusterId = ClusterId
-                };
+                    Message = Translator.GetString("LINK_DOMAIN_ERROR_NOTIFICATION_TITLE").Value,
+                    Description = Translator.GetString("LINK_DOMAIN_ERROR_NOTIFICATION_CONTENT").Value,
+                    NotificationType = NotificationType.Error
+                });
             }
-
-            base.OnParametersSet();
         }
     }
 }

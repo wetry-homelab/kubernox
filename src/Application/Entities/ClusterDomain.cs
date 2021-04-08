@@ -10,16 +10,20 @@ namespace Application.Entities
 
         public string Name { get; set; }
 
-        [Required]
         public string Value { get; set; }
 
+        [Required]
         public string RootDomainId { get; set; }
 
+        [Required]
         public string ClusterId { get; set; }
 
+        [Required]
         public string Resolver { get; set; }
 
         public string FullChain { get; set; }
+
+        public string Protocol { get; set; }
 
         public string PrivateKey { get; set; }
 

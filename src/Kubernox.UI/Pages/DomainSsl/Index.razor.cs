@@ -11,10 +11,7 @@ namespace Kubernox.UI.Pages.DomainSsl
     public partial class Index : CoreComponent
     {
         [Inject]
-        private IState<DomainNameState> DomainNameState { get; set; }
-
-        [Inject]
-        IDispatcher Dispatcher { get; set; }
+        private IState<DomainState> DomainState { get; set; }
 
         protected ITable table;
         protected bool visible = false;
@@ -23,18 +20,18 @@ namespace Kubernox.UI.Pages.DomainSsl
         {
             get
             {
-                return DomainNameState != null && DomainNameState.Value.IsLoading;
+                return DomainState != null && DomainState.Value.IsLoading;
             }
         }
 
         protected override void OnInitialized()
         {
-            DomainNameState.StateChanged += DomainNameState_StateChanged;
+            DomainState.StateChanged += DomainNameState_StateChanged;
             Dispatcher.Dispatch(new FetchDomainNameAction());
             base.OnInitialized();
         }
 
-        private void DomainNameState_StateChanged(object sender, DomainNameState e)
+        private void DomainNameState_StateChanged(object sender, DomainState e)
         {
             StateHasChanged();
         }

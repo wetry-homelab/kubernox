@@ -10,30 +10,30 @@ namespace Kubernox.Service.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DomainNameController : ControllerBase
+    public class DomainController : ControllerBase
     {
-        private readonly ILogger<DomainNameController> logger;
-        private readonly IDomaineNameBusiness domaineNameBusiness;
+        private readonly ILogger<DomainController> logger;
+        private readonly IDomainBusiness domaineBusiness;
 
-        public DomainNameController(ILogger<DomainNameController> logger, IDomaineNameBusiness domaineNameBusiness)
+        public DomainController(ILogger<DomainController> logger, IDomainBusiness domaineBusiness)
         {
-            if (domaineNameBusiness == null)
-                throw new ArgumentNullException(nameof(domaineNameBusiness));
+            if (domaineBusiness == null)
+                throw new ArgumentNullException(nameof(domaineBusiness));
 
             this.logger = logger;
-            this.domaineNameBusiness = domaineNameBusiness;
+            this.domaineBusiness = domaineBusiness;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await domaineNameBusiness.ListDomainsAsync());
+            return Ok(await domaineBusiness.ListDomainsAsync());
         }
 
-        [HttpGet("cluster/{id}")]
+        [HttpGet("cluster/{clusterId}")]
         public async Task<IActionResult> GetClusterDomain(string clusterId)
         {
-            return Ok(await domaineNameBusiness.ListDomainsForClusterAsync(clusterId));
+            return Ok(await domaineBusiness.ListDomainsForClusterAsync(clusterId));
         }
 
         [HttpPost]
@@ -41,7 +41,7 @@ namespace Kubernox.Service.Controllers
         {
             try
             {
-                if ((await domaineNameBusiness.CreateDomainAsync(request)))
+                if ((await domaineBusiness.CreateDomainAsync(request)))
                 {
                     return Ok();
                 }
@@ -64,7 +64,7 @@ namespace Kubernox.Service.Controllers
         {
             try
             {
-                if ((await domaineNameBusiness.ValidateDomainAsync(id)))
+                if ((await domaineBusiness.ValidateDomainAsync(id)))
                 {
                     return Ok();
                 }
@@ -82,12 +82,40 @@ namespace Kubernox.Service.Controllers
             return BadRequest();
         }
 
+        [HttpPost("link-to-cluster")]
+        public async Task<IActionResult> Link([FromBody] DomainLinkingRequestContract request)
+        {
+            try
+            {
+                if ((await domaineBusiness.LinkDomainToClusterAsync(request)))
+                {
+                    return Ok();
+                }
+            }
+            catch (DuplicateException dex)
+            {
+                logger.LogWarning(dex, "Error on link domain.");
+                return Conflict();
+            }
+            catch (NotFoundException ex)
+            {
+                logger.LogWarning(ex, "Error on link domain.");
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error on link domain.");
+            }
+
+            return BadRequest();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDomainNameAsync([FromRoute] string id)
         {
             try
             {
-                if ((await domaineNameBusiness.DeleteDomainAsync(id)))
+                if ((await domaineBusiness.DeleteDomainAsync(id)))
                 {
                     return Ok();
                 }

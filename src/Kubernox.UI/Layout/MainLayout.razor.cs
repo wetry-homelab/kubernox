@@ -2,6 +2,7 @@
 using Fluxor;
 using Kubernox.UI.Store.Actions.Cluster;
 using Kubernox.UI.Store.Actions.Datacenter;
+using Kubernox.UI.Store.Actions.DomainName;
 using Kubernox.UI.Store.Actions.SshKey;
 using Kubernox.UI.Store.Actions.Template;
 using Microsoft.AspNetCore.Components;
@@ -32,6 +33,7 @@ namespace Kubernox.UI.Layout
             Dispatcher.Dispatch(new FetchSshKeyAction());
             Dispatcher.Dispatch(new FetchClustersAction());
             Dispatcher.Dispatch(new FetchDatacenterAction());
+            Dispatcher.Dispatch(new FetchDomainNameAction());
 
             connection = new HubConnectionBuilder()
                                 .WithUrl($"{BaseUri}ws/notifications")

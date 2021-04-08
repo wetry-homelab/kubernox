@@ -1,11 +1,10 @@
-﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+﻿@inherits CoreComponent
 
-@inject IState<DomainNameState> DomainNameState
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @inject IStringLocalizer<App> Translator
 
-<Table @ref="table" TItem="DomainItemResponse" DataSource="@DomainNameState.Value.DomainNames">
+<Table @ref="table" TItem="DomainItemResponse" DataSource="@DomainState.Value.Domains">
     <AntDesign.Column @bind-Field="@context.RootDomain" Sortable />
     <AntDesign.ActionColumn style="max-width:40%" Title="Validation state">
         @if (context.ValidationDate != null)

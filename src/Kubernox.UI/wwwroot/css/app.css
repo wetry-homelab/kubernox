@@ -287,3 +287,8 @@ a, .btn-link {
 .pull-left {
     float: left;
 }
+
+.pull-right {
+    float: right;
+}
+

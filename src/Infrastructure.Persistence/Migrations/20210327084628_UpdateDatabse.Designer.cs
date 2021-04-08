@@ -3,15 +3,17 @@ using System;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    partial class ServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210327084628_UpdateDatabse")]
+    partial class UpdateDatabse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 3, 27, 9, 53, 16, 766, DateTimeKind.Utc).AddTicks(6744));
+                        .HasDefaultValue(new DateTime(2021, 3, 27, 8, 46, 27, 605, DateTimeKind.Utc).AddTicks(1127));
 
                     b.Property<DateTime?>("DeleteAt")
                         .HasColumnType("timestamp without time zone");
@@ -117,9 +119,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PrivateKey")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Protocol")
                         .HasColumnType("text");
 
                     b.Property<string>("Resolver")

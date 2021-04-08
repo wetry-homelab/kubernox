@@ -71,7 +71,16 @@ namespace Application.Messages
         [JsonPropertyName("config")]
         public Config Config { get; set; }
 
+        [JsonPropertyName("features")]
+        public Feature Features { get; set; }
+
         [JsonPropertyName("nodes")]
         public List<Node> Nodes { get; set; }
+    }
+
+    public class Feature
+    {
+        [JsonPropertyName("traefik")]
+        public bool Traefik { get; set; }
     }
 }

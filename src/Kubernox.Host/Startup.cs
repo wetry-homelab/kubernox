@@ -69,7 +69,7 @@ namespace Kubernox.Host
             services.AddScoped<IDatacenterService, DatacenterService>();
             services.AddScoped<ITemplateService, TemplateService>();
             services.AddScoped<ISshKeyService, SshKeyService>();
-            services.AddScoped<IDomainNameService, DomainNameService>();
+            services.AddScoped<IDomainService, DomainService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

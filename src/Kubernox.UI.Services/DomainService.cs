@@ -8,24 +8,24 @@ using System.Threading.Tasks;
 
 namespace Kubernox.UI.Services
 {
-    public class DomainNameService : IDomainNameService
+    public class DomainService : IDomainService
     {
         private readonly HttpClient httpClient;
 
-        public DomainNameService(HttpClient httpClient)
+        public DomainService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
         }
 
         public async Task<bool> CreateDomainNameAsync(DomainNameCreateRequest request)
         {
-            var httpResponse = await httpClient.PostAsync("api/domainname", GetContent(request));
+            var httpResponse = await httpClient.PostAsync("api/domain", GetContent(request));
             return httpResponse.IsSuccessStatusCode;
         }
 
         public async Task<DomainItemResponse[]> GetDomainsAsync()
         {
-            var httpResponse = await httpClient.GetAsync("api/domainname");
+            var httpResponse = await httpClient.GetAsync("api/domain");
             var response = await httpResponse.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<DomainItemResponse[]>(response);
@@ -33,15 +33,21 @@ namespace Kubernox.UI.Services
 
         public async Task<ClusterDomainItemResponse[]> GetDomainsForClusterAsync(string clusterId)
         {
-            var httpResponse = await httpClient.GetAsync($"api/domainname/cluster/{clusterId}");
+            var httpResponse = await httpClient.GetAsync($"api/domain/cluster/{clusterId}");
             var response = await httpResponse.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<ClusterDomainItemResponse[]>(response);
         }
 
+        public async Task<bool> LinkDomainToClusterAsync(DomainLinkingRequestContract request)
+        {
+            var httpResponse = await httpClient.PostAsync($"api/domain/link-to-cluster", GetContent(request));
+            return httpResponse.IsSuccessStatusCode;
+        }
+
         public async Task<bool> ValidateDomainNameAsync(string id)
         {
-            var httpResponse = await httpClient.GetAsync($"api/domainname/{id}/validate");
+            var httpResponse = await httpClient.GetAsync($"api/domain/{id}/validate");
             return httpResponse.IsSuccessStatusCode;
         }
 

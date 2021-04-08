@@ -23,12 +23,14 @@ namespace Infrastructure.Persistence.Repositories
 
         public Task<int> DeleteAsync(ClusterDomain entity)
         {
-            return UpdateAsync(entity);
+            serviceDbContext.ClusterDomain.Remove(entity);
+            return serviceDbContext.SaveChangesAsync();
         }
 
         public Task<int> DeletesAsync(ClusterDomain[] entities)
         {
-            throw new NotImplementedException();
+            serviceDbContext.ClusterDomain.RemoveRange(entities);
+            return serviceDbContext.SaveChangesAsync();
         }
 
         public Task<int> InsertAsync(ClusterDomain entity)

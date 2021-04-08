@@ -41,7 +41,7 @@ namespace Kubernox.UI
 
             builder.Services.AddAntDesign();
             var currentAssembly = typeof(StoreRegistration).Assembly;
-            builder.Services.AddFluxor(options => options.ScanAssemblies(currentAssembly));
+            builder.Services.AddFluxor(options => options.ScanAssemblies(currentAssembly).UseReduxDevTools());
         }
 
         private static void ConfigureLocalization(WebAssemblyHostBuilder builder)
@@ -56,7 +56,7 @@ namespace Kubernox.UI
             builder.Services.AddScoped<IDatacenterService, DatacenterService>();
             builder.Services.AddScoped<ITemplateService, TemplateService>();
             builder.Services.AddScoped<ISshKeyService, SshKeyService>();
-            builder.Services.AddScoped<IDomainNameService, DomainNameService>();
+            builder.Services.AddScoped<IDomainService, DomainService>();
         }
     }
 }

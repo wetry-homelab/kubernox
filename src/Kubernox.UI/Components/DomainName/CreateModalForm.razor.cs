@@ -21,7 +21,7 @@ namespace Kubernox.UI.Components.DomainName
         public DomainNameCreateRequest DomainNameCreateRequest { get; set; } = new DomainNameCreateRequest();
 
         [Inject]
-        public IDomainNameService DomainNameService { get; set; }
+        public IDomainService DomainNameService { get; set; }
 
         [Inject]
         public NotificationService NotificationService { get; set; }

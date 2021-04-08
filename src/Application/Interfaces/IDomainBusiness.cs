@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface IDomaineNameBusiness
+    public interface IDomainBusiness
     {
         Task<DomainItemResponse[]> ListDomainsAsync();
-        Task<DomainItemResponse[]> ListDomainsForClusterAsync(string clusterId);
-
+        Task<ClusterDomainItemResponse[]> ListDomainsForClusterAsync(string clusterId);
         Task<bool> CreateDomainAsync(DomainNameCreateRequest request);
         Task<bool> ValidateDomainAsync(string id);
         Task<bool> DeleteDomainAsync(string id);
+        Task<bool> LinkDomainToClusterAsync(DomainLinkingRequestContract request);
     }
 }

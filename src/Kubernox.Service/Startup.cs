@@ -91,7 +91,7 @@ namespace Kubernox.Service
             services.AddScoped<IDatacenterBusiness, DatacenterBusiness>();
             services.AddScoped<ISshKeyBusiness, SshKeyBusiness>();
             services.AddScoped<ITemplateBusiness, TemplateBusiness>();
-            services.AddScoped<IDomaineNameBusiness, DomaineNameBusiness>();
+            services.AddScoped<IDomainBusiness, DomainBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,21 +1,23 @@
 ﻿using AntDesign;
 using Fluxor;
+using Kubernox.UI.Core;
 using Kubernox.UI.Services.Interfaces;
 using Kubernox.UI.Store.Actions.DomainName;
+using Kubernox.UI.Store.States;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using System.Threading.Tasks;
 
 namespace Kubernox.UI.Components.Tables
 {
-    public partial class DomainNameTable : Fluxor.Blazor.Web.Components.FluxorComponent
+    public partial class DomainNameTable : CoreComponent
     {
 
         [Inject]
-        public IDomainNameService DomainNameService { get; set; }
+        public IDomainService DomainNameService { get; set; }
         
         [Inject]
-        IDispatcher Dispatcher { get; set; }
+        IState<DomainState> DomainState { get; set; }
 
         [Inject]
         public NotificationService NotificationService { get; set; }

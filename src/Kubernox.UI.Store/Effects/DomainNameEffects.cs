@@ -8,15 +8,15 @@ namespace Kubernox.UI.Store.Effects
 {
     public class DomainNameEffects
     {
-        private readonly IDomainNameService domainNameService;
+        private readonly IDomainService domainNameService;
 
-        public DomainNameEffects(IDomainNameService domainNameService)
+        public DomainNameEffects(IDomainService domainNameService)
         {
             this.domainNameService = domainNameService;
         }
 
         [EffectMethod]
-        public async Task HandleFetchSshKeyAction(FetchDomainNameAction action, IDispatcher dispatcher)
+        public async Task HandleFetchDomainAction(FetchDomainNameAction action, IDispatcher dispatcher)
         {
             try
             {
@@ -26,6 +26,20 @@ namespace Kubernox.UI.Store.Effects
             catch (Exception e)
             {
                 dispatcher.Dispatch(new FetchDomainNameFailureAction(e.Message));
+            }
+        }
+
+        [EffectMethod]
+        public async Task HandleFetchClusterDomainAction(FetchClusterDomainNameAction action, IDispatcher dispatcher)
+        {
+            try
+            {
+                var domainNames = await domainNameService.GetDomainsForClusterAsync(action.ClusterId);
+                dispatcher.Dispatch(new FetchClusterDomainNameSuccessAction(domainNames));
+            }
+            catch (Exception e)
+            {
+                dispatcher.Dispatch(new FetchClusterDomainNameFailureAction(e.Message));
             }
         }
     }

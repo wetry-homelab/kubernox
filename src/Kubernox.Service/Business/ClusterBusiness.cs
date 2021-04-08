@@ -23,15 +23,15 @@ namespace Kubernox.Service.Business
         private readonly IMetricRepository metricRepository;
         private readonly IQueueService queueService;
         private readonly ITemplateRepository templateRepository;
-        private readonly ITraefikRedisStore traefikCache;
+        private readonly ITraefikRouterService traefikRouterService;
+        private readonly IDomainRepository domainNameRepository;
         private readonly IMapper mapper;
         private readonly string domain;
-        private readonly string defaultResolver;
 
         public ClusterBusiness(IClusterRepository clusterRepository, IDatacenterRepository datacenterRepository,
             ISshKeyRepository sshKeyRepository, IClusterNodeRepository clusterNodeRepository,
             IQueueService queueService, ITemplateRepository templateRepository,
-            IConfiguration configuration, ITraefikRedisStore traefikCache, IMetricRepository metricRepository, IMapper mapper)
+            IConfiguration configuration, IMetricRepository metricRepository, IMapper mapper, ITraefikRouterService traefikRouterService, IDomainRepository domainNameRepository)
         {
 
             if (clusterRepository == null)
@@ -46,8 +46,8 @@ namespace Kubernox.Service.Business
                 throw new ArgumentNullException(nameof(queueService));
             if (templateRepository == null)
                 throw new ArgumentNullException(nameof(templateRepository));
-            if (traefikCache == null)
-                throw new ArgumentNullException(nameof(traefikCache));
+            if (traefikRouterService == null)
+                throw new ArgumentNullException(nameof(traefikRouterService));
             if (metricRepository == null)
                 throw new ArgumentNullException(nameof(metricRepository));
             if (mapper == null)
@@ -59,11 +59,11 @@ namespace Kubernox.Service.Business
             this.clusterNodeRepository = clusterNodeRepository;
             this.queueService = queueService;
             this.templateRepository = templateRepository;
-            this.traefikCache = traefikCache;
             this.domain = configuration["Kubernox:Domain"];
-            this.defaultResolver = configuration["Kubernox:DefaultResolver"];
             this.metricRepository = metricRepository;
             this.mapper = mapper;
+            this.traefikRouterService = traefikRouterService;
+            this.domainNameRepository = domainNameRepository;
         }
 
         public async Task<bool> CreateClusterAsync(ClusterCreateRequest request)
@@ -75,6 +75,7 @@ namespace Kubernox.Service.Business
             var selectedNode = await datacenterRepository.ReadAsync(f => f.Id == request.DeployNodeId);
             var template = await templateRepository.ReadAsync(t => t.Id == request.SelectedTemplate);
             var existingCluster = await clusterRepository.ReadsAsync(c => c.ProxmoxNodeId == request.DeployNodeId);
+            var domainDb = await domainNameRepository.ReadAsync(d => d.Id == request.LinkDomainId);
 
             var baseIp = existingCluster.Any() ? GetBasedRangeIp(existingCluster) : 10;
             var baseId = existingCluster.Any() ? ExtractBaseId(await clusterRepository.GetMaxOrder()) : 3000;
@@ -87,7 +88,7 @@ namespace Kubernox.Service.Business
                     Name = $"k3s-master-{request.Name}",
                     Node = request.Node,
                     Storage = request.Storage,
-                    Domain = domain,
+                    Domain = domainDb != null ? domainDb.Value : domain,
                     User = "root",
                     ProxmoxNodeId = selectedNode.Id,
                     OrderId = baseId,
@@ -117,7 +118,7 @@ namespace Kubernox.Service.Business
                         ClusterMessage message = GenerateCreateQueueMessage(request, newCluster, selectedSshKey, selectedNode, template, baseIp, baseId);
                         queueService.QueueClusterCreation(message);
 
-                        await InjectClusterCacheConfigurationAsync(newCluster);
+                        await traefikRouterService.GenerateClusterBasicRules(newCluster);
                     }
 
                     return true;
@@ -163,71 +164,12 @@ namespace Kubernox.Service.Business
 
             if (cluster != null)
             {
-                await InjectClusterCacheConfigurationAsync(cluster);
+                await traefikRouterService.RefreshClusterRule(id);
                 return true;
             }
 
             return false;
         }
-
-        private async Task DeleteClusterCacheConfigurationAsync(Cluster cluster)
-        {
-            var keys = new List<string>()
-            {
-                $"traefik/tcp/routers/{cluster.Name}/rule",
-                $"traefik.tcp.routers.{cluster.Name}.entryPoints.0",
-                $"traefik/tcp/routers/{cluster.Name}/service",
-                $"traefik/tcp/routers/{cluster.Name}/tls/passthrough",
-                $"traefik/tcp/services/{cluster.Name}-tcp-lb/loadbalancer/servers/0/address"
-            };
-
-            await traefikCache.DeleteValues(keys);
-        }
-
-        private async Task InjectClusterCacheConfigurationAsync(Cluster newCluster)
-        {
-            var values = new List<KeyValuePair<string, string>>();
-
-            // TCP Rules
-            values.Add(new KeyValuePair<string, string>($"traefik/tcp/services/{newCluster.Name}-tcp-lb/loadbalancer/servers/0/address", $"{newCluster.Ip}:6443"));
-            values.Add(new KeyValuePair<string, string>($"traefik/tcp/routers/{newCluster.Name}/service", $"{newCluster.Name}-tcp-lb"));
-            values.Add(new KeyValuePair<string, string>($"traefik/tcp/routers/{newCluster.Name}/tls/passthrough", "true"));
-            values.Add(new KeyValuePair<string, string>($"traefik/tcp/routers/{newCluster.Name}/entryPoints/0", "k3s"));
-            values.Add(new KeyValuePair<string, string>($"traefik/tcp/routers/{newCluster.Name}/rule", $"HostSNI(`{newCluster.Name}.{domain}`)"));
-
-            // HTTP Rules
-            values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-http-lb/loadbalancer/servers/0/url", $"http://{newCluster.Ip}:80"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-http/entrypoints/0", $"web"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-http/service", $"{newCluster.Name}-http-lb"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-http/rule", $"Host(`{newCluster.Name}.{domain}`)"));
-
-            // HTTPS Rules
-            values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-https-lb/loadbalancer/servers/0/url", $"https://{newCluster.Ip}:443"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/entrypoints/0", $"websecure"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls", "true"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/service", $"{newCluster.Name}-https-lb"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/rule", $"Host(`{newCluster.Name}.{domain}`)"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls/domains/0/sans/0", $"*.{domain}"));
-            values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https/tls/certresolver", $"{defaultResolver}"));
-
-            await traefikCache.StoreValues(values);
-        }
-
-        //private async Task LinkDomainToClusterAsync()
-        //{
-        //    var values = new List<KeyValuePair<string, string>>();
-
-        //    values.Add(new KeyValuePair<string, string>($"traefik/http/services/{newCluster.Name}-https-custom-lb/loadbalancer/servers/0/url", $"https://{newCluster.Ip}:443"));
-        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/entrypoints/0", $"websecure"));
-        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls", "true"));
-        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/service", $"{newCluster.Name}-https-custom-lb"));
-        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/rule", $"Host(`epic.{domain}`)"));
-        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls/domains/0/main", $"epic.{domain}"));
-        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls/domains/0/sans/0", $"*.{domain}"));
-        //    values.Add(new KeyValuePair<string, string>($"traefik/http/routers/{newCluster.Name}-https-custom/tls/certresolver", $"gandiResolver"));
-
-        //    await traefikCache.StoreValues(values);
-        //}
 
         private int ExtractBaseId(int valueMaxOrder)
         {
@@ -257,6 +199,10 @@ namespace Kubernox.Service.Business
                 {
                     Id = baseId,
                     Name = request.Name,
+                    Features = new Feature()
+                    {
+                        Traefik = request.InstallTraefik,
+                    },
                     Config = new Config()
                     {
                         User = "root",
@@ -402,14 +348,12 @@ namespace Kubernox.Service.Business
 
             if ((await clusterRepository.UpdateAsync(cluster)) > 0)
             {
+                await traefikRouterService.DeleteClusterRules(cluster);
+
                 var selectedSshKey = await sshKeyRepository.ReadAsync(cluster.SshKeyId);
                 var selectedNode = await datacenterRepository.ReadAsync(f => f.Id == cluster.ProxmoxNodeId);
 
-
-                await DeleteClusterCacheConfigurationAsync(cluster);
-
                 var nodes = await clusterNodeRepository.ReadsAsync(c => c.ClusterId == cluster.Id && c.DeleteAt == null);
-                //var selectedNode = await datacenterRepository.ReadAsync(f => f.Id == cluster.ProxmoxNodeId);
                 var qemuClient = new QemuClient();
 
                 foreach (var node in nodes)

@@ -14,7 +14,7 @@
             <Radio RadioButton Value="@(-1)">Custom</Radio>
         </RadioGroup>
     </FormItem>
-     <Row>
+    <Row>
         <GridCol Span="8">
             <FormItem Label="CPU">
                 <AntDesign.InputNumber Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Cpu" Min="1" Max="8" DefaultValue="1"></AntDesign.InputNumber>
@@ -32,14 +32,32 @@
         </GridCol>
     </Row>
 
+    @if (DomainState != null && DomainState.Value.Domains != null && DomainState.Value.Domains.Any())
+    {
+        <FormItem Label="Link to domain">
+            <Select DataSource="@DomainState.Value.Domains" @bind-Value="@context.LinkDomainId" ValueName="@nameof(DomainItemResponse.Id)" LabelName="@nameof(DomainItemResponse.RootDomain)">
+            </Select>
+        </FormItem>
+    }
+
     <FormItem Label="Select SSH Key">
         <Select DataSource="@SshKeyState.Value.SshKeys" @bind-Value="@context.SshKeyId" ValueName="@nameof(SshKeyResponse.Id)" LabelName="@nameof(SshKeyResponse.Name)">
         </Select>
     </FormItem>
-
-    <FormItem Label="Node Count">
-        <AntDesign.InputNumber @bind-Value="@context.Node" Min="2" Max="10" DefaultValue="2"></AntDesign.InputNumber>
-    </FormItem>
+    <Row>
+        <GridCol Span="8">
+            <FormItem Label="Node Count">
+                <AntDesign.InputNumber @bind-Value="@context.Node" Min="2" Max="10" DefaultValue="2"></AntDesign.InputNumber>
+            </FormItem>
+        </GridCol>
+        <GridCol Span="8">
+            <FormItem Label="Features">
+                <Checkbox Checked="@context.InstallTraefik" CheckedChange="@ToggleChecked">
+                    Install Traefik
+                </Checkbox>
+            </FormItem>
+        </GridCol>
+    </Row>
 
     <FormItem Label="Select deploy node">
         <Select DataSource="@DatacenterState.Value.Nodes" @bind-Value="@context.DeployNodeId" ValueName="@nameof(DatacenterNodeResponse.Id)" LabelName="@nameof(DatacenterNodeResponse.Name)">
@@ -50,8 +68,8 @@
     {
         <FormItem Label="Node availability">
             <div class="node-usage mt-2">
-            <div class="used" style="width:@GetRamUsedWidth()%"></div>
-            <div class="claim" style="width:@GetRamToClaimWidth()%"></div>
+                <div class="used" style="width:@GetRamUsedWidth()%"></div>
+                <div class="claim" style="width:@GetRamToClaimWidth()%"></div>
             </div>
         </FormItem>
     }

@@ -3,8 +3,7 @@ using Application.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IDomainNameRepository : BaseRepository<Domain>
+    public interface ITraefikRouteValueRepository : BaseRepository<TraefikRouteValue>
     {
-
     }
 }

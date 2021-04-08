@@ -2,6 +2,7 @@ using Application.Interfaces;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Shared.Services;
 using Kubernox.Service.Business;
+using Kubernox.Service.Services;
 using Kubernox.Service.Workers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -30,13 +31,14 @@ namespace Kubernox.Service
                 }).ConfigureServices((services) =>
                 {
                     services.AddSignalR();
-
                     services.AddScoped<IDatacenterRepository, DatacenterRepository>();
+                    services.AddScoped<ITraefikRouteValueRepository, TraefikRouteValueRepository>();
                     services.AddScoped<IClusterRepository, ClusterRepository>();
                     services.AddScoped<IQueueService, QueueService>();
+                    services.AddScoped<ITraefikRouterService, TraefikRouterService>();
                     services.AddScoped<IQueueBusiness, QueueBusiness>();
-
                     services.AddHostedService<ClusterQueueWorker>();
+                    services.AddHostedService<TraefikRoutingWorker>();
                 })
                 .UseSerilog((hostingContext, loggerConfiguration) =>
                     loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));

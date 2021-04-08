@@ -1,23 +1,38 @@
-﻿<hr />
+﻿@inherits CoreComponent
+
+<hr />
 <Form Layout="@Layout" Model="@DomainLinkingRequestContract">
     <AntDesign.Row>
-        <AntDesign.Col Span="6">
+        <AntDesign.Col Span="4">
             <FormItem Label="Subdomain" Style="padding:1em">
                 <Input @bind-Value="@context.SubDomain" />
             </FormItem>
         </AntDesign.Col>
-        <AntDesign.Col Span="7">
+        <AntDesign.Col Span="2">
+            <FormItem Label="Protocol" Style="padding:1em">
+               <Select @bind-Value="@context.Protocol" TItemValue="string" TItem="string" DefaultValue="@("HTTP")">
+                    <SelectOptions>
+                        <SelectOption TItemValue="string" TItem="string" Value="@("HTTP")" Label="Http" />
+                        <SelectOption TItemValue="string" TItem="string" Value="@("HTTPS")" Label="Https" />
+                        <SelectOption TItemValue="string" TItem="string" Value="@("HTTP_HTTPS")" Label="Http & Https" />
+                        <SelectOption TItemValue="string" TItem="string" Value="@("TCP")" Label="TCP" />
+                    </SelectOptions>
+                </Select>
+            </FormItem>
+        </AntDesign.Col>
+        <AntDesign.Col Span="6">
             <FormItem Label="Domain" Style="padding:1em">
-                @if (DomainNameState != null && DomainNameState.Value != null && DomainNameState.Value.DomainNames.Any())
+                @if (DomainState != null && DomainState.Value != null && DomainState.Value.Domains.Any())
                 {
-                    <Select @bind-Value="@context.DomainNameId" TItemValue="string" TItem="string">
-                        <SelectOptions>
-                            @foreach (var domain in DomainNameState.Value.DomainNames)
-                            {
-                                <SelectOption TItemValue="string" TItem="string" Value="@domain.Id" Label="@domain.RootDomain" />
-                            }
-                        </SelectOptions>
-                    </Select>
+                    
+                        <Select @bind-Value="@context.DomainId" TItemValue="string" TItem="string">
+                            <SelectOptions>
+                                @foreach (var domain in DomainState.Value.Domains.Where(d => d.ValidationDate.HasValue).ToArray())
+                                {
+                                    <SelectOption TItemValue="string" TItem="string" Value="@domain.Id" Label="@domain.RootDomain" />
+                                }
+                            </SelectOptions>
+                        </Select>
                 }
             </FormItem>
             @if(DiplayCertificateField()){
@@ -26,7 +41,7 @@
                 </FormItem>
             }
         </AntDesign.Col>
-        <AntDesign.Col Span="7">
+        <AntDesign.Col Span="6">
             <FormItem Label="Resolver" Style="padding:1em">
                 <Select @bind-Value="@context.Resolver" TItemValue="string" TItem="string" DefaultValue="@("none")">
                     <SelectOptions>
@@ -44,13 +59,8 @@
                 </FormItem>
             }
         </AntDesign.Col>
-        <AntDesign.Col Span="2" Style="padding:1em">
-            @if (Entry != null)
-            {
-                <Button Type="primary" Style="margin:2em">Save changes</Button>
-            }else{
-                <Button Type="primary" Style="margin:2em">Add domain to cluster</Button>
-            }
+        <AntDesign.Col Span="6" Style="padding:1em">
+            <Button Type="primary" Class="pull-right" Style="margin:2em" Loading="@isLoading" OnClick="@LinkClusterDomainAsync">Add domain to cluster</Button>
         </AntDesign.Col>
     </AntDesign.Row>
 </Form>

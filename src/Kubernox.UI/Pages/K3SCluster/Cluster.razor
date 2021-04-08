@@ -68,7 +68,25 @@ else
         </div>
 
         <Card Class="mt-3" Title="Configure cluster domain">
-            <Kubernox.UI.Components.ClusterDetails.LinkDomainForm />
+            @if(DomainState != null && DomainState.Value != null && DomainState.Value.ClusterDomains != null && DomainState.Value.ClusterDomains.Any())
+            {
+                <Table @ref="table" TItem="ClusterDomainItemResponse" DataSource="@DomainState.Value.ClusterDomains">
+                    <AntDesign.Column @bind-Field="@context.Name" Sortable />
+                    <AntDesign.Column @bind-Field="@context.Value" Sortable />
+                    <AntDesign.Column @bind-Field="@context.Resolver" Sortable />
+                    <AntDesign.Column @bind-Field="@context.Protocol" Sortable />
+                    <AntDesign.ActionColumn>
+                        <Button>
+                            Refresh rule
+                        </Button>
+                        <Button Danger>
+                            Delete rule
+                        </Button>
+                    </AntDesign.ActionColumn>
+                </Table>
+            }
+
+            <Kubernox.UI.Components.ClusterDetails.LinkDomainForm ClusterId="@ClusterId" />
         </Card>
     }
 }

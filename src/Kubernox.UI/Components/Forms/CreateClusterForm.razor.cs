@@ -13,10 +13,15 @@ namespace Kubernox.UI.Components.Forms
     {
         [Inject]
         public IState<SshKeyState> SshKeyState { get; set; }
+
         [Inject]
         public IState<TemplateState> TemplateState { get; set; }
+
         [Inject]
         public IState<DatacenterState> DatacenterState { get; set; }
+
+        [Inject]
+        public IState<DomainState> DomainState { get; set; }
 
         public string Layout { get; set; } = FormLayout.Vertical;
         protected ITable table;
@@ -51,6 +56,11 @@ namespace Kubernox.UI.Components.Forms
         private string ParseGB(string value)
         {
             return value.Replace("GB", "");
+        }
+
+        void ToggleChecked(bool value)
+        {
+            CreateRequest.InstallTraefik = !CreateRequest.InstallTraefik;
         }
 
         void ChangeTemplate(int value)

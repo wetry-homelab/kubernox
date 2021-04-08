@@ -28,12 +28,13 @@ namespace Infrastructure.Persistence
             services.AddScoped<IClusterRepository, ClusterRepository>();
             services.AddScoped<IClusterDomainRepository, ClusterDomainRepository>();
             services.AddScoped<ISshKeyRepository, SshKeyRepository>();
-            services.AddScoped<IDomainNameRepository, DomainNameRepository>();
+            services.AddScoped<IDomainRepository, DomainRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITemplateRepository, TemplateRepository>();
             services.AddScoped<IDatacenterRepository, DatacenterRepository>();
             services.AddScoped<IClusterNodeRepository, ClusterNodeRepository>();
             services.AddScoped<IMetricRepository, MetricRepository>();
+            services.AddScoped<ITraefikRouteValueRepository, TraefikRouteValueRepository>();
         }
     }
 }
