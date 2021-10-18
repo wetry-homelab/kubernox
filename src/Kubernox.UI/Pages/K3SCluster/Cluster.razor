@@ -58,17 +58,14 @@ else
                 @foreach (var node in ClusterState.Value.Cluster.Nodes.OrderBy(c => c.Name).ToArray())
                 {
                     <TabPane Key="@node.Name">
-                        <Tab>@node.Name</Tab>
-                        <ChildContent>
-                            <ClusterNodePane Node="node" />
-                        </ChildContent>
+                        <ClusterNodePane Node="node" />
                     </TabPane>
                 }
             </Tabs>
         </div>
 
         <Card Class="mt-3" Title="Configure cluster domain">
-            @if(DomainState != null && DomainState.Value != null && DomainState.Value.ClusterDomains != null && DomainState.Value.ClusterDomains.Any())
+            @if (DomainState != null && DomainState.Value != null && DomainState.Value.ClusterDomains != null && DomainState.Value.ClusterDomains.Any())
             {
                 <Table @ref="table" TItem="ClusterDomainItemResponse" DataSource="@DomainState.Value.ClusterDomains">
                     <AntDesign.Column @bind-Field="@context.Name" Sortable />

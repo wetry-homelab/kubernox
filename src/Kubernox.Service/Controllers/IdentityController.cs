@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Infrastructure.Contracts.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,6 +10,7 @@ namespace Kubernox.Service.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [AllowAnonymous]
     public class IdentityController : ControllerBase
     {
         private readonly ILogger<IdentityController> logger;

@@ -8,6 +8,7 @@ using Infrastructure.Persistence.Seeds;
 using Infrastructure.Shared;
 using Kubernox.Service.Business;
 using Kubernox.Service.Hubs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +16,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProxmoxVEAPI.Client;
-using Serilog.Ui.ElasticSearchProvider;
 using Serilog.Ui.PostgreSqlProvider.Extensions;
 using Serilog.Ui.Web;
 using System;
-using System.Configuration;
 using System.Net;
+using System.Text;
 
 namespace Kubernox.Service
 {
@@ -60,6 +61,25 @@ namespace Kubernox.Service
 
             ConfigureCors(services);
             AddBusinessLayer(services);
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = false,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"]))
+                };
+            });
+
 
             services.AddSingleton<ILookupClient>(c =>
             {
@@ -108,12 +128,11 @@ namespace Kubernox.Service
             MigrateDatabase(serviceDbContext);
 
             app.UseHttpsRedirection();
-
             app.UseCors();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseSerilogUi();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

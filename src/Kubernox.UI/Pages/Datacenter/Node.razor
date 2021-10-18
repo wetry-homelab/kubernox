@@ -26,78 +26,66 @@ else
         <Row Class="mt-6" Justify="space-between">
             <GridCol Span="12">
                 <Tabs DefaultActiveKey="cpu" Type="@TabType.Card" @bind-ActiveKey="@tabKey">
-                    <TabPane Key="cpu">
-                        <Tab>CPU</Tab>
-                        <ChildContent>
-                            <Card>
-                                <Row>
-                                    <GridCol Span="12">
-                                        <h4>Model</h4> @DatacenterState.Value.SelectedNode.Model * (@DatacenterState.Value.SelectedNode.Socket)
-                                    </GridCol>
-                                    <GridCol Span="6">
-                                        <h4>Core/Thread</h4> @DatacenterState.Value.SelectedNode.Core/@DatacenterState.Value.SelectedNode.Thread
-                                    </GridCol>
-                                    <GridCol Span="6">
-                                        <h4>Speed</h4> @(DatacenterState.Value.SelectedNode.Mhz * 1000)Mhz
-                                    </GridCol>
-                                </Row>
-                                <Divider />
-                                <h4>Flags</h4> @DatacenterState.Value.SelectedNode.Flag
-                            </Card>
-                        </ChildContent>
+                    <TabPane Key="cpu" Tab="CPU">
+                        <Card>
+                            <Row>
+                                <GridCol Span="12">
+                                    <h4>Model</h4> @DatacenterState.Value.SelectedNode.Model * (@DatacenterState.Value.SelectedNode.Socket)
+                                </GridCol>
+                                <GridCol Span="6">
+                                    <h4>Core/Thread</h4> @DatacenterState.Value.SelectedNode.Core/@DatacenterState.Value.SelectedNode.Thread
+                                </GridCol>
+                                <GridCol Span="6">
+                                    <h4>Speed</h4> @(DatacenterState.Value.SelectedNode.Mhz * 1000)Mhz
+                                </GridCol>
+                            </Row>
+                            <Divider />
+                            <h4>Flags</h4> @DatacenterState.Value.SelectedNode.Flag
+                        </Card>
                     </TabPane>
-                    <TabPane Key="ram">
-                        <Tab>RAM</Tab>
-                        <ChildContent>
-                            <Card>
-                                <Row>
-                                    <GridCol Span="8">
-                                        <h4>Ram available</h4> @(DatacenterState.Value.SelectedNode.RamTotal/ (1024 * 1024))Mb
-                                    </GridCol>
-                                    <GridCol Span="8">
-                                        <h4>Ram used</h4> @(DatacenterState.Value.SelectedNode.RamUsed/ (1024 * 1024))Mb
-                                    </GridCol>
-                                    <GridCol Span="8">
-                                        <h4>Ram free</h4> @(DatacenterState.Value.SelectedNode.RamFree / (1024 * 1024))Mb
-                                    </GridCol>
-                                </Row>
-                                <Divider />
-                                <div class="node-usage mt-2">
-                                    <div class="used" style="width:@GetRamUsedWidth()%">
-                                        @((int)GetRamUsedWidth())%
-                                    </div>
+                    <TabPane Key="ram" Tab="RAM">
+                        <Card>
+                            <Row>
+                                <GridCol Span="8">
+                                    <h4>Ram available</h4> @(DatacenterState.Value.SelectedNode.RamTotal/ (1024 * 1024))Mb
+                                </GridCol>
+                                <GridCol Span="8">
+                                    <h4>Ram used</h4> @(DatacenterState.Value.SelectedNode.RamUsed/ (1024 * 1024))Mb
+                                </GridCol>
+                                <GridCol Span="8">
+                                    <h4>Ram free</h4> @(DatacenterState.Value.SelectedNode.RamFree / (1024 * 1024))Mb
+                                </GridCol>
+                            </Row>
+                            <Divider />
+                            <div class="node-usage mt-2">
+                                <div class="used" style="width:@GetRamUsedWidth()%">
+                                    @((int)GetRamUsedWidth())%
                                 </div>
-                            </Card>
-                        </ChildContent>
+                            </div>
+                        </Card>
                     </TabPane>
-                    <TabPane Key="disk">
-                        <Tab>Disk</Tab>
-                        <ChildContent>
-                            <Card>
-                                <Row>
-                                    <GridCol Span="8">
-                                        <h4>Disk available</h4> @(DatacenterState.Value.SelectedNode.RootFsTotal / (1024 * 1024))Mb
-                                    </GridCol>
-                                    <GridCol Span="8">
-                                        <h4>Disk used</h4> @(DatacenterState.Value.SelectedNode.RootFsUsed/ (1024 * 1024))Mb
-                                    </GridCol>
-                                    <GridCol Span="8">
-                                        <h4>Disk free</h4> @(DatacenterState.Value.SelectedNode.RootFsFree / (1024 * 1024))Mb
-                                    </GridCol>
-                                </Row>
-                                <Divider />
-                                <div class="node-usage mt-2">
-                                    <div class="used" style="width:@GetDiskUsedWidth()%">
-                                        @((int)GetDiskUsedWidth())%
-                                    </div>
+                    <TabPane Key="disk" Tab="DISK">
+                        <Card>
+                            <Row>
+                                <GridCol Span="8">
+                                    <h4>Disk available</h4> @(DatacenterState.Value.SelectedNode.RootFsTotal / (1024 * 1024))Mb
+                                </GridCol>
+                                <GridCol Span="8">
+                                    <h4>Disk used</h4> @(DatacenterState.Value.SelectedNode.RootFsUsed/ (1024 * 1024))Mb
+                                </GridCol>
+                                <GridCol Span="8">
+                                    <h4>Disk free</h4> @(DatacenterState.Value.SelectedNode.RootFsFree / (1024 * 1024))Mb
+                                </GridCol>
+                            </Row>
+                            <Divider />
+                            <div class="node-usage mt-2">
+                                <div class="used" style="width:@GetDiskUsedWidth()%">
+                                    @((int)GetDiskUsedWidth())%
                                 </div>
-                            </Card>
-                        </ChildContent>
+                            </div>
+                        </Card>
                     </TabPane>
-                    <TabPane Key="proxmox">
-                        <Tab>Proxmox</Tab>
-                        <ChildContent>
-                        </ChildContent>
+                    <TabPane Key="proxmox" Tab="PROXMOX">
                     </TabPane>
                 </Tabs>
             </GridCol>

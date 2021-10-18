@@ -29,7 +29,6 @@ namespace Kubernox.Workers
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseRouting();
         }
     }

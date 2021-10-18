@@ -7,11 +7,20 @@ extensions:
   logPath: ./.logs
 
 services:
-- name: kubernox-host
-  project: src/Kubernox.Host/Kubernox.Host.csproj
-  replicas: 1
+- name: db
+  image: postgres
+  env:
+  - name: POSTGRES_PASSWORD
+    value: kubernoxDbPassword@0123
+  - name: POSTGRES_USER
+    value: kubernox
   bindings:
-  - port: 4000
+  - port: 5432 
+  tags:
+    - db
+  volumes:
+    - source: ./postgres-data
+      target: /var/lib/postgresql/data
 
 - name: kubernox-service
   project: src/Kubernox.Service/Kubernox.Service.csproj
@@ -21,6 +30,29 @@ services:
   env:
   - name: ASPNETCORE_ENVIRONMENT
     value: Development
+  - name: ConnectionStrings__Default
+    value: Host=localhost;Database=kubernox;Username=kubernox;Password=kubernoxDbPassword@0123
+  tags:
+    - app
+
+# - name: kubernox-host
+#   project: src/Kubernox.Host/Kubernox.Host.csproj
+#   replicas: 1
+#   bindings:
+#   - port: 4000
+#   tags:
+#     - app
+
+- name: kubernox-workers
+  project: src/Kubernox.Workers/Kubernox.Workers.csproj
+  replicas: 1
+  tags:
+    - app 
+  env:
+  - name: ASPNETCORE_ENVIRONMENT
+    value: Development
+  - name: ConnectionStrings__Default
+    value: Host=localhost;Database=kubernox;Username=kubernox;Password=kubernoxDbPassword@0123
 
 ingress:
   - name: ingress
@@ -38,5 +70,5 @@ ingress:
         service: kubernox-service
       - path: /ws
         service: kubernox-service
-      - path: /
-        service: kubernox-host
+      # - path: /
+      #   service: kubernox-host
