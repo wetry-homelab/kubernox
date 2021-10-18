@@ -1,0 +1,33 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@inject IStringLocalizer<App> Translator
+@inject IDispatcher Dispatcher
+@using Infrastructure.Contracts.Request
+
+<Modal Title="@Translator.GetString("SSH_CREATE_OR_IMPORT_BTN")"
+    Visible="@Visible"
+    OnOk="@HandleOk"
+    OnCancel="@HandleCancel"
+    OkText="@(sshKeyCreateRequest.AutoGenerate ? "Auto generate" : "Import")">
+    <CreateSshKeyForm SshKeyCreateRequest="sshKeyCreateRequest" />
+</Modal>
+
+@code{
+    [Parameter]
+    public bool Visible { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnCloseCallback { get; set; }
+
+    protected SshKeyCreateRequest sshKeyCreateRequest = new SshKeyCreateRequest();
+
+    private void HandleOk(MouseEventArgs e)
+    {
+        Dispatcher.Dispatch(new Kubernox.UI.Store.Actions.SshKey.CreateSshKeyAction(sshKeyCreateRequest));
+        Visible = false;
+    }
+
+    private void HandleCancel(MouseEventArgs e)
+    {
+        OnCloseCallback.InvokeAsync(e).Wait();
+    }
+}

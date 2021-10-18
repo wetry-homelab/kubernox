@@ -1,0 +1,10 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<Modal Title="Deploy new cluster"
+OnOk="@HandleOk"
+OnCancel="@HandleCancel"
+DestroyOnClose="true"
+Visible="@Visible"
+OkText="@("Deploy cluster")">
+    <CreateClusterForm CreateRequest="@ClusterCreateRequest" />
+</Modal>

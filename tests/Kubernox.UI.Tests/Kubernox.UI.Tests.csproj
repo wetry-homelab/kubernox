@@ -21,8 +21,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Kubernox.UI\Kubernox.UI.csproj" />
-  </ItemGroup>
-
 </Project>

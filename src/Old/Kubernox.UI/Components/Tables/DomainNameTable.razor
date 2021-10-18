@@ -1,0 +1,28 @@
+﻿@inherits CoreComponent
+
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject IStringLocalizer<App> Translator
+
+<Table @ref="table" TItem="DomainItemResponse" DataSource="@DomainState.Value.Domains">
+    <AntDesign.Column @bind-Field="@context.RootDomain" Sortable />
+    <AntDesign.ActionColumn style="max-width:40%" Title="Validation state">
+        @if (context.ValidationDate != null)
+        {
+            <Alert Type="@AlertType.Success" Message="@Translator.GetString("DOMAIN_VALIDATE_ON").Value.Replace("#VALIDATEON#", ((DateTime)context.ValidationDate).ToString())" />
+        }
+        else
+        {
+            <Alert Message="@Translator.GetString("DOMAIN_VALIDATION_REQUIRED").Value.Replace("#CHALLENGE#", context.ValidationKey).Replace("#ID#", context.Id).Replace("#DOMAIN#", context.RootDomain)" Type="@AlertType.Warning" />
+        }
+    </AntDesign.ActionColumn>
+    <AntDesign.ActionColumn>
+        @if (context.ValidationDate == null)
+        {
+            <Button Type="primary" OnClick="@(() => StartValidationAsync(context.Id))" Disabled="@ValidationInProgress">@Translator.GetString("DOMAIN_VALIDATION_BTN")</Button>
+        }
+    </AntDesign.ActionColumn>
+    <AntDesign.ActionColumn>
+        <Button Danger>Remove</Button>
+    </AntDesign.ActionColumn>
+</Table>

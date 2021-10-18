@@ -1,0 +1,83 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<Form Layout="@Layout" Model="@CreateRequest">
+    <FormItem Label="Cluster name">
+        <Input @bind-Value="@context.Name" />
+    </FormItem>
+
+    <FormItem Label="Cluster template">
+        <RadioGroup @bind-Value="@context.SelectedTemplate" TValue="int" OnChange="@ChangeTemplate">
+            @foreach (var template in TemplateState.Value.Templates)
+            {
+                <Radio RadioButton Value="@template.Id">@template.Name</Radio>
+            }
+            <Radio RadioButton Value="@(-1)">Custom</Radio>
+        </RadioGroup>
+    </FormItem>
+    <Row>
+        <GridCol Span="8">
+            <FormItem Label="CPU">
+                <AntDesign.InputNumber Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Cpu" Min="1" Max="8" DefaultValue="1"></AntDesign.InputNumber>
+            </FormItem>
+        </GridCol>
+        <GridCol Span="8">
+            <FormItem Label="Memory">
+                <AntDesign.InputNumber Formatter="FormatMB" Parser="ParseMB" Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Memory" Min="1024" Max="8192" DefaultValue="1024"></AntDesign.InputNumber>
+            </FormItem>
+        </GridCol>
+        <GridCol Span="8">
+            <FormItem Label="Disk">
+                <AntDesign.InputNumber Formatter="FormatGB" Parser="ParseGB" Disabled="@(context.SelectedTemplate != -1)" @bind-Value="@context.Storage" Min="20" Max="100" DefaultValue="20"></AntDesign.InputNumber>
+            </FormItem>
+        </GridCol>
+    </Row>
+
+    @if (DomainState != null && DomainState.Value.Domains != null && DomainState.Value.Domains.Any())
+    {
+        <FormItem Label="Link to domain">
+            <Select DataSource="@DomainState.Value.Domains" @bind-Value="@context.LinkDomainId" ValueName="@nameof(DomainItemResponse.Id)" LabelName="@nameof(DomainItemResponse.RootDomain)">
+            </Select>
+        </FormItem>
+    }
+
+    <FormItem Label="Select SSH Key">
+        <Select DataSource="@SshKeyState.Value.SshKeys" @bind-Value="@context.SshKeyId" ValueName="@nameof(SshKeyResponse.Id)" LabelName="@nameof(SshKeyResponse.Name)">
+        </Select>
+    </FormItem>
+    <Row>
+        <GridCol Span="8">
+            <FormItem Label="Node Count">
+                <AntDesign.InputNumber @bind-Value="@context.Node" Min="2" Max="10" DefaultValue="2"></AntDesign.InputNumber>
+            </FormItem>
+        </GridCol>
+        <GridCol Span="8">
+            <FormItem Label="Features">
+                <Checkbox Checked="@context.InstallTraefik" CheckedChange="@ToggleChecked">
+                    Install Traefik
+                </Checkbox>
+            </FormItem>
+        </GridCol>
+    </Row>
+
+    <FormItem Label="Select deploy node">
+        <Select DataSource="@DatacenterState.Value.Nodes" @bind-Value="@context.DeployNodeId" ValueName="@nameof(DatacenterNodeResponse.Id)" LabelName="@nameof(DatacenterNodeResponse.Name)">
+        </Select>
+    </FormItem>
+
+    @if (context.DeployNodeId != -1 && !Overheat())
+    {
+        <FormItem Label="Node availability">
+            <div class="node-usage mt-2">
+                <div class="used" style="width:@GetRamUsedWidth()%"></div>
+                <div class="claim" style="width:@GetRamToClaimWidth()%"></div>
+            </div>
+        </FormItem>
+    }
+    else
+    {
+        if (Overheat())
+        {
+            <Alert Type="@AlertType.Error" Message="Error" Description="This cluster cannot be deploy on this node, not enough resources." ShowIcon="true" />
+        }
+    }
+</Form>

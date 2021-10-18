@@ -1,0 +1,42 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IState<DatacenterState> DatacenterState
+@inject NavigationManager NavigationManager
+
+<Table @ref="table" TItem="DatacenterNodeResponse" DataSource="@DatacenterState.Value.Nodes">
+    <AntDesign.Column @bind-Field="@context.Id" Sortable />
+    <AntDesign.Column @bind-Field="@context.Name" Sortable />
+    <AntDesign.Column @bind-Field="@context.Ip" Sortable />
+    <AntDesign.Column @bind-Field="@context.Model" Sortable />
+    <AntDesign.Column @bind-Field="@context.Core" Sortable>
+        @($"{context.Core} / {context.Thread} - ({context.Mhz* 1000}Mhz) ({context.Socket})")
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.RamTotal" Sortable>
+        @($"{ValueConvert(context.RamUsed)}MB / {ValueConvert(context.RamTotal)}MB")
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.SwapTotal" Sortable>
+        @($"{ValueConvert(context.SwapUsed)}MB / {ValueConvert(context.SwapTotal)}MB")
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.RootFsTotal" Sortable>
+        @($"{ValueConvert(context.RootFsUsed)}MB / {ValueConvert(context.RootFsTotal)}MB")
+    </AntDesign.Column>
+    <ActionColumn>
+        <Space>
+            <SpaceItem><Button OnClick="() => ViewDetails(context.Id)">Details</Button></SpaceItem>
+        </Space>
+    </ActionColumn>
+</Table>
+
+@code{
+    protected ITable table;
+
+    protected void ViewDetails(int id)
+    {
+        NavigationManager.NavigateTo($"/node/{id}");
+    }
+
+    protected long ValueConvert(long input)
+    {
+        return (input / (1024 * 1024));
+    }
+}

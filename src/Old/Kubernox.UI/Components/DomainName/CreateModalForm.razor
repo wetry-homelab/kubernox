@@ -1,0 +1,27 @@
+﻿@inherits CoreModalComponent
+
+@{
+    RenderFragment footer = @<Template>
+        <Button OnClick="@HandleCancel" Class="pull-left">@Translator.GetString("BTN_FORM_CANCEL")</Button>
+
+        <Button OnClick="@HandleOk" Type="primary" Loading="@loadInProgress" Disabled="@(validationResult == null || !validationResult.IsValid)">
+            @Translator.GetString("BTN_FORM_CLAIM")
+        </Button>
+    </Template>;
+}
+
+<Modal Title="Claim root domain" Visible="@Visible" Footer="@footer" OnCancel="@HandleCancel" DestroyOnClose="true">
+    @if (displayError) {
+        <Alert Message="@Translator.GetString("CLAIM_ERROR")" Class="mb-2" Type="@AlertType.Error" />
+    }
+    <Form Layout="@Layout" Model="@DomainNameCreateRequest">
+        <FormItem Label="Domain Name">
+            <Input @bind-Value="@context.Name" OnInput="@(() => Validate())" OnFocus="@(() => OnFocus("Name"))" OnBlur="@(() => OnBlur())" OnChange="@((string v) => Validate())" />
+            <ValidatorField ValidationResult="@validationResult" CurrentFieldFocus="@currentFocus" AlreadyFocus="@alreadyFocus" FieldName="Name" />
+        </FormItem>
+        <FormItem Label="Root Domain (*)">
+            <Input @bind-Value="@context.RootDomain" OnInput="@(() => Validate())" OnFocus="@(() => OnFocus("RootDomain"))" OnBlur="@(() => OnBlur())" OnChange="@((string v) => Validate())" />
+            <ValidatorField ValidationResult="@validationResult" CurrentFieldFocus="@currentFocus" AlreadyFocus="@alreadyFocus" FieldName="RootDomain" />
+        </FormItem>
+    </Form>
+</Modal>

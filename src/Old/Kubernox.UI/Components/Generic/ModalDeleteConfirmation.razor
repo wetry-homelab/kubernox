@@ -1,0 +1,8 @@
+﻿@inject IStringLocalizer<App> Translator
+
+<Modal Title="@Translator.GetString("MODAL_DELETION_TITLE")"
+       Visible="IsVisible"
+       OnOk="@ValidateDelete"
+       OkText="@Translator.GetString("MODAL_DELETION_DELETE_BTN").Value"
+       CancelText="@Translator.GetString("MODAL_DELETION_CANCEL_BTN").Value">
+</Modal>

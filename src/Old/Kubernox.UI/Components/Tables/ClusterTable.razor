@@ -1,0 +1,73 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IState<ClusterState> ClusterState
+@inject NavigationManager NavigationManager
+@inject IClusterService ClusterService
+@inject IJSRuntime JSRuntime
+
+<Table @ref="table" TItem="ClusterItemResponse" DataSource="@ClusterState.Value.Clusters">
+    <AntDesign.Column @bind-Field="@context.Name" Sortable />
+    <AntDesign.Column @bind-Field="@context.Ip" Title="Reverse">
+        <span>@($"{context.Name}.ice-artefact.com")</span>
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.Cpu" Sortable>
+        @($"{context.Cpu}")
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.Memory" Sortable>
+        @($"{context.Memory}MB")
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.Disk" Sortable>
+        @($"{context.Disk}GB")
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.State">
+        @if (context.State == "Ready")
+        {
+            <Tag Color="green">Ready</Tag>
+        }
+        else
+        {
+            <Tag Color="orange">Not Ready</Tag>
+        }
+    </AntDesign.Column>
+    <AntDesign.Column @bind-Field="@context.Nodes">
+        @foreach (var node in context.Nodes.OrderBy(n => n.Ip).ToList())
+        {
+        <div class="block m-2">
+            @if (node.State == "Ready")
+            {
+                <Tag Color="green" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
+            }
+            else
+            {
+                <Tag Color="orange" Class="mb-1" Style="margin-bottom:5px">@node.Name / @node.Ip / @node.State</Tag>
+            }
+        </div>
+        }
+    </AntDesign.Column>
+    <ActionColumn>
+        <Space>
+            <SpaceItem>
+                @if (context.State == "Ready")
+                {
+                    <Button OnClick="() => DownloadKubeConfig(context.Id)">Download KubeConfig</Button>
+                }
+            </SpaceItem>
+            <SpaceItem><Button OnClick="() => ViewDetails(context.Id)">View Cluster</Button></SpaceItem>
+        </Space>
+    </ActionColumn>
+</Table>
+
+@code {
+    protected ITable table;
+
+    protected async Task DownloadKubeConfig(string id)
+    {
+        var download = await ClusterService.DownloadConfigAsync(id);
+        await FileUtil.SaveAs(JSRuntime, download.Name, System.Text.Encoding.UTF8.GetBytes(download.Content));
+    }
+
+    protected async Task ViewDetails(string id)
+    {
+        NavigationManager.NavigateTo($"/k3s/{id}");
+    }
+}
