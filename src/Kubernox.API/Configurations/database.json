@@ -1,0 +1,27 @@
+﻿[
+  {
+    "name": "Small",
+    "vcpu": 1,
+    "memory": 2048
+  },
+  {
+    "name": "Medium",
+    "vcpu": 2,
+    "memory": 8196
+  },
+  {
+    "name": "Large",
+    "vcpu": 4,
+    "memory": 16392
+  },
+  {
+    "name": "X-Large",
+    "vcpu": 8,
+    "memory": 32784
+  },
+  {
+    "name": "X-Large",
+    "vcpu": 16,
+    "memory": 65568
+  }
+]

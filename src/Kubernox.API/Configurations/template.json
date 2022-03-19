@@ -1,0 +1,42 @@
+﻿[
+  {
+    "name": "Small",
+    "node": 10,
+    "vcpu": 2,
+    "memory": 4096,
+    "description": "Basic instance, perfect for fast test and dev. Work with embed database or external.",
+    "externalDb": false
+  },
+  {
+    "name": "Medium",
+    "node": 100,
+    "vcpu": 4,
+    "memory": 8192,
+    "description": "Basic instance, perfect for fast test and dev. Work with embed database or external.",
+    "externalDb": false
+  },
+  {
+    "name": "Large",
+    "node": 250,
+    "vcpu": 8,
+    "memory": 16386,
+    "description": "Medium instance for production. Required a external database provider with high-availability. (MySQL/PostgreSQL)",
+    "externalDb": true
+  },
+  {
+    "name": "X-Large",
+    "node": 500,
+    "vcpu": 16,
+    "memory": 32768,
+    "description": "Large instance for production. Required a external database provider with high-availability. (MySQL/PostgreSQL)",
+    "externalDb": true
+  },
+  {
+    "name": "XX-Large",
+    "node": 1000,
+    "vcpu": 32,
+    "memory": 65536,
+    "description": "Very large instance for production. Required a external database provider with high-availability. (MySQL/PostgreSQL)",
+    "externalDb": true
+  }
+]

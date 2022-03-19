@@ -1,0 +1,46 @@
+<div class="left-side-menu">
+    <div class="slimscroll-menu">
+        <div id="sidebar-menu">
+            <ul class="metismenu" id="side-menu">
+                <li>
+                    <a [routerLink]="['/']" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active"
+                        class="waves-effect">
+                        <i class="ion-md-speedometer"></i>
+                        <span> Dashboard </span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/datacenter']" routerLinkActive="active" class="waves-effect">
+                        <i class="ion-md-pulse"></i>
+                        <span> Datacenter </span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/instances']" routerLinkActive="active" class="waves-effect">
+                        <i class="ion-md-desktop"></i>
+                        <span> Instances </span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/k3s']" routerLinkActive="active" class="waves-effect">
+                        <i class="ion-ios-cloud"></i>
+                        <span> K3S </span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/settings']" routerLinkActive="active" class="waves-effect">
+                        <i class="ion-md-cog"></i>
+                        <span> Settings </span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/log']" routerLinkActive="active" class="waves-effect">
+                        <i class="ion-md-cog"></i>
+                        <span> Log </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

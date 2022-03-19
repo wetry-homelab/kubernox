@@ -8,67 +8,50 @@ extensions:
 
 services:
 - name: db
-  image: postgres
+  image: mcr.microsoft.com/mssql/server:2019-latest
   env:
-  - name: POSTGRES_PASSWORD
-    value: kubernoxDbPassword@0123
-  - name: POSTGRES_USER
-    value: kubernox
+  - name: ACCEPT_EULA
+    value: "Y"
+  - name: MSSQL_SA_PASSWORD
+    value: Kubernox@0123
+  - name: MSSQL_SA_USER
+    value: sa
   bindings:
-  - port: 5432 
-  tags:
-    - db
+  - port: 14330
+    containerPort: 1433
+    name: dbBinding
+    connectionString: Data Source=${host},${port};Initial Catalog=KUBERNOX;User Id=${env:MSSQL_SA_USER};Password=${env:MSSQL_SA_PASSWORD}
   volumes:
-    - source: ./postgres-data
-      target: /var/lib/postgresql/data
+    - source: ./mssql/data
+      target: /var/opt/mssql/data
+    - source: ./mssql/log
+      target: /var/opt/mssql/log
+    - source: ./mssql/secrets
+      target: /var/opt/mssql/secrets
 
 - name: kubernox-service
-  project: src/Kubernox.Service/Kubernox.Service.csproj
+  project: src/Kubernox.API/Kubernox.API.csproj
   replicas: 1
   bindings:
-  - port: 4001
+  - port: 5001
+    protocol: https
   env:
   - name: ASPNETCORE_ENVIRONMENT
     value: Development
-  - name: ConnectionStrings__Default
-    value: Host=localhost;Database=kubernox;Username=kubernox;Password=kubernoxDbPassword@0123
-  tags:
-    - app
 
-# - name: kubernox-host
-#   project: src/Kubernox.Host/Kubernox.Host.csproj
-#   replicas: 1
-#   bindings:
-#   - port: 4000
-#   tags:
-#     - app
-
-- name: kubernox-workers
-  project: src/Kubernox.Workers/Kubernox.Workers.csproj
-  replicas: 1
-  tags:
-    - app 
-  env:
-  - name: ASPNETCORE_ENVIRONMENT
-    value: Development
-  - name: ConnectionStrings__Default
-    value: Host=localhost;Database=kubernox;Username=kubernox;Password=kubernoxDbPassword@0123
-
-ingress:
-  - name: ingress
-    bindings:
-      - port: 80
-        protocol: http
-        name: http-redirect
-      - port: 443
-        protocol: https
-        name: https-redirect
-    rules:
-      - path: /api
-        service: kubernox-service
-      - path: /logs
-        service: kubernox-service
-      - path: /ws
-        service: kubernox-service
-      # - path: /
-      #   service: kubernox-host
+# ingress:
+#   - name: ingress
+#     bindings:
+#       - port: 80
+#         protocol: http
+#         name: http-redirect
+#       - port: 443
+#         protocol: https
+#         name: https-redirect
+#     rules:
+#       - path: /api
+#         service: kubernox-service
+#       - path: /logs
+#         service: kubernox-service
+#       - path: /ws
+#         service: kubernox-service

@@ -1,0 +1,70 @@
+<div class="account-pages my-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+                <div class="card mt-4">
+                    <div class="card-header p-4 bg-primary">
+                        <h4 class="text-white text-center mb-0 mt-0">Kubernox</h4>
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="loginForm" class="p-2"
+                            *ngIf="!authenticationResponse.passwordExpire; else changePassword">
+                            <div class="form-group mb-3">
+                                <label for="username">Username</label>
+                                <input formControlName="username" class="form-control" type="text"
+                                    placeholder="kubernox" [class.parsley-error]="!loginForm.controls.username.valid 
+                                    && (loginForm.controls.username.dirty || loginForm.controls.username.touched)">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="password">Password</label>
+                                <input formControlName="password" class="form-control" type="password"
+                                    placeholder="kubernox" [class.parsley-error]="!loginForm.controls.password.valid 
+                                    && (loginForm.controls.password.dirty || loginForm.controls.password.touched)">
+                            </div>
+
+                            <div class="form-group row text-center mt-4 mb-4">
+                                <div class="col-12">
+                                    <button class="btn btn-md btn-block btn-primary waves-effect waves-light"
+                                        type="submit" (click)="loginUserAsync()" [disabled]="loginForm.invalid">Sign
+                                        In</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <ng-template #changePassword>
+                            <div class="alert alert-info">
+                                Password must be change.
+                            </div>
+                            <form [formGroup]="passwordForm" class="p-2">
+                                <div class="form-group mb-3">
+                                    <label for="password">Password</label>
+                                    <input formControlName="password" class="form-control" type="password"
+                                        placeholder="kubernox"
+                                        [class.parsley-error]="!passwordForm.controls.password.valid 
+                                        && (passwordForm.controls.password.dirty || passwordForm.controls.password.touched)">
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="passwordRepeated">Repeat password</label>
+                                    <input formControlName="passwordRepeated" class="form-control" type="password"
+                                        placeholder="kubernox"
+                                        [class.parsley-error]="!passwordForm.controls.passwordRepeated.valid 
+                                        && (passwordForm.controls.passwordRepeated.dirty || passwordForm.controls.passwordRepeated.touched)">
+                                </div>
+
+                                <div class="form-group row text-center mt-4 mb-4">
+                                    <div class="col-12">
+                                        <button class="btn btn-md btn-block btn-primary waves-effect waves-light"
+                                            type="submit" (click)="updatePasswordAsync()"
+                                            [disabled]="passwordForm.invalid">Change password</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
