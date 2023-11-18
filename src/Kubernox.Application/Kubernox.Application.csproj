@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.0.3" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.0.3" />
+		<PackageReference Include="MediatR" Version="12.2.0" />
+		<PackageReference Include="Pulumi" Version="3.*" />
+		<PackageReference Include="Pulumi.Automation" Version="3.59.0" />
+		<PackageReference Include="Pulumi.ProxmoxVE" Version="5.15.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Kubernox.Infrastructure\Kubernox.Infrastructure.csproj" />
+	</ItemGroup>
+</Project>
