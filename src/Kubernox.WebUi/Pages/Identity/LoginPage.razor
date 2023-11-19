@@ -1,0 +1,39 @@
+﻿@page "/login"
+@attribute [AllowAnonymous]
+@layout EmptyLayout
+
+<GridRow>
+    <GridCol Span="9"></GridCol>
+    <GridCol Span="6">
+        <Card Style="margin-top:160px">
+            <Title Level="2" Style="text-align:center">Kubernox</Title>
+            <Divider />
+            @if (authError)
+            {
+                <Alert Type="@AlertType.Error"
+                       Message="Authentication Error"
+                       Description="Username or password invalid. Don't forget to add realm in Username. (username@pam / username@pve)"
+                       ShowIcon="true" />
+            }
+
+            <Form Model="@signInRequest" OnFinish="SignInAsync" ValidateMode="@FormValidateMode.Rules" ValidateOnChange Layout="@FormLayout.Vertical">
+
+                <FormItem Label="Username" Required ShowFeedbackOnError ValidateStatus="@GetValidationStatus("Username")">
+                    <Input @bind-Value="@context.Username" Disabled="isLoading" />
+                </FormItem>
+
+                <FormItem Label="Password" Required ShowFeedbackOnError ValidateStatus="@GetValidationStatus("Password")">
+                    <InputPassword @bind-Value="@context.Password" Disabled="isLoading" />
+                </FormItem>
+
+                <FormItem Style="text-align:center">
+                    <Button Loading="isLoading" Type="@ButtonType.Primary" HtmlType="submit">
+                        Sign in
+                    </Button>
+                </FormItem>
+
+            </Form>
+        </Card>
+    </GridCol>
+    <GridCol Span="9"></GridCol>
+</GridRow>

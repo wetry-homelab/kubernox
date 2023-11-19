@@ -1,0 +1,19 @@
+﻿<Header Class="header">
+    <div class="logo" />
+    <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Horizontal">
+        <AuthorizeView>
+            <Authorized>
+
+                <MenuItem Style="font-size:1.25rem!important;float:right">
+                    <Icon Type="logout" Theme="outline" Style="font-size:1.25rem!important" />
+                </MenuItem>
+
+                <MenuItem Style="font-size:1.15rem!important;float:right">
+                    <MenuItem>
+                        <span class="" style="margin-left:8px;font-size:1.15rem!important; color:#FFF!important">@context.User.Identity.Name</span>
+                    </MenuItem>
+                </MenuItem>
+            </Authorized>
+        </AuthorizeView>
+    </Menu>
+</Header>

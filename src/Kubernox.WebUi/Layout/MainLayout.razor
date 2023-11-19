@@ -1,0 +1,14 @@
+﻿@inherits LayoutComponentBase
+
+<Layout Style="min-height:100%">
+    <Kubernox.WebUi.Components.Shared.TopHeader />
+
+    <Layout Style="min-height:100%">
+        <Kubernox.WebUi.Components.Shared.SideNav />
+        <Layout Style="min-height:100%; background:#f0f2f5">
+            <Content Style="margin-left:200px;">
+                @Body
+            </Content>
+        </Layout>
+    </Layout>
+</Layout>

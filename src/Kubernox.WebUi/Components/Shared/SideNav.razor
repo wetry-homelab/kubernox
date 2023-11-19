@@ -1,0 +1,52 @@
+﻿<Sider Width="200" Style="overflow: auto;height: 100vh;position: fixed;left: 0;">
+    <Menu Mode="MenuMode.Inline"
+          Theme="MenuTheme.Light"
+          Style="min-height: 100%;">
+
+        <FeatureComponent FlagName="Instance">
+            <MenuItem>
+                <MenuLink Href="/instances" Match="@NavLinkMatch.Prefix">
+                    <Icon Type="pie-chart" Theme="outline" />
+                    <span>Instances</span>
+                </MenuLink>
+            </MenuItem>
+        </FeatureComponent>
+
+        <MenuItem>
+            <MenuLink Href="/k3s" Match="@NavLinkMatch.Prefix">
+                <Icon Type="pie-chart" Theme="outline" />
+                <span>K3S</span>
+            </MenuLink>
+        </MenuItem>
+
+        <FeatureComponent FlagName="Template">
+            <MenuItem>
+                <MenuLink Href="/templates" Match="@NavLinkMatch.Prefix">
+                    <Icon Type="pie-chart" Theme="outline" />
+                    <span>Templates</span>
+                </MenuLink>
+            </MenuItem>
+        </FeatureComponent>
+
+        @{
+            RenderFragment subMenuAdmin =@<span>
+                <Icon Type="user" Theme="outline" />
+                <span>Admin</span>
+            </span>
+            ;
+        }
+
+        <SubMenu Key="admin" TitleTemplate=subMenuAdmin>
+            <MenuItem>
+                <MenuLink Href="/clusters" Match="@NavLinkMatch.Prefix">Clusters</MenuLink>
+            </MenuItem>
+            <MenuItem>
+                <MenuLink Href="/projects" Match="@NavLinkMatch.Prefix">Projects</MenuLink>
+            </MenuItem>
+            <MenuItem>
+                <MenuLink Href="/ssh-keys" Match="@NavLinkMatch.Prefix">SSH</MenuLink>
+            </MenuItem>
+        </SubMenu>
+
+    </Menu>
+</Sider>

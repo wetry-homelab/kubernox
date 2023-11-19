@@ -3,12 +3,31 @@ using Corsinvest.ProxmoxVE.Api.Shared.Models.Cluster;
 
 using Kubernox.Application.Interfaces;
 
+using Microsoft.Extensions.Configuration;
+
 using Newtonsoft.Json;
+
+using static Corsinvest.ProxmoxVE.Api.Shared.Models.Vm.VmQemuAgentNetworkGetInterfaces;
 
 namespace Kubernox.Application.Clients
 {
     public class ProxmoxClient : IProxmoxClient
     {
+        private readonly IConfiguration configuration;
+        private readonly string identityIp;
+
+        public ProxmoxClient(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+            this.identityIp = configuration["Identity:Ip"];
+        }
+
+        public Task<bool> AuthenticateUserAsync(string username, string password)
+        {
+            var client = new PveClient(identityIp);
+            return client.Login(username, password);
+        }
+
         public async Task<IEnumerable<ClusterResource>> GetNodesAsync(string ip, string apiToken)
         {
             var client = new PveClient(ip);

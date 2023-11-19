@@ -47,12 +47,12 @@ namespace Kubernox.Application.Workers
                                     MaxMemory = clusterNode.MemorySize,
                                     Id = Guid.NewGuid(),
                                     CreateAt = DateTime.UtcNow,
-                                    CreateBy = "System"
+                                    CreateBy = typeof(ProxmoxClusterWorker).Name
                                 });
                             }
                             else
                             {
-                                nodeExisting.UpdateBy = "System";
+                                nodeExisting.UpdateBy = typeof(ProxmoxClusterWorker).Name;
                                 nodeExisting.UpdateAt = DateTime.UtcNow;
                                 nodeExisting.MaxMemory = clusterNode.MemorySize;
                                 nodeExisting.MaxCpu = clusterNode.CpuSize;

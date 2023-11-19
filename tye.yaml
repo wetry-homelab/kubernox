@@ -7,36 +7,44 @@ extensions:
   logPath: ./.logs
 
 services:
-- name: kubernox-host
-  project: src/Kubernox.Host/Kubernox.Host.csproj
+- name: kubernox-webui
+  project: src/Kubernox.WebUi/Kubernox.WebUi.csproj
   replicas: 1
   bindings:
-  - port: 4000
+  - port: 6000
 
-- name: kubernox-service
-  project: src/Kubernox.Service/Kubernox.Service.csproj
-  replicas: 1
-  bindings:
-  - port: 4001
-  env:
-  - name: ASPNETCORE_ENVIRONMENT
-    value: Development
+# - name: kubernox-service
+#   project: src/Kubernox.Service.Host/Kubernox.Service.Host.csproj
+#   replicas: 1
+#   bindings:
+#   - port: 4001
+#   env:
+#   - name: ASPNETCORE_ENVIRONMENT
+#     value: Development
 
-ingress:
-  - name: ingress
-    bindings:
-      - port: 80
-        protocol: http
-        name: http-redirect
-      - port: 443
-        protocol: https
-        name: https-redirect
-    rules:
-      - path: /api
-        service: kubernox-service
-      - path: /logs
-        service: kubernox-service
-      - path: /ws
-        service: kubernox-service
-      - path: /
-        service: kubernox-host
+# - name: postgres
+#   image: postgres
+#   bindings:
+#   - port: 5432
+#   env:
+#   - name: POSTGRES_PASSWORD
+#     value: postgres
+
+# ingress:
+#   - name: ingress
+#     bindings:
+#       - port: 80
+#         protocol: http
+#         name: http-redirect
+#       - port: 443
+#         protocol: https
+#         name: https-redirect
+#     rules:
+#       - path: /api
+#         service: kubernox-service
+#       - path: /logs
+#         service: kubernox-service
+#       - path: /ws
+#         service: kubernox-service
+#       - path: /
+#         service: kubernox-webui

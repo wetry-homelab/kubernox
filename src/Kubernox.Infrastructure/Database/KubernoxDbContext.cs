@@ -7,12 +7,18 @@ namespace Kubernox.Infrastructure.Database
     public class KubernoxDbContext : DbContext
     {
         public DbSet<Node> Nodes { get; set; }
+
         public DbSet<ClusterConfiguration> ClusterConfigurations { get; set; }
+
+        public DbSet<Log> Logs { get; set; }
+
+        public DbSet<SshKey> SshKeys { get; set; }
+
 
         public KubernoxDbContext(DbContextOptions<KubernoxDbContext> options)
             : base(options)
         {
-            
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
