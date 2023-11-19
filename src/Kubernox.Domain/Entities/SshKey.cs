@@ -6,7 +6,7 @@
 
         public string PublicKey { get; set; }
 
-        public string Private { get; set; }
+        public string PrivateKey { get; set; }
 
         public DateTime CreateAt { get; set; }
         public string CreateBy { get; set; }

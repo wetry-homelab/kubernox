@@ -6,6 +6,5 @@ namespace Kubernox.Shared.Interfaces
     public interface IIdentityClient
     {
         Task<SignInResponse> SignInAsync(SignInRequest request);
-        Task<string> TestAsync();
     }
 }

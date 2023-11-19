@@ -22,7 +22,7 @@ namespace Kubernox.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Kubernox.Domain.Entities.ClusterConfiguration", b =>
+            modelBuilder.Entity("Kubernox.Domain.Entities.HostConfiguration", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,7 +67,7 @@ namespace Kubernox.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ClusterConfiguration", (string)null);
+                    b.ToTable("HostConfiguration", (string)null);
                 });
 
             modelBuilder.Entity("Kubernox.Domain.Entities.Log", b =>
@@ -103,9 +103,6 @@ namespace Kubernox.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ClusterConfigurationId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -118,6 +115,9 @@ namespace Kubernox.Infrastructure.Migrations
 
                     b.Property<string>("DeleteBy")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("HostConfigurationId")
+                        .HasColumnType("uuid");
 
                     b.Property<long?>("MaxCpu")
                         .HasColumnType("bigint");
@@ -142,6 +142,67 @@ namespace Kubernox.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Node", (string)null);
+                });
+
+            modelBuilder.Entity("Kubernox.Domain.Entities.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Identifier")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Project", (string)null);
+                });
+
+            modelBuilder.Entity("Kubernox.Domain.Entities.SshKey", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreateBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeleteAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeleteBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrivateKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PublicKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdateBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SshKey", (string)null);
                 });
 #pragma warning restore 612, 618
         }

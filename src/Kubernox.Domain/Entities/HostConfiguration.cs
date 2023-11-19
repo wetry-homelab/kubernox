@@ -1,6 +1,6 @@
 ﻿namespace Kubernox.Domain.Entities
 {
-    public class ClusterConfiguration
+    public class HostConfiguration
     {
         public Guid Id { get; set; }
 

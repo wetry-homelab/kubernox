@@ -1,8 +1,36 @@
-﻿@page "/projects"
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@page "/projects"
 @attribute [Authorize]
 
 <PageTitle>Kubernox - Admin - Projects</PageTitle>
 
 <Card>
-    <Title Level="1">Projects</Title>
+    <PageHeader Class="site-page-header">
+        <PageHeaderTitle>
+            Projects
+        </PageHeaderTitle>
+        <PageHeaderExtra>
+            <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" />
+        </PageHeaderExtra>
+    </PageHeader>
+
+    <Table DataSource="@ProjectState?.Value?.Projects" Bordered HidePagination Loading="@(ProjectState?.Value?.IsLoading ?? true)">
+        <PropertyColumn Property="c => c.Name">
+            <a>@context.Name</a>
+        </PropertyColumn>
+
+        <PropertyColumn Property="c => c.Identifier" />
+
+        <ActionColumn Width="100px">
+            <Space Size=@("large")>
+                <SpaceItem>
+                    <Button Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Edit" />
+                </SpaceItem>
+
+                <SpaceItem>
+                    <Button Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Delete" Danger />
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
 </Card>

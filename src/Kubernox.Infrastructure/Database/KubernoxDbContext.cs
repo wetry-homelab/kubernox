@@ -6,9 +6,11 @@ namespace Kubernox.Infrastructure.Database
 {
     public class KubernoxDbContext : DbContext
     {
+        public DbSet<Project> Projects { get; set; }
+
         public DbSet<Node> Nodes { get; set; }
 
-        public DbSet<ClusterConfiguration> ClusterConfigurations { get; set; }
+        public DbSet<HostConfiguration> HostConfigurations { get; set; }
 
         public DbSet<Log> Logs { get; set; }
 

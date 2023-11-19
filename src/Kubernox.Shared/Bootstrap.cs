@@ -10,6 +10,8 @@ namespace Kubernox.Shared
         public static IServiceCollection RegisterClientServices(this IServiceCollection services)
         {
             services.AddScoped<IIdentityClient, IdentityClient>();
+            services.AddScoped<IHostClient, HostClient>();
+            services.AddScoped<IProjectClient, ProjectClient>();
 
             return services;
         }

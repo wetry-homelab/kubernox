@@ -22,8 +22,9 @@ namespace Kubernox.Infrastructure
             }, ServiceLifetime.Singleton);
 
             services.AddScoped<ILogRepository, LogRepository>();
-            services.AddScoped<IClusterConfigurationRepository, ClusterConfigurationRepository>();
+            services.AddScoped<IHostConfigurationRepository, HostConfigurationRepository>();
             services.AddScoped<INodeRepository, NodeRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
 
             return services;
         }
@@ -33,9 +34,9 @@ namespace Kubernox.Infrastructure
             var dbContext = builder.ApplicationServices.GetRequiredService<KubernoxDbContext>();
             dbContext.Database.Migrate();
 
-            if (!dbContext.ClusterConfigurations.Any())
+            if (!dbContext.HostConfigurations.Any())
             {
-                dbContext.ClusterConfigurations.Add(new Domain.Entities.ClusterConfiguration()
+                dbContext.HostConfigurations.Add(new Domain.Entities.HostConfiguration()
                 {
                     ApiToken = "root@pam!dev=2c29ffce-b72a-4acd-8fdc-c4a1ab5b4cdb",
                     Ip = "192.168.50.200",

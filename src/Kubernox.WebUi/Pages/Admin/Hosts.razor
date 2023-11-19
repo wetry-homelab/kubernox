@@ -1,0 +1,57 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@page "/hosts"
+@attribute [Authorize]
+
+<PageTitle>Kubernox - Admin - Hosts</PageTitle>
+
+<Card>
+    <PageHeader Class="site-page-header">
+        <PageHeaderTitle>
+            Hosts
+        </PageHeaderTitle>
+        <PageHeaderExtra>
+            <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" />
+        </PageHeaderExtra>
+    </PageHeader>
+
+    <Table DataSource="@HostState?.Value?.Hosts" Bordered HidePagination Loading="@(HostState?.Value?.IsLoading ?? true)">
+        <PropertyColumn Property="c => c.Name">
+            <a>@context.Name</a>
+        </PropertyColumn>
+
+        <PropertyColumn Property="c => c.Ip" />
+
+        <PropertyColumn Property="c => c.IsActive">
+            @if (context.IsActive)
+            {
+                <Tag Color="@PresetColor.Green.ToString()">Active</Tag>
+            }
+            else
+            {
+                <Tag Color="@PresetColor.Red.ToString()">Inactive</Tag>
+            }
+        </PropertyColumn>
+
+        <PropertyColumn Property="c => c.Nodes">
+            <AntList Bordered DataSource="@context.Nodes">
+                <ChildContent Context="item">
+                    <ListItem>
+                        @item.Name
+                    </ListItem>
+                </ChildContent>
+            </AntList>
+        </PropertyColumn>
+
+        <ActionColumn Width="100px">
+            <Space Size=@("large")>
+                <SpaceItem>
+                    <Button Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Edit" />
+                </SpaceItem>
+
+                <SpaceItem>
+                    <Button Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Delete" Danger />
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
+</Card>

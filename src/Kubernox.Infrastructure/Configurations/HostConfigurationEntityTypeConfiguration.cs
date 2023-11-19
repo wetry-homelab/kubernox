@@ -5,22 +5,20 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Kubernox.Infrastructure.Configurations
 {
-    public class ClusterConfigurationEntityTypeConfiguration : IEntityTypeConfiguration<ClusterConfiguration>
+    public class HostConfigurationEntityTypeConfiguration : IEntityTypeConfiguration<HostConfiguration>
     {
-        public void Configure(EntityTypeBuilder<ClusterConfiguration> builder)
+        public void Configure(EntityTypeBuilder<HostConfiguration> builder)
         {
-            builder.ToTable("ClusterConfiguration");
+            builder.ToTable("HostConfiguration");
             builder.HasKey(c => c.Id);
 
             builder.Property(p => p.Name)
                         .IsRequired()
                         .HasMaxLength(128);
 
-
             builder.Property(p => p.Ip)
                         .IsRequired()
                         .HasMaxLength(128);
-
 
             builder.Property(p => p.ApiToken)
                         .IsRequired()

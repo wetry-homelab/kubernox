@@ -6,18 +6,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kubernox.Infrastructure.Repositories
 {
-    public class ClusterConfigurationRepository : IClusterConfigurationRepository
+    public class HostConfigurationRepository : IHostConfigurationRepository
     {
         private readonly KubernoxDbContext kubernoxDbContext;
 
-        public ClusterConfigurationRepository(KubernoxDbContext kubernoxDbContext)
+        public HostConfigurationRepository(KubernoxDbContext kubernoxDbContext)
         {
             this.kubernoxDbContext = kubernoxDbContext;
         }
 
-        public Task<List<ClusterConfiguration>> GetClustersAsync()
+        public Task<List<HostConfiguration>> GetHostsAsync()
         {
-            return kubernoxDbContext.ClusterConfigurations.ToListAsync();
+            return kubernoxDbContext.HostConfigurations.Where(c => c.DeleteAt == null).ToListAsync();
         }
     }
 }

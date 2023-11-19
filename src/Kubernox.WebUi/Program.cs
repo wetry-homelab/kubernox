@@ -1,5 +1,7 @@
 using Blazored.LocalStorage;
 
+using Fluxor;
+
 using Kubernox.Shared;
 using Kubernox.WebUi;
 using Kubernox.WebUi.Core;
@@ -21,5 +23,12 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddFeatureManagement();
 builder.Services.AddScoped<AuthenticationStateProvider, KubernoxAuthenticationStateProvider>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5276") });
+
+var currentAssembly = typeof(Program).Assembly;
+builder.Services.AddFluxor(options =>
+{
+    options.ScanAssemblies(currentAssembly);
+    options.UseReduxDevTools();
+});
 
 await builder.Build().RunAsync();

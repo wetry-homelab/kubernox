@@ -23,6 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Features\Host\Commands\" />
 	  <Folder Include="Features\Identity\Queries\" />
 	</ItemGroup>
 </Project>

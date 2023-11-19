@@ -6,7 +6,7 @@
 
         public string Name { get; set; }
 
-        public Guid ClusterConfigurationId { get; set; }
+        public Guid HostConfigurationId { get; set; }
 
         public string NodeId{ get; set; }
 

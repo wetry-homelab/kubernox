@@ -21,11 +21,5 @@ namespace Kubernox.Shared.Clients
             var httpClientResponse = await httpClient.PostAsJsonAsync("identity", request);
             return JsonSerializer.Deserialize<SignInResponse>(await httpClientResponse.Content.ReadAsStringAsync());
         }
-
-        public async Task<string> TestAsync()
-        {
-            var httpClientResponse = await httpClient.GetStringAsync("test");
-            return httpClientResponse;
-        }
     }
 }

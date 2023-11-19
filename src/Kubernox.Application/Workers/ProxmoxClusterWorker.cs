@@ -22,10 +22,10 @@ namespace Kubernox.Application.Workers
                 using (IServiceScope scope = serviceProvider.CreateScope())
                 {
                     var proxmoxClient = scope.ServiceProvider.GetRequiredService<IProxmoxClient>();
-                    var clusterConfigurationRepository = scope.ServiceProvider.GetRequiredService<IClusterConfigurationRepository>();
+                    var clusterConfigurationRepository = scope.ServiceProvider.GetRequiredService<IHostConfigurationRepository>();
                     var nodeRepository = scope.ServiceProvider.GetRequiredService<INodeRepository>();
 
-                    var clusters = await clusterConfigurationRepository.GetClustersAsync();
+                    var clusters = await clusterConfigurationRepository.GetHostsAsync();
                     var nodes = await nodeRepository.GetNodesAsync();
 
                     foreach (var cluster in clusters)
@@ -42,7 +42,7 @@ namespace Kubernox.Application.Workers
                                 {
                                     NodeId = clusterNode.Id,
                                     Name = clusterNode.Id,
-                                    ClusterConfigurationId = cluster.Id,
+                                    HostConfigurationId = cluster.Id,
                                     MaxCpu = clusterNode.CpuSize,
                                     MaxMemory = clusterNode.MemorySize,
                                     Id = Guid.NewGuid(),
