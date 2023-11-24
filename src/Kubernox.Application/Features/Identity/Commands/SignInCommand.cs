@@ -1,5 +1,4 @@
-﻿using Kubernox.Shared.Contracts.Request;
-using Kubernox.Shared.Contracts.Response;
+﻿using Kubernox.Shared;
 
 using MediatR;
 

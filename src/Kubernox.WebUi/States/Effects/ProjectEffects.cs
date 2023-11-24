@@ -1,23 +1,22 @@
 ﻿using Fluxor;
-
-using Kubernox.Shared.Interfaces;
+using Kubernox.Shared;
 using Kubernox.WebUi.States.Actions;
 
 namespace Kubernox.WebUi.States.Effects
 {
     public class ProjectEffects
     {
-        private readonly IProjectClient projectClient;
+        private readonly IKubernoxClient kubernoxClient;
 
-        public ProjectEffects(IProjectClient projectClient)
+        public ProjectEffects(IKubernoxClient kubernoxClient)
         {
-            this.projectClient = projectClient;
+            this.kubernoxClient = kubernoxClient;
         }
 
         [EffectMethod]
         public async Task HandleFetchProjectActionEffect(FetchProjectAction _, IDispatcher dispatcher)
         {
-            var response = await projectClient.GetProjectsAsync();
+            var response = await kubernoxClient.ListProjectsAsync();
             dispatcher.Dispatch(new FetchProjectActionSuccess(response));
         }
     }

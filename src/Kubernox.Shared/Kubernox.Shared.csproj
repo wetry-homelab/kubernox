@@ -1,14 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.8.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\openapi.yaml" Link="openapi.yaml" />
+	</ItemGroup>
+
+	<Target Name="OpenApiGenerate" AfterTargets="Build">
+		<Exec Command="$(NSwagExe_Net60) run nswag.json /variables:Configuration=$(Configuration),AspNetCoreEnvironment=$(ASPNETCORE_ENVIRONMENT)" />
+	</Target>
+
+	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="11.8.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.0" />
+		<PackageReference Include="NSwag.MSBuild" Version="13.20.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Polly" Version="8.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Interfaces\" />
+	</ItemGroup>
 
 </Project>

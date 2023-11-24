@@ -25,6 +25,7 @@ namespace Kubernox.Infrastructure
             services.AddScoped<IHostConfigurationRepository, HostConfigurationRepository>();
             services.AddScoped<INodeRepository, NodeRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<ITemplateRepository, TemplateRepository>();
 
             return services;
         }

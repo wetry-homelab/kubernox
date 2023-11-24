@@ -7,6 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.0.3" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.0.3" />
+		<PackageReference Include="Pulumi" Version="3.*" />
+		<PackageReference Include="Pulumi.Automation" Version="3.*" />
+		<PackageReference Include="Pulumi.ProxmoxVE" Version="5.*" />
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>

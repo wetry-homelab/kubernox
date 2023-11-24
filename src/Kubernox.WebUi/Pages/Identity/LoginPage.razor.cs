@@ -4,8 +4,7 @@ using Blazored.LocalStorage;
 
 using FluentValidation.Results;
 
-using Kubernox.Shared.Contracts.Request;
-using Kubernox.Shared.Interfaces;
+using Kubernox.Shared;
 using Kubernox.Shared.Validators;
 using Kubernox.WebUi.Core;
 
@@ -18,10 +17,10 @@ namespace Kubernox.WebUi.Pages.Identity
     public partial class LoginPage
     {
         [Inject]
-        public IIdentityClient IdentityClient { get; set; }
+        public IKubernoxClient KubernoxClient { get; set; }
 
         [Inject]
-        public ILocalStorageService LocalStorage  { get; set; }
+        public ILocalStorageService LocalStorage { get; set; }
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
@@ -42,12 +41,12 @@ namespace Kubernox.WebUi.Pages.Identity
             validationResult = await signInRequestValidator.ValidateAsync(signInRequest);
             if (validationResult.IsValid)
             {
-                var authResult = await IdentityClient.SignInAsync(signInRequest);
+                var authResult = await KubernoxClient.SignInAsync(signInRequest);
                 if (authResult != null)
                 {
                     authError = string.IsNullOrEmpty(authResult.AccessToken);
 
-                    if(!authError)
+                    if (!authError)
                     {
                         await LocalStorage.SetItemAsStringAsync("access_token", authResult.AccessToken);
                         await ((KubernoxAuthenticationStateProvider)AppAuthenticationStateProvider).MarkUserAsAuthenticated();
@@ -72,7 +71,6 @@ namespace Kubernox.WebUi.Pages.Identity
                 return FormValidateStatus.Error;
 
             return FormValidateStatus.Success;
-
         }
     }
 }

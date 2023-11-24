@@ -1,7 +1,9 @@
 ﻿using Kubernox.Infrastructure.Interfaces;
-using Kubernox.Shared.Contracts.Response;
+using Kubernox.Shared;
 
 using MediatR;
+
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kubernox.Application.Features.Host.Queries
 {
@@ -9,22 +11,30 @@ namespace Kubernox.Application.Features.Host.Queries
     {
         private readonly IHostConfigurationRepository hostConfigurationRepository;
         private readonly INodeRepository nodeRepository;
+        private readonly IMemoryCache memoryCache;
 
-        public GetHostQueryHandler(IHostConfigurationRepository hostConfigurationRepository, INodeRepository nodeRepository)
+        private const string HostCacheKey = "hostsList";
+
+        public GetHostQueryHandler(IHostConfigurationRepository hostConfigurationRepository, INodeRepository nodeRepository, IMemoryCache memoryCache)
         {
             this.hostConfigurationRepository = hostConfigurationRepository;
             this.nodeRepository = nodeRepository;
+            this.memoryCache = memoryCache;
         }
 
         public async Task<IEnumerable<HostItemResponse>> Handle(GetHostQuery request, CancellationToken cancellationToken)
         {
+            if (memoryCache.TryGetValue<IEnumerable<HostItemResponse>>(HostCacheKey, out var hosts))
+                return hosts;
+
             var hostConfigurations = await hostConfigurationRepository.GetHostsAsync();
             var nodes = await nodeRepository.GetNodesAsync();
 
-            return hostConfigurations.Select(s => new HostItemResponse()
+            hosts = hostConfigurations.Select(s => new HostItemResponse()
             {
                 Id = s.Id,
                 Ip = s.Ip,
+                Status = s.Status,
                 IsActive = s.IsActive,
                 Name = s.Name,
                 NodeCount = nodes.Count(c => c.HostConfigurationId == s.Id),
@@ -34,6 +44,10 @@ namespace Kubernox.Application.Features.Host.Queries
                     Name = n.Name
                 }).ToList()
             }).ToList();
+
+            memoryCache.Set(HostCacheKey, hosts);
+
+            return hosts;
         }
     }
 }

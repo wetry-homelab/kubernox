@@ -1,13 +1,13 @@
 ﻿using Fluxor;
 
-using Kubernox.Shared.Contracts.Request;
+using Kubernox.Shared;
 
 namespace Kubernox.WebUi.States.Stores
 {
     [FeatureState]
     public class ProjectState
     {
-        public IEnumerable<ProjectItemResponse> Projects { get; }
+        public ICollection<ProjectItemResponse> Projects { get; }
 
         public bool IsLoading { get; }
 
@@ -16,7 +16,7 @@ namespace Kubernox.WebUi.States.Stores
 
         }
 
-        public ProjectState(IEnumerable<ProjectItemResponse> projects, bool isLoading)
+        public ProjectState(ICollection<ProjectItemResponse> projects, bool isLoading)
         {
             Projects = projects;
             IsLoading = isLoading;

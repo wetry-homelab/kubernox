@@ -1,4 +1,4 @@
-﻿using Kubernox.Shared.Contracts.Response;
+﻿using Kubernox.Shared;
 using Kubernox.WebUi.Core;
 
 namespace Kubernox.WebUi.States.Actions
@@ -9,12 +9,12 @@ namespace Kubernox.WebUi.States.Actions
 
     public class FetchHostActionSuccess
     {
-        public FetchHostActionSuccess(IEnumerable<HostItemResponse> hosts)
+        public FetchHostActionSuccess(ICollection<HostItemResponse> hosts)
         {
             Hosts = hosts;
         }
 
-        public IEnumerable<HostItemResponse> Hosts { get; }
+        public ICollection<HostItemResponse> Hosts { get; }
 
     }
 

@@ -1,0 +1,20 @@
+﻿{
+  "runtime": "Net60",
+  "defaultVariables": null,
+  "documentGenerator": {
+    "fromDocument": {
+      "url": "./../openapi.yaml",
+      "output": null
+    }
+  },
+  "codeGenerators": {
+    "openApiToCSharpClient": {
+      "className": "KubernoxClient",
+      "namespace": "Kubernox.Shared",
+      "generateClientClasses": true,
+      "generateClientInterfaces": true,
+      "jsonLibrary": "SystemTextJson",
+      "output": "./Clients/KubernoxClient.cs"
+    }
+  }
+}

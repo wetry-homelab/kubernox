@@ -6,5 +6,6 @@ namespace Kubernox.Application.Interfaces
     {
         Task<bool> AuthenticateUserAsync(string username, string password);
         Task<IEnumerable<ClusterResource>> GetNodesAsync(string ip, string apiToken);
+        Task<IEnumerable<ClusterResource>> GetVmsAsync(string ip, string apiToken);
     }
 }

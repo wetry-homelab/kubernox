@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
 
-using Kubernox.Shared.Contracts.Request;
-
 namespace Kubernox.Shared.Validators
 {
     public class SignInRequestValidator : AbstractValidator<SignInRequest>

@@ -5,17 +5,17 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{68314055-3B1B-41D3-B39A-5646258A9339}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernox.Domain", "src\Kubernox.Domain\Kubernox.Domain.csproj", "{3DE91805-2B06-4220-8B25-5A04F0BD5D38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kubernox.Domain", "src\Kubernox.Domain\Kubernox.Domain.csproj", "{3DE91805-2B06-4220-8B25-5A04F0BD5D38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernox.Application", "src\Kubernox.Application\Kubernox.Application.csproj", "{19DB4BDB-0388-42C9-9273-AFF4A9DB5496}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kubernox.Application", "src\Kubernox.Application\Kubernox.Application.csproj", "{19DB4BDB-0388-42C9-9273-AFF4A9DB5496}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernox.Infrastructure", "src\Kubernox.Infrastructure\Kubernox.Infrastructure.csproj", "{164B8EED-E74B-442D-90BB-F0033BE4BBC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kubernox.Infrastructure", "src\Kubernox.Infrastructure\Kubernox.Infrastructure.csproj", "{164B8EED-E74B-442D-90BB-F0033BE4BBC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernox.Service.Host", "src\Kubernox.Service.Host\Kubernox.Service.Host.csproj", "{62F2A808-B94B-4462-BE5D-2896B98397D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kubernox.Service.Host", "src\Kubernox.Service.Host\Kubernox.Service.Host.csproj", "{62F2A808-B94B-4462-BE5D-2896B98397D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernox.WebUi", "src\Kubernox.WebUi\Kubernox.WebUi\Kubernox.WebUi.csproj", "{69B7A266-1430-4619-AA4D-1D9558E23B87}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernox.Shared", "src\Kubernox.Shared\Kubernox.Shared.csproj", "{38FDB24C-41CD-4BAD-99C1-291CF6BCB1D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernox.WebUi.Client", "src\Kubernox.WebUi\Kubernox.WebUi.Client\Kubernox.WebUi.Client.csproj", "{B73B03E8-7FA8-44A3-B6DF-96BCD4CB8AC5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernox.WebUi", "src\Kubernox.WebUi\Kubernox.WebUi.csproj", "{C21DBF33-147E-474F-870F-6F59F4F69B6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,14 +39,14 @@ Global
 		{62F2A808-B94B-4462-BE5D-2896B98397D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62F2A808-B94B-4462-BE5D-2896B98397D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62F2A808-B94B-4462-BE5D-2896B98397D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{69B7A266-1430-4619-AA4D-1D9558E23B87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{69B7A266-1430-4619-AA4D-1D9558E23B87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{69B7A266-1430-4619-AA4D-1D9558E23B87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{69B7A266-1430-4619-AA4D-1D9558E23B87}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B73B03E8-7FA8-44A3-B6DF-96BCD4CB8AC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B73B03E8-7FA8-44A3-B6DF-96BCD4CB8AC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B73B03E8-7FA8-44A3-B6DF-96BCD4CB8AC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B73B03E8-7FA8-44A3-B6DF-96BCD4CB8AC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38FDB24C-41CD-4BAD-99C1-291CF6BCB1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38FDB24C-41CD-4BAD-99C1-291CF6BCB1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38FDB24C-41CD-4BAD-99C1-291CF6BCB1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38FDB24C-41CD-4BAD-99C1-291CF6BCB1D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C21DBF33-147E-474F-870F-6F59F4F69B6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C21DBF33-147E-474F-870F-6F59F4F69B6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C21DBF33-147E-474F-870F-6F59F4F69B6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C21DBF33-147E-474F-870F-6F59F4F69B6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,8 +56,8 @@ Global
 		{19DB4BDB-0388-42C9-9273-AFF4A9DB5496} = {68314055-3B1B-41D3-B39A-5646258A9339}
 		{164B8EED-E74B-442D-90BB-F0033BE4BBC6} = {68314055-3B1B-41D3-B39A-5646258A9339}
 		{62F2A808-B94B-4462-BE5D-2896B98397D9} = {68314055-3B1B-41D3-B39A-5646258A9339}
-		{69B7A266-1430-4619-AA4D-1D9558E23B87} = {68314055-3B1B-41D3-B39A-5646258A9339}
-		{B73B03E8-7FA8-44A3-B6DF-96BCD4CB8AC5} = {68314055-3B1B-41D3-B39A-5646258A9339}
+		{38FDB24C-41CD-4BAD-99C1-291CF6BCB1D1} = {68314055-3B1B-41D3-B39A-5646258A9339}
+		{C21DBF33-147E-474F-870F-6F59F4F69B6D} = {68314055-3B1B-41D3-B39A-5646258A9339}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ABDA9442-326C-47C9-90E8-CD9FCEF25F41}

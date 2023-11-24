@@ -14,6 +14,8 @@ namespace Kubernox.Infrastructure.Database
 
         public DbSet<Log> Logs { get; set; }
 
+        public DbSet<Template> Templates { get; set; }
+
         public DbSet<SshKey> SshKeys { get; set; }
 
 

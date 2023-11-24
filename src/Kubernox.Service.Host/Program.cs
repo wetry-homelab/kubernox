@@ -1,8 +1,10 @@
 using FluentValidation;
 
+using Hangfire;
+using Hangfire.PostgreSql;
+
 using Kubernox.Application;
 using Kubernox.Application.Features.Identity.Commands;
-using Kubernox.Application.Workers;
 using Kubernox.Infrastructure;
 using Kubernox.Shared.Validators;
 
@@ -14,7 +16,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.RegisterApplicationLayer(builder.Configuration);
 builder.Services.RegisterInfrastructureLayer(builder.Configuration);
-builder.Services.AddHostedService<ProxmoxClusterWorker>();
 builder.Services.AddValidatorsFromAssemblyContaining<SignInRequestValidator>();
 builder.Services.AddMediatR(config =>
 {
@@ -23,6 +24,7 @@ builder.Services.AddMediatR(config =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddCors(c =>
 {
@@ -56,6 +58,16 @@ builder.Services.AddAuthentication(x =>
     x.SaveToken = true;
 });
 
+builder.Services.AddHangfire(configuration =>
+{
+    configuration.UsePostgreSqlStorage(options =>
+    {
+        options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("Default"), setup =>
+        {
+        });
+    });
+});
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -65,6 +77,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.RegisterCoreJobs();
 
 app.UseHttpsRedirection();
 app.UseCors();
@@ -75,5 +88,6 @@ app.UseAuthorization();
 
 app.MigrateData();
 app.MapControllers();
+app.MapHangfireDashboard();
 
 app.Run();

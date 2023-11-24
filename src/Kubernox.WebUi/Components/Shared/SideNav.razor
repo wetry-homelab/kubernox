@@ -1,4 +1,6 @@
-﻿<Sider Width="200" Style="overflow: auto;height: 100vh;position: fixed;left: 0;">
+﻿@inject IJSRuntime JsRuntime
+
+<Sider Width="200" Style="overflow: auto;height: 100vh;position: fixed;left: 0;">
     <Menu Mode="MenuMode.Inline"
           Theme="MenuTheme.Light"
           Style="min-height: 100%;">
@@ -28,17 +30,9 @@
             </MenuItem>
         </FeatureComponent>
 
-        @{
-            RenderFragment subMenuAdmin =@<span>
-                <Icon Type="user" Theme="outline" />
-                <span>Admin</span>
-            </span>
-            ;
-        }
-
         <SubMenu Key="admin" TitleTemplate=subMenuAdmin>
             <MenuItem>
-                <MenuLink Href="/hosts" Match="@NavLinkMatch.Prefix">Clusters</MenuLink>
+                <MenuLink Href="/hosts" Match="@NavLinkMatch.Prefix">Hosts</MenuLink>
             </MenuItem>
             <MenuItem>
                 <MenuLink Href="/projects" Match="@NavLinkMatch.Prefix">Projects</MenuLink>
@@ -46,7 +40,25 @@
             <MenuItem>
                 <MenuLink Href="/ssh-keys" Match="@NavLinkMatch.Prefix">SSH</MenuLink>
             </MenuItem>
+
+            <MenuItem OnClick=@(async () => await OpenHangfireDashboard("/hangfire/"))>
+                Hangfire
+            </MenuItem>
         </SubMenu>
 
     </Menu>
 </Sider>
+
+
+@code {
+    RenderFragment subMenuAdmin =@<span>
+        <Icon Type="user" Theme="outline" />
+        <span>Admin</span>
+    </span>
+    ;
+
+    private async Task OpenHangfireDashboard(string url)
+    {
+        await JsRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+}

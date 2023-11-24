@@ -1,0 +1,251 @@
+openapi: 3.0.0
+info:
+  title: Kubernox API
+  description: This is API for Kubernox
+  version: 0.0.1
+tags:
+  - name: ssh
+    description: All operation link to SSH Keys
+  - name: project
+  - name: host
+  - name: identity
+paths:
+  /sshkey:
+    get:
+      tags:
+        - ssh
+      summary: List all SSH Keys
+      operationId: listSSHKeys
+      responses:
+        '200':
+          description: List of SSH Keys
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SSHKeyItemResponse'
+    post:
+      tags:
+        - ssh
+      summary: Create a new SSH Key
+      operationId: createSSHKey
+      requestBody:
+        description: SSH Key to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SSHKeyRequest'
+      responses:
+        '200':
+          description: SSH Key created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SSHKeyItemResponse'
+
+  /project:
+    get:
+      tags:
+        - project
+      summary: List all projects
+      operationId: listProjects
+      responses:
+        '200':
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectItemResponse'
+    post:
+      tags:
+        - project
+      summary: Create a new project
+      operationId: createProject
+      requestBody:
+        description: Project to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+      responses:
+        '200':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectItemResponse'
+
+  /host:
+    get:
+      tags:
+        - host
+      summary: List all hosts
+      operationId: listHosts
+      responses:
+        '200':
+          description: List of hosts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HostItemResponse'
+    post:
+      tags:
+        - host
+      summary: Create a new host
+      operationId: createHost
+      requestBody:
+        description: Host to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostConfigurationRequest'
+      responses:
+        '200':
+          description: Host created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostItemResponse'
+
+  /identity:
+    post:
+      tags:
+        - identity
+      summary: Sign in
+      operationId: signIn
+      requestBody:
+        description: Sign in
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: Sign in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInResponse'
+
+  /template:
+    get:
+      tags:
+        - template
+      summary: List all templates
+      operationId: listTemplates
+      responses:
+        '200':
+          description: List of templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TemplateItemResponse'
+components:
+  schemas:
+    SSHKeyItemResponse:
+      type: object
+      properties:
+        Id:
+          type: string
+          format: uuid
+    SSHKeyRequest:
+      type: object
+      properties:
+        Name:
+          type: string
+    ProjectItemResponse:
+      type: object
+      properties:
+        Id:
+          type: string
+          format: uuid
+        Name:  
+          type: string
+        Identifier:
+          type: string
+    ProjectRequest:
+      type: object
+      properties:
+        Name:
+          type: string
+    HostItemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        ip:
+          type: string
+        status:
+          type: string
+        isActive:
+          type: boolean
+        nodeCount:
+          type: integer
+          format: int32
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/NodeItemResponse'
+    NodeItemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    SignInResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+    TemplateItemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        hostId:
+          type: string
+          format: uuid
+        hostName:
+          type: string
+        nodeId:
+          type: string
+          format: uuid
+        nodeName:
+          type: string
+    SignInRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    HostConfigurationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        ip:
+          type: string
+        apiToken:
+          type: string

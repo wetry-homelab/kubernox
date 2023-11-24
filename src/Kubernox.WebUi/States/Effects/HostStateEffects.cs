@@ -1,23 +1,23 @@
 ﻿using Fluxor;
 
-using Kubernox.Shared.Interfaces;
+using Kubernox.Shared;
 using Kubernox.WebUi.States.Actions;
 
 namespace Kubernox.WebUi.States.Effects
 {
     public class HostStateEffects
     {
-        private readonly IHostClient hostClient;
+        private readonly IKubernoxClient kubernoxClient;
 
-        public HostStateEffects(IHostClient hostClient)
+        public HostStateEffects(IKubernoxClient kubernoxClient)
         {
-            this.hostClient = hostClient;
+            this.kubernoxClient = kubernoxClient;
         }
 
         [EffectMethod]
         public async Task HandleFetchHostActionEffect(FetchHostAction _, IDispatcher dispatcher)
         {
-            var response = await hostClient.GetHostsAsync();
+            var response = await kubernoxClient.ListHostsAsync();
             dispatcher.Dispatch(new FetchHostActionSuccess(response));
         }
     }

@@ -1,13 +1,13 @@
 ﻿using Fluxor;
 
-using Kubernox.Shared.Contracts.Response;
+using Kubernox.Shared;
 
 namespace Kubernox.WebUi.States.Stores
 {
     [FeatureState]
     public class HostState
     {
-        public IEnumerable<HostItemResponse> Hosts { get; }
+        public ICollection<HostItemResponse> Hosts { get; }
 
         public bool IsLoading { get; }
 
@@ -16,7 +16,7 @@ namespace Kubernox.WebUi.States.Stores
 
         }
 
-        public HostState(IEnumerable<HostItemResponse> hosts, bool isLoading)
+        public HostState(ICollection<HostItemResponse> hosts, bool isLoading)
         {
             Hosts = hosts;
             IsLoading = isLoading;

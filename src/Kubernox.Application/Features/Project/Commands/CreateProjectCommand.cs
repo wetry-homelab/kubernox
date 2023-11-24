@@ -1,4 +1,5 @@
-﻿using Kubernox.Shared.Contracts.Request;
+﻿
+using Kubernox.Shared;
 
 using MediatR;
 
@@ -6,6 +7,7 @@ namespace Kubernox.Application.Features.Project.Commands
 {
     public class CreateProjectCommand : IRequest<bool>
     {
-        public CreateProjectRequest Request { get; set; }
+        public ProjectRequest Request { get; set; }
+        public string UserId { get; set; }
     }
 }

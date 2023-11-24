@@ -1,8 +1,4 @@
-﻿using Kubernox.Shared.Interfaces;
-
-using Microsoft.AspNetCore.Components;
-
-namespace Kubernox.WebUi.Pages
+﻿namespace Kubernox.WebUi.Pages
 {
     public partial class Home
     {

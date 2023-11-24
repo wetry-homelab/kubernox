@@ -1,6 +1,6 @@
 ﻿using Fluxor;
 
-using Kubernox.Shared.Contracts.Response;
+using Kubernox.Shared;
 
 namespace Kubernox.WebUi.States.Stores
 {
@@ -9,14 +9,14 @@ namespace Kubernox.WebUi.States.Stores
     {
         public bool IsLoading { get; }
 
-        public IEnumerable<SshKeyItemResponse> SshKeys { get; }
+        public IEnumerable<SSHKeyItemResponse> SshKeys { get; }
 
         public SshKeyState()
         {
 
         }
 
-        public SshKeyState(bool isLoading, IEnumerable<SshKeyItemResponse> sshKeys)
+        public SshKeyState(bool isLoading, IEnumerable<SSHKeyItemResponse> sshKeys)
         {
             IsLoading = isLoading;
             SshKeys = sshKeys;

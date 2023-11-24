@@ -1,7 +1,9 @@
 ﻿using Fluxor;
-using Kubernox.Shared.Interfaces;
+
+using Kubernox.Shared;
 using Kubernox.WebUi.States.Actions;
 using Kubernox.WebUi.States.Stores;
+
 using Microsoft.AspNetCore.Components;
 
 namespace Kubernox.WebUi.Pages.Admin
@@ -9,7 +11,7 @@ namespace Kubernox.WebUi.Pages.Admin
     public partial class Projects
     {
         [Inject]
-        public IHostClient HostClient { get; set; }
+        public IKubernoxClient KubernoxClient { get; set; }
 
         [Inject]
         private IState<ProjectState> ProjectState { get; set; }

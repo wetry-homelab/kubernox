@@ -1,4 +1,7 @@
-﻿using Kubernox.Application.Features.Host.Queries;
+﻿using Kubernox.Application.Features.Host.Commands;
+using Kubernox.Application.Features.Host.Queries;
+using Kubernox.Service.Host.Core;
+using Kubernox.Shared;
 
 using MediatR;
 
@@ -8,10 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kubernox.Service.Host.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class HostController : ControllerBase
+    public class HostController : HostControllerBase
     {
         private readonly ILogger<HostController> logger;
         private readonly IMediator mediator;
@@ -22,11 +23,22 @@ namespace Kubernox.Service.Host.Controllers
             this.mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetClustersListAsync()
+
+        public override async Task<ActionResult<ICollection<HostItemResponse>>> ListHosts()
         {
-            var clusters = await mediator.Send(new GetHostQuery());
-            return Ok(clusters);
+            var hosts = await mediator.Send(new GetHostQuery());
+            return Ok(hosts);
+        }
+
+        public override async Task<ActionResult<HostItemResponse>> CreateHost([FromBody] HostConfigurationRequest body)
+        {
+            var created = await mediator.Send(new CreateHostCommand()
+            {
+                Request = body,
+                UserId = UserId
+            });
+
+            return created ? Created() : BadRequest();
         }
     }
 }

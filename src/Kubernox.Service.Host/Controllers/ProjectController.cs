@@ -1,6 +1,6 @@
 ﻿using Kubernox.Application.Features.Project.Commands;
 using Kubernox.Application.Features.Project.Queries;
-using Kubernox.Shared.Contracts.Request;
+using Kubernox.Shared;
 
 using MediatR;
 
@@ -10,10 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kubernox.Service.Host.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class ProjectController : ControllerBase
+    public class ProjectController : ProjectControllerBase
     {
         private readonly ILogger<ProjectController> logger;
         private readonly IMediator mediator;
@@ -24,16 +22,14 @@ namespace Kubernox.Service.Host.Controllers
             this.mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetProjectsAsync()
+        public override async Task<ActionResult<ICollection<ProjectItemResponse>>> ListProjects()
         {
             return Ok(await mediator.Send(new GetProjectQuery()));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateProjectAsync([FromBody] CreateProjectRequest request)
+        public override async Task<ActionResult<ProjectItemResponse>> CreateProject([FromBody] ProjectRequest body)
         {
-            var projectCreated = await mediator.Send(new CreateProjectCommand() { Request = request });
+            var projectCreated = await mediator.Send(new CreateProjectCommand() { Request = body });
 
             if (projectCreated)
                 return Created();

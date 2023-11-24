@@ -1,8 +1,16 @@
-﻿@page "/k3s"
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@page "/k3s"
 @attribute [Authorize]
 
 <PageTitle>Kubernox - K3S</PageTitle>
 
 <Card>
-    <Title Level="1">K3S</Title>
+    <PageHeader Class="site-page-header">
+        <PageHeaderTitle>
+            K3s Clusters
+        </PageHeaderTitle>
+        <PageHeaderExtra>
+            <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" />
+        </PageHeaderExtra>
+    </PageHeader>
 </Card>

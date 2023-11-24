@@ -59,6 +59,10 @@ namespace Kubernox.Infrastructure.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -84,6 +88,10 @@ namespace Kubernox.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Data")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Key")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -203,6 +211,35 @@ namespace Kubernox.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SshKey", (string)null);
+                });
+
+            modelBuilder.Entity("Kubernox.Domain.Entities.Template", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("HostConfigurationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<Guid>("NodeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("VmId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Template", (string)null);
                 });
 #pragma warning restore 612, 618
         }

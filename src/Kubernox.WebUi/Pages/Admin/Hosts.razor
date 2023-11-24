@@ -1,5 +1,6 @@
 ﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 @page "/hosts"
+@using Kubernox.WebUi.Components.Modals
 @attribute [Authorize]
 
 <PageTitle>Kubernox - Admin - Hosts</PageTitle>
@@ -10,7 +11,7 @@
             Hosts
         </PageHeaderTitle>
         <PageHeaderExtra>
-            <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" />
+            <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" OnClick="OpenCreateHostConfigurationAsync" />
         </PageHeaderExtra>
     </PageHeader>
 
@@ -20,6 +21,17 @@
         </PropertyColumn>
 
         <PropertyColumn Property="c => c.Ip" />
+
+        <PropertyColumn Property="c => c.Status">
+            @if (context.Status == "Online")
+            {
+                <Tag Color="@PresetColor.Green.ToString()">Online</Tag>
+            }
+            else
+            {
+                <Tag Color="@PresetColor.Red.ToString()">Offline</Tag>
+            }
+        </PropertyColumn>
 
         <PropertyColumn Property="c => c.IsActive">
             @if (context.IsActive)
@@ -33,13 +45,16 @@
         </PropertyColumn>
 
         <PropertyColumn Property="c => c.Nodes">
-            <AntList Bordered DataSource="@context.Nodes">
-                <ChildContent Context="item">
-                    <ListItem>
-                        @item.Name
-                    </ListItem>
-                </ChildContent>
-            </AntList>
+            @if (context.Nodes != null && context.Nodes.Any())
+            {
+                <AntList Bordered DataSource="@context.Nodes">
+                    <ChildContent Context="item">
+                        <ListItem>
+                            @item.Name
+                        </ListItem>
+                    </ChildContent>
+                </AntList>
+            }
         </PropertyColumn>
 
         <ActionColumn Width="100px">
@@ -55,3 +70,5 @@
         </ActionColumn>
     </Table>
 </Card>
+
+<CreateHostConfigurationModal @ref=@createHostConfigurationModal />

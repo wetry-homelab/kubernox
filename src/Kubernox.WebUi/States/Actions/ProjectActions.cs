@@ -1,4 +1,4 @@
-﻿using Kubernox.Shared.Contracts.Request;
+﻿using Kubernox.Shared;
 using Kubernox.WebUi.Core;
 
 namespace Kubernox.WebUi.States.Actions
@@ -9,12 +9,12 @@ namespace Kubernox.WebUi.States.Actions
 
     public class FetchProjectActionSuccess
     {
-        public FetchProjectActionSuccess(IEnumerable<ProjectItemResponse> projects)
+        public FetchProjectActionSuccess(ICollection<ProjectItemResponse> projects)
         {
             Projects = projects;
         }
 
-        public IEnumerable<ProjectItemResponse> Projects { get; }
+        public ICollection<ProjectItemResponse> Projects { get; }
     }
 
     public class FetchProjectActionFailure : CoreFailureAction

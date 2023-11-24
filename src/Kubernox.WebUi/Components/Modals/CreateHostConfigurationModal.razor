@@ -1,0 +1,80 @@
+﻿<Modal Title="@("Create Host Configuration")"
+       Visible="@showModal"
+       OnCancel="ToggleModal"
+       Footer=null
+       DestroyOnClose>
+
+    @if (createError)
+    {
+        <Alert Type="@AlertType.Error"
+               Message="Authentication Error"
+               Description="Error on create host."
+               ShowIcon="true" />
+    }
+
+    <Form Model="@request" OnFinish="CreateHostConfigurationAsync" ValidateMode="@FormValidateMode.Rules" ValidateOnChange Layout="@FormLayout.Vertical">
+        <FormItem Label="Name" Required ShowFeedbackOnError ValidateStatus="@GetValidationStatus("Name")">
+            <Input @bind-Value="@context.Name" Disabled="isLoading" />
+
+            @if (GetValidationStatus("Name") == FormValidateStatus.Error)
+            {
+                <div style="display: flex; flex-wrap: nowrap;">
+                    <div class="ant-form-item-explain ant-form-item-explain-connected" role="alert">
+                        @foreach (var validationKey in validationResult.Errors.Where(a => a.PropertyName == "Name").ToList())
+                        {
+                            <div class="ant-form-item-explain-error">
+                                @validationKey.ErrorMessage
+                            </div>
+                        }
+                    </div>
+                    <div style="width: 0px; height: 24px;"></div>
+                </div>
+            }
+        </FormItem>
+
+        <FormItem Label="IP" Required ShowFeedbackOnError ValidateStatus="@GetValidationStatus("Ip")">
+            <Input @bind-Value="@context.Ip" Disabled="isLoading" />
+
+            @if (GetValidationStatus("Ip") == FormValidateStatus.Error)
+            {
+                <div style="display: flex; flex-wrap: nowrap;">
+                    <div class="ant-form-item-explain ant-form-item-explain-connected" role="alert">
+                        @foreach (var validationKey in validationResult.Errors.Where(a => a.PropertyName == "Ip").ToList())
+                        {
+                            <div class="ant-form-item-explain-error">
+                                @validationKey.ErrorMessage
+                            </div>
+                        }
+                    </div>
+                    <div style="width: 0px; height: 24px;"></div>
+                </div>
+            }
+        </FormItem>
+
+        <FormItem Label="API Token" Required ShowFeedbackOnError ValidateStatus="@GetValidationStatus("ApiToken")">
+            <Input @bind-Value="@context.ApiToken" Disabled="isLoading" />
+
+            @if (GetValidationStatus("ApiToken") == FormValidateStatus.Error)
+            {
+                <div style="display: flex; flex-wrap: nowrap;">
+                    <div class="ant-form-item-explain ant-form-item-explain-connected" role="alert">
+                        @foreach (var validationKey in validationResult.Errors.Where(a => a.PropertyName == "ApiToken").ToList())
+                        {
+                            <div class="ant-form-item-explain-error">
+                                @validationKey.ErrorMessage
+                            </div>
+                        }
+                    </div>
+                    <div style="width: 0px; height: 24px;"></div>
+                </div>
+            }
+        </FormItem>
+
+        <FormItem Style="text-align:right">
+            <Button Loading="isLoading" Type="@ButtonType.Primary" HtmlType="submit">
+                Create Host
+            </Button>
+        </FormItem>
+    </Form>
+
+</Modal>

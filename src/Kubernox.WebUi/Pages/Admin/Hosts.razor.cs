@@ -1,6 +1,9 @@
-﻿using Fluxor;
+﻿using AntDesign;
 
-using Kubernox.Shared.Interfaces;
+using Fluxor;
+
+using Kubernox.Shared;
+using Kubernox.WebUi.Components.Modals;
 using Kubernox.WebUi.States.Actions;
 using Kubernox.WebUi.States.Stores;
 
@@ -11,7 +14,7 @@ namespace Kubernox.WebUi.Pages.Admin
     public partial class Hosts
     {
         [Inject]
-        public IHostClient HostClient { get; set; }
+        public IKubernoxClient KubernoxClient { get; set; }
 
         [Inject]
         private IState<HostState> HostState { get; set; }
@@ -19,6 +22,15 @@ namespace Kubernox.WebUi.Pages.Admin
         [Inject]
         public IDispatcher Dispatcher { get; set; }
 
+        [Inject]
+        public ModalService ModalService { get; set; }
+
+        private CreateHostConfigurationModal createHostConfigurationModal;
+
+        private async Task OpenCreateHostConfigurationAsync()
+        {
+            createHostConfigurationModal?.ToggleModal();
+        }
 
         protected override async Task OnInitializedAsync()
         {

@@ -10,6 +10,7 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.0.3" />
 		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.0.3" />
+		<PackageReference Include="Hangfire.Core" Version="1.8.6" />
 		<PackageReference Include="MediatR" Version="12.2.0" />
 		<PackageReference Include="Pulumi" Version="3.*" />
 		<PackageReference Include="Pulumi.Automation" Version="3.59.0" />
@@ -23,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Features\Host\Commands\" />
 	  <Folder Include="Features\Identity\Queries\" />
+	  <Folder Include="Features\Ssh\" />
 	</ItemGroup>
 </Project>

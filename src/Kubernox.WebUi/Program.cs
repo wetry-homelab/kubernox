@@ -16,13 +16,13 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddAntDesign();
-builder.Services.RegisterClientServices();
+builder.Services.RegisterClientServices(builder.Configuration);
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddFeatureManagement();
 builder.Services.AddScoped<AuthenticationStateProvider, KubernoxAuthenticationStateProvider>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5276") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost/api/") });
 
 var currentAssembly = typeof(Program).Assembly;
 builder.Services.AddFluxor(options =>
@@ -30,5 +30,11 @@ builder.Services.AddFluxor(options =>
     options.ScanAssemblies(currentAssembly);
     options.UseReduxDevTools();
 });
+
+builder.Services
+    .AddOidcAuthentication(options =>
+    {
+    });
+
 
 await builder.Build().RunAsync();

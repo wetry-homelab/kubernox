@@ -7,8 +7,6 @@ using Microsoft.Extensions.Configuration;
 
 using Newtonsoft.Json;
 
-using static Corsinvest.ProxmoxVE.Api.Shared.Models.Vm.VmQemuAgentNetworkGetInterfaces;
-
 namespace Kubernox.Application.Clients
 {
     public class ProxmoxClient : IProxmoxClient
@@ -35,6 +33,15 @@ namespace Kubernox.Application.Clients
 
             var nodesResult = await client.Cluster.Resources.Resources(type: "node");
             return JsonConvert.DeserializeObject<List<ClusterResource>>(JsonConvert.SerializeObject(nodesResult.ToEnumerable()));
+        }
+
+        public async Task<IEnumerable<ClusterResource>> GetVmsAsync(string ip, string apiToken)
+        {
+            var client = new PveClient(ip);
+            client.ApiToken = apiToken;
+
+            var nodesResult = (await client.Cluster.Resources.Resources(type: "vm")).ToEnumerable();
+            return JsonConvert.DeserializeObject<List<ClusterResource>>(JsonConvert.SerializeObject(nodesResult));
         }
     }
 }

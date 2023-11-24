@@ -1,5 +1,5 @@
 ﻿using Kubernox.Application.Features.Identity.Commands;
-using Kubernox.Shared.Contracts.Request;
+using Kubernox.Shared;
 
 using MediatR;
 
@@ -8,10 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kubernox.Service.Host.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    [AllowAnonymous]
-    public class IdentityController : ControllerBase
+    public class IdentityController : IdentityControllerBase
     {
         private readonly ILogger<IdentityController> logger;
         private readonly IMediator mediator;
@@ -22,11 +19,11 @@ namespace Kubernox.Service.Host.Controllers
             this.mediator = mediator;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SignInUserAsync([FromBody] SignInRequest request)
+        [AllowAnonymous]
+        public override async Task<ActionResult<SignInResponse>> SignIn([FromBody] SignInRequest body)
         {
             logger.LogInformation($"Start Sign In Flow.");
-            var signInResult = await mediator.Send(new SignInCommand() { SignInRequest = request });
+            var signInResult = await mediator.Send(new SignInCommand() { SignInRequest = body });
 
             if (signInResult != null)
                 return Ok(signInResult);
